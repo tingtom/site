@@ -68,7 +68,7 @@
 }
 
 /* hover expands one half and collapses the other */
-@media (hover: hover) and (min-width: 860px) {
+@media (hover: hover) and (min-width: 640px) {
   .split:has(.panel:hover) .panel {
     flex-grow: 0.4;
   }
@@ -220,8 +220,8 @@
   mask-image: linear-gradient(to top left, #000 30%, transparent 92%);
 }
 
-/* touch + wide enough to sit side by side: first tap expands, second follows */
-@media (min-width: 860px) and (hover: none) {
+/* no hover available: first tap expands, second follows the link */
+@media (hover: none) {
   .split .panel.is-open {
     flex-grow: 2.15;
   }
@@ -235,27 +235,55 @@
   }
 }
 
-/* stacked layout on small screens / no hover */
-@media (max-width: 859px), (hover: none) {
-  .split {
-    flex-direction: column;
+/* The halves stay side by side at every width — on a phone each one is only
+   ~half the screen, so the lede and the teaser list are dropped and the type
+   steps down to keep the choice readable. */
+@media (max-width: 859px) {
+  .landing__top {
+    padding: 1rem var(--pad-x) 0.75rem;
   }
 
-  .panel {
-    flex: 1 1 auto;
-    min-height: 44svh;
-  }
-
-  .panel--rx7 {
-    border-left: none;
-    border-top: 1px solid #27272b;
+  .landing__tag {
+    font-size: 0.82rem;
+    max-width: 32ch;
   }
 
   .panel__content {
+    padding: clamp(1rem, 3.5vw, 2rem) clamp(0.85rem, 3vw, 1.75rem);
     width: 100%;
   }
 
-  .panel__strip {
+  .panel__kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.6rem;
+  }
+
+  .panel__title {
+    font-size: clamp(1.55rem, 7vw, 2.75rem);
+    letter-spacing: -0.035em;
+  }
+
+  .panel__lede {
     display: none;
+  }
+
+  .panel__list {
+    display: none;
+  }
+
+  .panel__links {
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+  }
+
+  .panel__chip {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.74rem;
+  }
+
+  .panel__strip span {
+    font-size: 0.95rem;
+    letter-spacing: 0.22em;
   }
 }

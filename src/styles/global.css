@@ -285,14 +285,18 @@ img {
   }
 }
 
-/* below 900px the rail becomes a fixed horizontal strip beneath the top bar */
+/* below 900px the rail flips to the right edge — same vertical tabs, mirrored */
 @media (max-width: 899px) {
-  /* backdrop for the fixed brand + toggle + tab strip */
+  :root {
+    --rail-width: 3rem;
+  }
+
+  /* backdrop for the fixed brand + section toggle */
   header::before {
     content: '';
     position: fixed;
     inset: 0 0 auto 0;
-    height: 6.5rem;
+    height: 4.25rem;
     background: color-mix(in srgb, var(--bg) 90%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
@@ -302,43 +306,45 @@ img {
 
   .edge-tabs {
     position: fixed;
-    top: 3.7rem;
-    left: 0;
+    left: auto;
     right: 0;
-    transform: none;
-    flex-direction: row;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
     gap: 0.4rem;
-    padding: 0.55rem var(--pad-x);
-    overflow-x: auto;
+    padding: 0;
+    overflow: visible;
     background: none;
     border: none;
-    z-index: 54;
-    scrollbar-width: none;
-  }
-
-  .edge-tabs::-webkit-scrollbar {
-    display: none;
+    z-index: 55;
   }
 
   .edge-tabs a {
-    writing-mode: horizontal-tb;
+    writing-mode: vertical-rl;
+    /* no 180° flip here: on the right edge the label reads top-to-bottom,
+       which mirrors the desktop rail's bottom-to-top */
     transform: none;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.45rem 0.95rem;
+    /* flush to the screen edge, rounded into the content */
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    padding: 1.1rem 0.55rem;
     white-space: nowrap;
     background: color-mix(in srgb, var(--bg-elev) 70%, transparent);
   }
 
   .edge-tabs a:hover {
-    padding-right: 0.95rem;
+    padding-left: 0.85rem;
+    padding-right: 0.55rem;
   }
 
   .edge-tabs a[aria-current='page'] {
-    background: var(--accent);
-    color: var(--accent-fg);
-    border-color: var(--accent);
-    padding-right: 0.95rem;
+    background: var(--bg);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    /* the active tab bleeds left, into the content */
+    padding-left: 1.15rem;
+    padding-right: 0.55rem;
   }
 
   .brand {
@@ -347,17 +353,30 @@ img {
 
   body {
     padding-left: 0;
+    padding-right: var(--rail-width);
   }
+}
 
-  main {
-    padding-top: 7.75rem;
-  }
+/* The landing renders no chrome, so let it run full-bleed instead of being
+   inset by the rail width reserved for the section pages. Declared after both
+   rail-width rules so it wins the tie. */
+[data-section='landing'] {
+  --rail-width: 0px;
 }
 
 /* --- page furniture ----------------------------------------------------- */
 
 main {
   padding-block: clamp(4.5rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem);
+}
+
+/* Must follow the rule above: same specificity, so source order decides. On
+   narrow screens there is no top strip any more, just the fixed brand and
+   section toggle to clear. */
+@media (max-width: 899px) {
+  main {
+    padding-top: 5.25rem;
+  }
 }
 
 .page-head {
