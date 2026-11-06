@@ -87,7 +87,12 @@
     flex-grow: 2.15;
   }
 
+  /* The hidden half is invisible but was still in flow: squeezed into the
+     ~220px it has left it rewraps to 1161px tall and drags the whole page
+     into scrolling while you hover. Absolutely position it instead — it is
+     invisible, so nothing is lost but the phantom height. */
   .split:has(.panel:hover) .panel:not(:hover) .panel__content {
+    position: absolute;
     opacity: 0;
     transform: translateX(-14px);
   }
@@ -245,7 +250,9 @@
     flex-grow: 2.15;
   }
 
+  /* same phantom-height fix as the hover state above */
   .split:has(.panel.is-open) .panel:not(.is-open) .panel__content {
+    position: absolute;
     opacity: 0;
   }
 

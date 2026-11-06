@@ -439,8 +439,11 @@ header::before {
 
 /* --- page furniture ----------------------------------------------------- */
 
+/* Titles sit much tighter on the section pages now — the same rhythm the
+   landing panels use — so the page opens with the heading instead of a
+   screen of air above it. */
 main {
-  padding-block: clamp(4.5rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem);
+  padding-block: clamp(3.25rem, 6vw, 4.5rem) clamp(2.5rem, 6vw, 4rem);
 }
 
 /* Must follow the rule above: same specificity, so source order decides. On
@@ -448,18 +451,26 @@ main {
    top strip is what has to be cleared. */
 @media (max-width: 899px) {
   main {
-    padding-top: 5.25rem;
+    padding-top: 4.5rem;
   }
 }
 
 .page-head {
-  margin-bottom: clamp(2rem, 5vw, 3.25rem);
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .page-head p {
   max-width: var(--measure);
   font-size: 1.1rem;
   color: var(--fg-muted);
+}
+
+/* The kicker is a <p> too, so the rule above would otherwise blow it up to
+   lede size and mute its colour — it has to match the landing's kicker:
+   small, uppercase, accent-coloured. */
+.page-head .kicker {
+  font-size: 0.72rem;
+  color: var(--accent);
 }
 
 .backlink {
@@ -687,33 +698,27 @@ main {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1.25rem;
+  /* same spacing the marketplace logos use between themselves, so the channel
+     icon doesn't look like it carries extra left margin */
+  gap: 0.75rem;
 }
 
+/* The channel icon gets the marketplace logos' treatment exactly: same
+   height, same opacity, no border and no hover lift — it used to be the odd
+   one out in the RX7 footer. */
 .social {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
 }
 
 .social a {
   display: inline-flex;
-  border-radius: 50%;
 }
 
 .social img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  opacity: 0.78;
-  transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
-}
-
-.social a:hover img {
-  opacity: 1;
-  border-color: var(--accent);
-  transform: translateY(-2px);
+  height: 26px;
+  width: auto;
+  opacity: 0.7;
 }
 
 /* --- prose (markdown bodies) -------------------------------------------- */
