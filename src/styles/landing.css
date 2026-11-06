@@ -1,6 +1,9 @@
 /* Landing page: the two halves of the site, as one gesture. */
 
 .landing {
+  /* fill the viewport, but never less than the content: when the window is
+     short the panels keep their height and the page scrolls instead */
+  min-height: 100vh;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -54,13 +57,16 @@
   transition: flex-grow 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.panel--personal {
-  background: #f7f5f0;
+/* Doubled up on purpose: `a:hover { color: var(--accent) }` in global.css is
+   (0,1,1) and would otherwise beat a single class, turning every word in the
+   hovered panel the landing-red. Two classes wins. */
+.panel.panel--personal {
+  background: #efece2;
   color: #17171a;
   --panel-accent: #0f766e;
 }
 
-.panel--rx7 {
+.panel.panel--rx7 {
   background: #0a0a0b;
   color: #f5f5f6;
   --panel-accent: #ef4444;
@@ -74,7 +80,10 @@
   .split:has(.panel:hover) .panel {
     flex-grow: 0.4;
   }
-  .split .panel:hover {
+  /* the :has() selector above is (0,4,0) and outranks `.split .panel:hover`
+     (0,3,0), so the hovered half has to repeat :has() to win. Without this
+     both halves collapse to 0.4 together and a black gap opens on the right. */
+  .split:has(.panel:hover) .panel:hover {
     flex-grow: 2.15;
   }
 
@@ -258,7 +267,7 @@
     min-height: 46svh;
   }
 
-  .panel--rx7 {
+  .panel.panel--rx7 {
     border-left: none;
     border-top: 1px solid #27272b;
   }

@@ -10,11 +10,38 @@ const MAP: Record<string, { hex: string; fg: string }> = {
   orange: { hex: '#ea580c', fg: '#ffffff' },
   purple: { hex: '#a855f7', fg: '#ffffff' },
   pink: { hex: '#ec4899', fg: '#ffffff' },
+  gray: { hex: '#9ca3af', fg: '#171717' },
+  grey: { hex: '#9ca3af', fg: '#171717' },
 };
 
 const findKey = (s: string) => {
   const lower = s.toLowerCase();
   return Object.keys(MAP).find((k) => lower.includes(k)) ?? null;
+};
+
+/* --- contrast ------------------------------------------------------------ */
+
+const luminance = (hex: string) => {
+  const n = hex.replace('#', '');
+  const ch = [0, 2, 4]
+    .map((i) => parseInt(n.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
+};
+
+const contrast = (a: string, b: string) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((m, n) => n - m);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+/**
+ * Black or white, whichever still reads against *both* halves of a split
+ * swatch — a 50/50 gradient can't use one fixed text colour, so take the one
+ * with the better worst case instead of defaulting to white.
+ */
+const bestFg = (...bgs: string[]) => {
+  const worst = (fg: string) => Math.min(...bgs.map((bg) => contrast(fg, bg)));
+  return worst('#ffffff') >= worst('#171717') ? '#ffffff' : '#171717';
 };
 
 /** Inline style for a wire-colour chip, or null when the colour is unknown. */
@@ -28,7 +55,7 @@ export function wireStyle(color: string): string | null {
       if (a && b && a !== b) {
         const h1 = MAP[a].hex;
         const h2 = MAP[b].hex;
-        return `background:linear-gradient(135deg,${h1} 50%,${h2} 50%);color:${MAP[a].fg}`;
+        return `background:linear-gradient(135deg,${h1} 50%,${h2} 50%);color:${bestFg(h1, h2)}`;
       }
     }
   }

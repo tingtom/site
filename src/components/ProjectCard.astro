@@ -1,28 +1,43 @@
 ---
 import { u } from '../lib/url';
-import { asset } from '../lib/media';
+import { asset, imageSize, srcset } from '../lib/media';
 
 interface Props {
   title: string;
   href: string;
   summary?: string;
   image?: string;
+  /** h2 on list pages, h3 under the hub's section headings. */
+  headingLevel?: 2 | 3;
 }
 
-const { title, href, summary = '', image = '' } = Astro.props;
+const { title, href, summary = '', image = '', headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
 const src = asset(image, '/images/projects');
+const dims = src ? await imageSize(image, '/images/projects') : null;
+const srcsetAttr = srcset(image, '/images/projects', [320, 480, 640, 800, 1024, 1400]);
+const sizes = srcsetAttr ? '(max-width: 640px) calc(100vw - 5rem), 300px' : undefined;
 ---
 
 <a class="card" href={u(href)}>
   {
     src && (
       <div class="card__media">
-        <img src={src} alt="" loading="lazy" decoding="async" />
+        <img
+          src={src}
+          srcset={srcsetAttr ?? undefined}
+          sizes={sizes}
+          alt=""
+          width={dims?.w}
+          height={dims?.h}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     )
   }
   <div class="card__body">
-    <h3 class="card__title">{title}</h3>
+    <Heading class="card__title">{title}</Heading>
     {summary && <p class="card__summary">{summary}</p>}
     <span class="card__foot">View project →</span>
   </div>

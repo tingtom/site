@@ -4,7 +4,7 @@ import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
 import WireChips from '../../../components/WireChips.astro';
 import { u } from '../../../lib/url';
-import { asset } from '../../../lib/media';
+import { asset, diagramSrc, diagramSize } from '../../../lib/media';
 
 export async function getStaticPaths() {
   const diagrams = (await getCollection('diagrams')).filter((d) =>
@@ -39,8 +39,10 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
               <figure class="diagram-figure">
                 <a href={asset(img, '/diagrams')} target="_blank" rel="noopener">
                   <img
-                    src={asset(img, '/diagrams')}
+                    src={diagramSrc(img, 'view')}
                     alt={`${d.title}${d.images.length > 1 ? ` — page ${i + 1}` : ''}`}
+                    width={diagramSize(img)?.w}
+                    height={diagramSize(img)?.h}
                     loading={i === 0 ? 'eager' : 'lazy'}
                     decoding="async"
                   />
@@ -154,7 +156,9 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
     margin: 0 0 1.5rem;
   }
 
-  .diagram-figure a {
+  /* direct child only: the caption contains its own link, which must keep the
+     page background — a white box under muted grey text failed contrast */
+  .diagram-figure > a {
     display: block;
     border: 1px solid var(--line);
     border-radius: var(--radius);

@@ -1,6 +1,6 @@
 ---
 import { u } from '../lib/url';
-import { asset } from '../lib/media';
+import { diagramSrc, diagramThumbSize } from '../lib/media';
 import WireChips from './WireChips.astro';
 
 interface Props {
@@ -12,6 +12,9 @@ interface Props {
   yearRange?: string;
   wireColors?: string[];
   connectors?: string[];
+  /** h2 on list pages (the page h1 is the only heading above it), h3 when the
+   *  card sits under a section h2, as on the RX7 hub. */
+  headingLevel?: 2 | 3;
 }
 
 const {
@@ -23,9 +26,12 @@ const {
   yearRange = '',
   wireColors = [],
   connectors = [],
+  headingLevel = 3,
 } = Astro.props;
 
-const thumb = asset(images[0] ?? '', '/diagrams');
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const thumb = diagramSrc(images[0] ?? '', 'thumb');
+const thumbSize = diagramThumbSize(images[0] ?? '');
 const extra = Math.max(images.length - 1, 0);
 ---
 
@@ -33,7 +39,14 @@ const extra = Math.max(images.length - 1, 0);
   {
     thumb && (
       <div class="card__media">
-        <img src={thumb} alt="" loading="lazy" decoding="async" />
+        <img
+          src={thumb}
+          alt=""
+          width={thumbSize?.w}
+          height={thumbSize?.h}
+          loading="lazy"
+          decoding="async"
+        />
         {extra > 0 && <span class="card__count">+{extra}</span>}
       </div>
     )
@@ -45,7 +58,7 @@ const extra = Math.max(images.length - 1, 0);
         yearRange.split(',').map((y) => <span class="pill pill--quiet">{y.trim()}</span>)}
       {!category && !yearRange && <span>Wiring diagram</span>}
     </p>
-    <h3 class="card__title">{title}</h3>
+    <Heading class="card__title">{title}</Heading>
     {description && <p class="card__summary">{description}</p>}
     {connectors.length > 0 && (
       <p class="card__meta">{connectors.slice(0, 6).join(' · ')}{connectors.length > 6 ? '…' : ''}</p>

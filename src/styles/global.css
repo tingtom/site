@@ -3,6 +3,132 @@
    The theme is chosen by data-section on <body>, set per layout.
    ========================================================================== */
 
+/* --- webfont fallbacks ----------------------------------------------------
+   Fontsource ships the faces with `font-display: swap`, so for the first few
+   hundred milliseconds text is laid out in the fallback stack (system-ui →
+   DejaVu Sans on Linux, Segoe UI on Windows…). DejaVu runs ~6% wider than
+   Inter and Archivo widens sharply with weight, so paragraphs and headings
+   re-wrap when the webfont lands — the RX7 hub alone shifted 0.075 CLS.
+
+   These faces reuse a local Arial/Helvetica (metric-compatible with Liberation
+   Sans) scaled to the real font's advance widths, so pre-swap and post-swap
+   layout agree. Each weight gets its own face because the ratio is
+   weight-specific: Archivo 800 is 11% wider than Arial regular, Archivo 600
+   only 3%. Bold weights take Arial Bold as their source so the swap window
+   isn't a weight change on top of a width change.
+
+   The "Wide" variants cover machines without an Arial clone, where the only
+   sans available is DejaVu — too wide by ~13%, hence size-adjusts below 100%.
+
+   Measured on the same sample string at 100px. To re-check after a font
+   change: load /rx7/ and /rx7/diagrams/ in headless chromium under slow-4G
+   with 4x CPU throttling and read the layout-shift observer — pre-swap and
+   post-swap wrap decisions must match.
+   ========================================================================== */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  font-weight: 400;
+  size-adjust: 106.9%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  font-weight: 500;
+  size-adjust: 107.8%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  font-weight: 600;
+  size-adjust: 108.7%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback Wide';
+  src: local('DejaVu Sans');
+  font-weight: 400;
+  size-adjust: 94.2%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback Wide';
+  src: local('DejaVu Sans');
+  font-weight: 500;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback Wide';
+  src: local('DejaVu Sans');
+  font-weight: 600;
+  size-adjust: 95.8%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  font-weight: 600;
+  size-adjust: 102.9%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  src:
+    local('Arial Bold'), local('Helvetica Bold'), local('Liberation Sans Bold'), local('Arial'),
+    local('Liberation Sans');
+  font-weight: 700;
+  size-adjust: 98.3%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  src:
+    local('Arial Bold'), local('Helvetica Bold'), local('Liberation Sans Bold'), local('Arial'),
+    local('Liberation Sans');
+  font-weight: 800;
+  size-adjust: 103.1%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  src:
+    local('Arial Bold'), local('Helvetica Bold'), local('Liberation Sans Bold'), local('Arial'),
+    local('Liberation Sans');
+  font-weight: 900;
+  size-adjust: 109.8%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback Wide';
+  src: local('DejaVu Sans');
+  font-weight: 600;
+  size-adjust: 91.2%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback Wide';
+  src: local('DejaVu Sans Bold'), local('DejaVu Sans');
+  font-weight: 700;
+  size-adjust: 83.5%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback Wide';
+  src: local('DejaVu Sans Bold'), local('DejaVu Sans');
+  font-weight: 800;
+  size-adjust: 87.5%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback Wide';
+  src: local('DejaVu Sans Bold'), local('DejaVu Sans');
+  font-weight: 900;
+  size-adjust: 93.3%;
+}
+
 *,
 *::before,
 *::after {
@@ -22,15 +148,22 @@ body {
   color: var(--fg);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
-  /* room for the fixed edge tabs on the left */
-  padding-left: var(--rail-width, 0px);
+  /* room for the fixed edge tabs on the right */
+  padding-right: var(--rail-width, 0px);
   transition: background 0.4s ease, color 0.4s ease;
 }
 
+/* Metrics-matched fallback faces (see the @font-face block below these vars).
+   The stacks list them between the webfont and system-ui so the pre-swap text
+   already has the same advance widths as the real font. */
 :root {
-  --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --rail-width: 0px;
+  --font-display:
+    'Archivo', 'Archivo Fallback', 'Archivo Fallback Wide', ui-sans-serif, system-ui,
+    sans-serif;
+  --font-body: 'Inter', 'Inter Fallback', 'Inter Fallback Wide', ui-sans-serif, system-ui,
+    sans-serif;
+  /* the edge rail lives on the right at every width — see .edge-tabs */
+  --rail-width: 2.5rem;
   --measure: 68ch;
   --radius: 14px;
   --gap: clamp(1rem, 2.5vw, 2rem);
@@ -40,9 +173,11 @@ body {
 /* --- themes ------------------------------------------------------------- */
 
 [data-section='personal'] {
-  --bg: #f7f5f0;
+  /* a touch darker than the original near-white so the light half reads as a
+     surface rather than a hole punched next to the black RX7 half */
+  --bg: #efece2;
   --bg-elev: #fffefb;
-  --panel: #efece3;
+  --panel: #e6e2d6;
   --fg: #17171a;
   --fg-muted: #5e5e68;
   --line: #e4e0d5;
@@ -161,38 +296,31 @@ img {
 
 /* --- brand mark (top-left) --------------------------------------------- */
 
+/* Same treatment as the landing's `tingtom.` — plain display type, no pill —
+   but the trailing dot takes each section's accent instead of the landing red. */
 .brand {
   position: fixed;
-  top: 0.9rem;
-  left: calc(var(--rail-width, 0px) + 0.9rem);
+  top: 1.05rem;
+  left: 0.9rem;
   z-index: 60;
   display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: baseline;
   font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
   font-weight: 800;
-  font-size: 0.95rem;
-  letter-spacing: -0.02em;
+  line-height: 1;
+  letter-spacing: -0.03em;
   text-decoration: none;
-  padding: 0.4rem 0.7rem 0.4rem 0.55rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--bg-elev) 78%, transparent);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
+  color: var(--fg);
+  text-shadow: 0 1px 8px color-mix(in srgb, var(--bg) 70%, transparent);
 }
 
 .brand__dot {
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--accent);
-  flex: none;
+  color: var(--accent);
 }
 
 .brand:hover {
   color: var(--fg);
-  border-color: var(--accent);
 }
 
 /* --- section toggle (top-right) ---------------------------------------- */
@@ -235,9 +363,13 @@ img {
 
 /* --- edge tabs (the navigation) ---------------------------------------- */
 
+/* One rail, right edge, at every width — the same vertical tabs on PC and
+   mobile. Body reserves --rail-width on the right so content never sits under
+   them; the landing opts out with --rail-width: 0. */
 .edge-tabs {
   position: fixed;
-  left: 0;
+  left: auto;
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   z-index: 55;
@@ -248,8 +380,9 @@ img {
 
 .edge-tabs a {
   --tab-bg: color-mix(in srgb, var(--bg-elev) 70%, transparent);
+  /* no 180° flip: on the right edge the label reads top-to-bottom */
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  transform: none;
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 700;
@@ -257,109 +390,49 @@ img {
   text-transform: uppercase;
   text-decoration: none;
   color: var(--fg-muted);
-  padding: 1.1rem 0.55rem;
+  padding: 1.1rem 0.45rem;
   background: var(--tab-bg);
   border: 1px solid var(--line);
-  border-left: none;
-  border-radius: 0 12px 12px 0;
+  /* flush to the screen edge, rounded into the content */
+  border-right: none;
+  border-radius: 12px 0 0 12px;
   backdrop-filter: blur(10px);
+  white-space: nowrap;
   transition: color 0.2s, background 0.2s, padding 0.25s;
 }
 
 .edge-tabs a:hover {
   color: var(--fg);
-  padding-right: 0.85rem;
+  padding-left: 0.75rem;
+  padding-right: 0.45rem;
 }
 
 .edge-tabs a[aria-current='page'] {
   --tab-bg: var(--bg);
   color: var(--accent);
-  /* the active tab bleeds into the content, like a folder tab */
-  padding-right: 1.15rem;
   border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  /* the active tab bleeds left, into the content */
+  padding-left: 1.05rem;
+  padding-right: 0.45rem;
 }
 
-@media (min-width: 900px) {
-  :root {
-    --rail-width: 3.25rem;
-  }
-}
-
-/* below 900px the rail flips to the right edge — same vertical tabs, mirrored */
-@media (max-width: 899px) {
-  :root {
-    --rail-width: 2.5rem;
-  }
-
-  /* backdrop for the fixed brand + section toggle */
-  header::before {
-    content: '';
-    position: fixed;
-    inset: 0 0 auto 0;
-    height: 4.25rem;
-    background: color-mix(in srgb, var(--bg) 90%, transparent);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--line);
-    z-index: 50;
-    pointer-events: none;
-  }
-
-  .edge-tabs {
-    position: fixed;
-    left: auto;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0;
-    overflow: visible;
-    background: none;
-    border: none;
-    z-index: 55;
-  }
-
-  .edge-tabs a {
-    writing-mode: vertical-rl;
-    /* no 180° flip here: on the right edge the label reads top-to-bottom,
-       which mirrors the desktop rail's bottom-to-top */
-    transform: none;
-    border: 1px solid var(--line);
-    /* flush to the screen edge, rounded into the content */
-    border-right: none;
-    border-radius: 12px 0 0 12px;
-    padding: 1.1rem 0.45rem;
-    white-space: nowrap;
-    background: color-mix(in srgb, var(--bg-elev) 70%, transparent);
-  }
-
-  .edge-tabs a:hover {
-    padding-left: 0.75rem;
-    padding-right: 0.45rem;
-  }
-
-  .edge-tabs a[aria-current='page'] {
-    background: var(--bg);
-    color: var(--accent);
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
-    /* the active tab bleeds left, into the content */
-    padding-left: 1.05rem;
-    padding-right: 0.45rem;
-  }
-
-  .brand {
-    left: 0.9rem;
-  }
-
-  body {
-    padding-left: 0;
-    padding-right: var(--rail-width);
-  }
+/* Backdrop for the fixed brand + section toggle. The brand is plain display
+   type now, so it needs something to sit on once content scrolls under it. */
+header::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 4.25rem;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  z-index: 50;
+  pointer-events: none;
 }
 
 /* The landing renders no chrome, so let it run full-bleed instead of being
-   inset by the rail width reserved for the section pages. Declared after both
-   rail-width rules so it wins the tie. */
+   inset by the rail width reserved for the section pages. Declared after the
+   --rail-width rule above, and an attribute selector beats :root anyway. */
 [data-section='landing'] {
   --rail-width: 0px;
 }
@@ -371,8 +444,8 @@ main {
 }
 
 /* Must follow the rule above: same specificity, so source order decides. On
-   narrow screens there is no top strip any more, just the fixed brand and
-   section toggle to clear. */
+   narrow screens the fixed brand + section toggle sit closer together, so the
+   top strip is what has to be cleared. */
 @media (max-width: 899px) {
   main {
     padding-top: 5.25rem;
@@ -607,6 +680,40 @@ main {
   height: 26px;
   width: auto;
   opacity: 0.7;
+}
+
+/* marketplace logos + the section's YouTube channel icon */
+.foot-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.social a {
+  display: inline-flex;
+  border-radius: 50%;
+}
+
+.social img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  opacity: 0.78;
+  transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.social a:hover img {
+  opacity: 1;
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
 /* --- prose (markdown bodies) -------------------------------------------- */

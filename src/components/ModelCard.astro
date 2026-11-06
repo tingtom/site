@@ -1,6 +1,7 @@
 ---
 import { Box } from '@lucide/astro';
 import { u } from '../lib/url';
+import { imageSize } from '../lib/media';
 
 interface Props {
   title: string;
@@ -9,17 +10,29 @@ interface Props {
   preview?: string;
   category?: string;
   file?: string;
+  /** h2 on list pages, h3 under the hub's section headings. */
+  headingLevel?: 2 | 3;
 }
 
-const { title, href, description = '', preview = '', category = '', file = '' } = Astro.props;
+const {
+  title,
+  href,
+  description = '',
+  preview = '',
+  category = '',
+  file = '',
+  headingLevel = 3,
+} = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
 const src = preview ? u(preview) : '';
+const dims = preview ? await imageSize(preview, '/images') : null;
 ---
 
 <a class="card" href={u(href)}>
   <div class="card__media model-media">
     {
       src ? (
-        <img src={src} alt="" loading="lazy" decoding="async" />
+        <img src={src} alt="" width={dims?.w} height={dims?.h} loading="lazy" decoding="async" />
       ) : (
         <>
           <span class="model-media__grid" aria-hidden="true" />
@@ -33,7 +46,7 @@ const src = preview ? u(preview) : '';
       {category ? <span class="pill">{category}</span> : <span>3D model</span>}
       {file && <span>· ready to print</span>}
     </p>
-    <h3 class="card__title">{title}</h3>
+    <Heading class="card__title">{title}</Heading>
     {description && <p class="card__summary">{description}</p>}
     <span class="card__foot">View model →</span>
   </div>

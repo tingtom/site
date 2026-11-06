@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
 import { u } from '../../../lib/url';
-import { asset } from '../../../lib/media';
+import { asset, imageSize, srcset } from '../../../lib/media';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).filter((p) =>
@@ -19,6 +19,10 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const hero = asset(project.data.image, '/images/projects');
+const heroDims = hero ? await imageSize(project.data.image, '/images/projects') : null;
+const heroSrcset = srcset(project.data.image, '/images/projects', [
+  320, 480, 640, 800, 1024, 1400,
+]);
 ---
 
 <Base title={project.data.title} description={project.data.summary} section="personal">
@@ -37,8 +41,12 @@ const hero = asset(project.data.image, '/images/projects');
           hero && (
             <img
               src={hero}
+              srcset={heroSrcset ?? undefined}
+              sizes={heroSrcset ? '(max-width: 900px) calc(100vw - 5rem), 720px' : undefined}
               alt={project.data.title}
               class="project-hero"
+              width={heroDims?.w}
+              height={heroDims?.h}
               loading="eager"
               decoding="async"
             />

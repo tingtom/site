@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { u, isActive } from '../lib/url';
-import { SECTIONS, SITE_NAME, type SectionId } from '../lib/nav';
+import { SECTIONS, SOCIAL, SITE_NAME, type SectionId } from '../lib/nav';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
@@ -34,6 +34,7 @@ const absImage = new URL(u(ogImage), site).href;
 const active = section === 'personal' || section === 'rx7' ? SECTIONS[section] : null;
 const other = active ? (active.id === 'personal' ? SECTIONS.rx7 : SECTIONS.personal) : null;
 const pageTitle = title === SITE_NAME ? `${SITE_NAME} — personal projects & RX7` : `${title} · ${SITE_NAME}`;
+const social = active ? SOCIAL[active.id] : null;
 ---
 
 <!doctype html>
@@ -68,16 +69,26 @@ const pageTitle = title === SITE_NAME ? `${SITE_NAME} — personal projects & RX
       color={active?.id === 'rx7' ? '#ef4444' : '#0f766e'}
     />
     <link rel="manifest" href={u('/images/fav/site.webmanifest')} />
-    <meta name="theme-color" content={active?.id === 'rx7' ? '#0a0a0b' : '#f7f5f0'} />
+    <meta
+      name="theme-color"
+      content={active?.id === 'personal' ? '#efece2' : '#0a0a0b'}
+    />
+    {
+      section === 'landing' && (
+        <>
+          {/* Both panel backdrops sit in the first paint and are LCP
+              candidates — start them while the rest of the head streams by. */}
+          <link rel="preload" as="image" href={u('/images/landing/personal.jpg')} fetchpriority="high" />
+          <link rel="preload" as="image" href={u('/images/landing/rx7.jpg')} fetchpriority="high" />
+        </>
+      )
+    }
   </head>
 
   <body data-section={section}>
     {!noChrome && active && (
       <header>
-        <a class="brand" href={u('/')} aria-label={`${SITE_NAME} — home`}>
-          <span class="brand__dot" aria-hidden="true"></span>
-          {SITE_NAME}
-        </a>
+        <a class="brand" href={u('/')} aria-label={`${SITE_NAME} — home`}>{SITE_NAME}<span class="brand__dot" aria-hidden="true">.</span></a>
 
         <nav class="section-toggle" aria-label="Site sections">
           <a href={u(SECTIONS.personal.href)} aria-current={active.id === 'personal'}>
@@ -109,16 +120,47 @@ const pageTitle = title === SITE_NAME ? `${SITE_NAME} — personal projects & RX
             <a href={u('/admin/')}>CMS</a>
           </nav>
 
-          {active.id === 'rx7' && (
-            <div class="logos">
-              <a href="https://cults3d.com/en/users/tingtom" rel="me noopener" target="_blank">
-                <img src={u('/logos/cults3d.png')} alt="Cults3D" loading="lazy" />
-              </a>
-              <a href="https://www.printables.com/@tingtom" rel="me noopener" target="_blank">
-                <img src={u('/logos/printables.png')} alt="Printables" loading="lazy" />
-              </a>
-            </div>
-          )}
+          <div class="foot-meta">
+            {active.id === 'rx7' && (
+              <div class="logos">
+                <a href="https://cults3d.com/en/users/tingtom" rel="me noopener" target="_blank">
+                  <img
+                    src={u('/logos/cults3d.png')}
+                    alt="Cults3D"
+                    width="173"
+                    height="173"
+                    loading="lazy"
+                  />
+                </a>
+                <a href="https://www.printables.com/@tingtom" rel="me noopener" target="_blank">
+                  <img
+                    src={u('/logos/printables.png')}
+                    alt="Printables"
+                    width="847"
+                    height="1212"
+                    loading="lazy"
+                  />
+                </a>
+              </div>
+            )}
+
+            {
+              social && (
+                <div class="social">
+                  <a href={social.url} rel="me noopener" target="_blank" aria-label={social.label}>
+                    <img
+                      src={u(social.icon)}
+                      alt=""
+                      width="32"
+                      height="32"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                </div>
+              )
+            }
+          </div>
 
           <span>© {new Date().getFullYear()} {SITE_NAME}</span>
         </div>

@@ -32,6 +32,7 @@ const projects = (await getCollection('projects'))
                 href={`/personal/projects/${slug(p)}/`}
                 summary={p.data.summary}
                 image={p.data.image}
+                headingLevel={2}
               />
             ))}
           </div>

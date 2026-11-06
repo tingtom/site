@@ -127,6 +127,9 @@ collections:
         allow_add: true
         hint: 'One entry per page — uploaded to public/diagrams'
         field:
+          # `name` is required by Sveltia's schema even for a scalar list —
+          # the value stays a plain array of file paths.
+          name: file
           label: Scan
           widget: file
           media_folder: public/diagrams
@@ -138,22 +141,22 @@ collections:
         name: wireColors
         widget: list
         allow_add: true
-        field: { label: Colour, widget: string }
+        field: { name: color, label: Colour, widget: string }
       - label: Components
         name: components
         widget: list
         allow_add: true
-        field: { label: Component, widget: string }
+        field: { name: component, label: Component, widget: string }
       - label: Connectors
         name: connectors
         widget: list
         allow_add: true
-        field: { label: Connector, widget: string }
+        field: { name: connector, label: Connector, widget: string }
       - label: ECU pins
         name: ecuPins
         widget: list
         allow_add: true
-        field: { label: Pin, widget: string }
+        field: { name: pin, label: Pin, widget: string }
       - { label: Notes, name: notes, widget: text, required: false }
       - { label: Extraction confidence (0-1), name: confidence, widget: number, value_type: float, required: false }
       - label: Appears in

@@ -7,8 +7,11 @@ import ModelCard from '../../components/ModelCard.astro';
 import PostCard from '../../components/PostCard.astro';
 import { SECTIONS } from '../../lib/nav';
 import { u } from '../../lib/url';
+import { imageSize, srcset } from '../../lib/media';
 
 const section = SECTIONS.rx7;
+const heroDims = await imageSize('/images/rx7/rx7-bg.jpg', '/images');
+const heroSrcset = srcset('/images/rx7/rx7-bg.jpg', '/images/rx7', [400, 800, 1600]);
 
 const diagrams = (await getCollection('diagrams')).filter((d) =>
   d.data.sections.includes('rx7'),
@@ -39,7 +42,16 @@ const featured = diagrams
             <span><strong>{posts.length}</strong> posts</span>
           </div>
         </div>
-        <img class="hero__art" src={u('/images/rx7/rx7-bg.jpg')} alt="" aria-hidden="true" />
+        <img
+          class="hero__art"
+          src={u('/images/rx7/rx7-bg.jpg')}
+          alt=""
+          aria-hidden="true"
+          srcset={heroSrcset ?? undefined}
+          sizes={heroSrcset ? '55vw' : undefined}
+          width={heroDims?.w}
+          height={heroDims?.h}
+        />
       </header>
 
       <section>

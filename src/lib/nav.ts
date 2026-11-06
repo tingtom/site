@@ -40,3 +40,27 @@ export const SECTIONS: Record<'personal' | 'rx7', Section> = {
 };
 
 export const SITE_NAME = 'tingtom';
+
+export interface SocialLink {
+  label: string;
+  url: string;
+  icon: string;
+}
+
+/**
+ * One YouTube channel per section, shown as its round channel icon in that
+ * section's footer: the car vlogs live on RX7, the older general channel on
+ * Personal.
+ */
+export const SOCIAL: Record<'personal' | 'rx7', SocialLink> = {
+  personal: {
+    label: 'Tingtom on YouTube',
+    url: 'https://www.youtube.com/@tingtom1',
+    icon: '/images/social/youtube-tingtom.jpg',
+  },
+  rx7: {
+    label: 'Tom Ruins Cars on YouTube',
+    url: 'https://www.youtube.com/channel/UCicjfYjhvsbw8MuF85SeFCw',
+    icon: '/images/social/youtube-tomruinscars.jpg',
+  },
+};
