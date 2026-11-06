@@ -50,11 +50,13 @@ Requires Node ≥ 22.23.4 (Astro 7).
 GitHub Actions builds `dist/` and publishes it to Pages on every push to
 `main`.
 
-The site is served from the **`/site/` subfolder** of
+The site is served from a **subfolder of your custom domain** —
+`https://tmathews.co.uk/site/` (GitHub serves project pages under the
+account's custom domain) — and is also reachable at
 `https://tingtom.github.io/site/`. Two values control that, both in
 `.github/workflows/deploy.yml` and `astro.config.mjs`:
 
-- `PUBLIC_BASE` — `/site/` now, `/` after the custom-domain cutover
+- `PUBLIC_BASE` — `/site/` now, `/` if it ever moves to the domain root
 - `PUBLIC_SITE_URL` — the canonical origin used for sitemap/OG URLs
 
 ## CMS

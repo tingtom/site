@@ -8,7 +8,7 @@ backend:
   repo: tingtom/site
   branch: main
 
-site_url: https://tingtom.github.io/site/
+site_url: https://tmathews.co.uk/site/
 logo:
   src: /site/favicon.png
 
