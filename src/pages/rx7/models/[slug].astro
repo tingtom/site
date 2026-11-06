@@ -1,0 +1,240 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../../lib/slug';
+import Base from '../../../layouts/Base.astro';
+import { u } from '../../../lib/url';
+
+export async function getStaticPaths() {
+  const models = (await getCollection('models')).filter((m) =>
+    m.data.sections.includes('rx7'),
+  );
+  return models.map((model) => ({
+    params: { slug: slug(model) },
+    props: { model },
+  }));
+}
+
+const { model } = Astro.props;
+const m = model.data;
+const fileUrl = u(m.file);
+const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
+---
+
+<Base title={m.title} description={m.description || `${m.title} — 3D model`} section="rx7">
+  <main>
+    <div class="wrap">
+      <a class="backlink" href="/rx7/models/">← All models</a>
+
+      <div class="model-layout">
+        <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
+          <p class="viewer__hint">Loading 3D preview…</p>
+        </div>
+
+        <aside class="model-meta">
+          <p class="card__meta">
+            {m.category ? <span class="pill">{m.category}</span> : <span>3D model</span>}
+            <span>· {ext.toUpperCase()}</span>
+          </p>
+
+          <h1>{m.title}</h1>
+          {m.description && <p class="muted">{m.description}</p>}
+
+          <div class="model-actions">
+            <a class="btn" href={fileUrl} download>Download {ext.toUpperCase()}</a>
+            <a class="btn btn--ghost" href="/rx7/models/">All models</a>
+          </div>
+
+          <p class="muted model-hint">
+            Drag to orbit, scroll to zoom. Download the file to slice it for printing.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+    import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+    const host = document.getElementById('viewer');
+    if (host) {
+      const src = host.dataset.src;
+      const ext = (host.dataset.ext || 'stl').toLowerCase();
+
+      try {
+        const width = host.clientWidth || 640;
+        const height = host.clientHeight || 480;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x141416);
+
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 5000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(width, height, false);
+        host.replaceChildren(renderer.domElement);
+
+        const key = new THREE.DirectionalLight(0xffffff, 2.4);
+        key.position.set(1, 2, 3);
+        scene.add(key, new THREE.AmbientLight(0xffffff, 0.9));
+
+        const grid = new THREE.GridHelper(200, 40, 0x3f3f46, 0x27272b);
+        grid.position.y = -0.001;
+        scene.add(grid);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.4;
+
+        const finish = (geometry: THREE.BufferGeometry) => {
+          geometry.computeVertexNormals();
+          geometry.center();
+
+          const box = new THREE.Box3().setFromObject(
+            new THREE.Mesh(geometry, new THREE.MeshStandardMaterial()),
+          );
+          const size = box.getSize(new THREE.Vector3()).length();
+          const mesh = new THREE.Mesh(
+            geometry,
+            new THREE.MeshStandardMaterial({
+              color: 0xef4444,
+              metalness: 0.25,
+              roughness: 0.45,
+            }),
+          );
+          scene.add(mesh);
+
+          camera.position.set(size * 0.9, size * 0.6, size * 1.3);
+          camera.near = size / 100;
+          camera.far = size * 40;
+          camera.updateProjectionMatrix();
+          controls.target.set(0, 0, 0);
+          controls.minDistance = size * 0.15;
+          controls.maxDistance = size * 6;
+          controls.update();
+        };
+
+        if (ext === 'stl') {
+          new STLLoader().load(src, finish, undefined, () => fail(host));
+        } else {
+          const loader = new GLTFLoader();
+          loader.load(
+            src,
+            (gltf) => {
+              const box = new THREE.Box3().setFromObject(gltf.scene);
+              const center = box.getCenter(new THREE.Vector3());
+              gltf.scene.position.sub(center);
+              scene.add(gltf.scene);
+              const size = box.getSize(new THREE.Vector3()).length();
+              camera.position.set(size * 0.9, size * 0.6, size * 1.3);
+              controls.update();
+            },
+            undefined,
+            () => fail(host),
+          );
+        }
+
+        let raf = 0;
+        const tick = () => {
+          controls.update();
+          renderer.render(scene, camera);
+          raf = requestAnimationFrame(tick);
+        };
+        tick();
+
+        const onResize = () => {
+          const w = host.clientWidth;
+          const h = host.clientHeight;
+          if (!w || !h) return;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h, false);
+        };
+        window.addEventListener('resize', onResize);
+        window.addEventListener('pagehide', () => cancelAnimationFrame(raf), { once: true });
+      } catch {
+        fail(host);
+      }
+    }
+
+    function fail(el: HTMLElement) {
+      el.innerHTML =
+        '<p class="viewer__hint">This model can\'t be previewed in your browser — use the download button.</p>';
+    }
+  </script>
+</Base>
+
+<style>
+  .model-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .viewer {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-elev);
+    display: grid;
+    place-items: center;
+  }
+
+  .viewer :global(canvas) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .viewer__hint {
+    color: var(--fg-muted);
+    font-size: 0.92rem;
+    margin: 0;
+  }
+
+  .model-meta {
+    position: sticky;
+    top: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    padding: 1.35rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .model-meta h1 {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    margin: 0;
+  }
+
+  .model-meta p {
+    margin: 0;
+  }
+
+  .model-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .model-hint {
+    font-size: 0.84rem;
+  }
+
+  @media (max-width: 900px) {
+    .model-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .model-meta {
+      position: static;
+    }
+  }
+</style>

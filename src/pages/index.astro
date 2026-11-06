@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SECTIONS } from '../lib/nav';
+import { u } from '../lib/url';
+import '../styles/landing.css';
+
+const posts = (await getCollection('posts'))
+  .filter((p) => p.data.sections.includes('personal'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const diagrams = (await getCollection('diagrams'))
+  .slice()
+  .sort((a, b) => Number(!!b.data.category) - Number(!!a.data.category))
+  .slice(0, 3);
+
+const dateFmt = (d: Date) =>
+  d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+---
+
+<Base
+  title="tingtom"
+  description="Personal blog and projects, plus RX7 FD3S wiring diagrams, 3D models and restoration notes."
+  section="landing"
+  noChrome
+>
+  <div class="landing">
+    <div class="landing__top">
+      <h1 class="landing__title">tingtom<span>.</span></h1>
+      <p class="landing__tag">
+        Two halves: what I'm building, and an FD3S I'm putting back together. Pick one.
+      </p>
+    </div>
+
+    <div class="split" id="split">
+      <!-- ------------------------------ PERSONAL ------------------------------ -->
+      <a class="panel panel--personal" href={u(SECTIONS.personal.href)} data-panel>
+        <div class="panel__content">
+          <p class="panel__kicker">{SECTIONS.personal.label}</p>
+          <h2 class="panel__title">Blog &amp;<br />projects</h2>
+          <p class="panel__lede">{SECTIONS.personal.lede}</p>
+
+          <ul class="panel__list">
+            {
+              posts.map((p) => (
+                <li>
+                  <span class="when">{dateFmt(p.data.date)}</span>
+                  <span>{p.data.title}</span>
+                </li>
+              ))
+            }
+          </ul>
+
+          <div class="panel__links">
+            <span class="panel__chip panel__chip--go">Enter →</span>
+            <span class="panel__chip">Blog</span>
+            <span class="panel__chip">Projects</span>
+          </div>
+        </div>
+
+        <span class="panel__strip" aria-hidden="true"><span>Personal</span></span>
+        <img
+          class="panel__peek"
+          src={u('/images/projects/res.png')}
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+        />
+      </a>
+
+      <!-- -------------------------------- RX7 -------------------------------- -->
+      <a class="panel panel--rx7" href={u(SECTIONS.rx7.href)} data-panel>
+        <div class="panel__content">
+          <p class="panel__kicker">{SECTIONS.rx7.label}</p>
+          <h2 class="panel__title">FD3S<br />wiring &amp; parts</h2>
+          <p class="panel__lede">{SECTIONS.rx7.lede}</p>
+
+          <ul class="panel__list">
+            {
+              diagrams.map((d) => (
+                <li>
+                  <span class="when">{d.data.category || 'scan'}</span>
+                  <span>{d.data.title}</span>
+                </li>
+              ))
+            }
+          </ul>
+
+          <div class="panel__links">
+            <span class="panel__chip panel__chip--go">Enter →</span>
+            <span class="panel__chip">Diagrams</span>
+            <span class="panel__chip">Models</span>
+          </div>
+        </div>
+
+        <span class="panel__strip" aria-hidden="true"><span>RX7</span></span>
+        <img
+          class="panel__peek"
+          src={u('/diagrams/wiring-1993-p0025.jpg')}
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+        />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Touch devices large enough to lay the panels side by side can't hover, so
+    // the first tap expands a panel and the second one follows the link.
+    const sideBySide = window.matchMedia('(min-width: 860px) and (hover: none)');
+    if (sideBySide.matches) {
+      document.querySelectorAll<HTMLElement>('[data-panel]').forEach((panel) => {
+        panel.addEventListener('click', (event) => {
+          if (panel.classList.contains('is-open')) return;
+          event.preventDefault();
+          document
+            .querySelectorAll('[data-panel].is-open')
+            .forEach((p) => p.classList.remove('is-open'));
+          panel.classList.add('is-open');
+        });
+      });
+    }
+  </script>
+</Base>

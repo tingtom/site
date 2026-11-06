@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../lib/slug';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { SECTIONS } from '../../lib/nav';
+
+const section = SECTIONS.personal;
+
+const posts = (await getCollection('posts'))
+  .filter((p) => p.data.sections.includes('personal'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const projects = (await getCollection('projects')).filter((p) =>
+  p.data.sections.includes('personal'),
+);
+
+const featured = projects.filter((p) => p.data.homepage).slice(0, 4);
+const latest = posts.slice(0, 6);
+---
+
+<Base title="Personal" description={section.lede} section="personal">
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="kicker">{section.label}</p>
+        <h1>Blog &amp; projects</h1>
+        <p>{section.lede}</p>
+      </header>
+
+      <section>
+        <div class="section-head">
+          <h2>Latest posts</h2>
+          <a class="pill pill--quiet" href="/personal/blog/">All {posts.length} posts →</a>
+        </div>
+        <div class="grid grid--3">
+          {latest.map((p) => (
+            <PostCard
+              title={p.data.title}
+              href={`/personal/blog/${slug(p)}/`}
+              date={p.data.date}
+              mins={p.data.mins}
+              summary={p.data.summary}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section style="margin-top: clamp(2.5rem, 6vw, 4.5rem)">
+        <div class="section-head">
+          <h2>Projects</h2>
+          <a class="pill pill--quiet" href="/personal/projects/">All {projects.length} projects →</a>
+        </div>
+        <div class="grid grid--3">
+          {(featured.length ? featured : projects.slice(0, 4)).map((p) => (
+            <ProjectCard
+              title={p.data.title}
+              href={`/personal/projects/${slug(p)}/`}
+              summary={p.data.summary}
+              image={p.data.image}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+</Base>

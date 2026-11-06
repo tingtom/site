@@ -1,0 +1,49 @@
+---
+import { wireStyle } from '../lib/wire-color';
+
+interface Props {
+  colors: string[];
+}
+
+const { colors } = Astro.props;
+---
+
+{
+  colors.length > 0 && (
+    <div class="wire-chips">
+      {colors.map((c) => {
+        const style = wireStyle(c);
+        return (
+          <span class="wire-chip" style={style ?? undefined}>
+            {c}
+          </span>
+        );
+      })}
+    </div>
+  )
+}
+
+<style>
+  .wire-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .wire-chip {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    /* fallback for colours we don't recognise */
+    background: var(--panel);
+    color: var(--fg-muted);
+    border: 1px solid var(--line);
+  }
+
+  .wire-chip[style] {
+    border-color: transparent;
+  }
+</style>

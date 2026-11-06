@@ -1,0 +1,72 @@
+---
+import { u } from '../lib/url';
+import { asset } from '../lib/media';
+import WireChips from './WireChips.astro';
+
+interface Props {
+  title: string;
+  href: string;
+  images: string[];
+  description?: string;
+  category?: string;
+  yearRange?: string;
+  wireColors?: string[];
+  connectors?: string[];
+}
+
+const {
+  title,
+  href,
+  images,
+  description = '',
+  category = '',
+  yearRange = '',
+  wireColors = [],
+  connectors = [],
+} = Astro.props;
+
+const thumb = asset(images[0] ?? '', '/diagrams');
+const extra = Math.max(images.length - 1, 0);
+---
+
+<a class="card" href={u(href)}>
+  {
+    thumb && (
+      <div class="card__media">
+        <img src={thumb} alt="" loading="lazy" decoding="async" />
+        {extra > 0 && <span class="card__count">+{extra}</span>}
+      </div>
+    )
+  }
+  <div class="card__body">
+    <p class="card__meta">
+      {category && <span class="pill">{category}</span>}
+      {yearRange && <span class="pill pill--quiet">{yearRange}</span>}
+      {!category && !yearRange && <span>Wiring diagram</span>}
+    </p>
+    <h3 class="card__title">{title}</h3>
+    {description && <p class="card__summary">{description}</p>}
+    {connectors.length > 0 && (
+      <p class="card__meta">{connectors.slice(0, 6).join(' · ')}{connectors.length > 6 ? '…' : ''}</p>
+    )}
+    <WireChips colors={wireColors.slice(0, 6)} />
+    <span class="card__foot">Open diagram →</span>
+  </div>
+</a>
+
+<style>
+  .card__count {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    color: var(--fg);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(6px);
+  }
+</style>

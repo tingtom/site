@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../../lib/slug';
+import Base from '../../../layouts/Base.astro';
+import ModelCard from '../../../components/ModelCard.astro';
+import { SECTIONS } from '../../../lib/nav';
+
+const models = (await getCollection('models'))
+  .filter((m) => m.data.sections.includes('rx7'))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<Base
+  title="3D models"
+  description={`3D printable models for the RX7 and MX5 — ${models.length} models.`}
+  section="rx7"
+>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="kicker">RX7</p>
+        <h1>3D models</h1>
+        <p>
+          Printable parts for the FD3S (and a few MX5 things). Preview in the browser, download the
+          STL, or grab them from the shops linked in the footer.
+        </p>
+      </header>
+
+      {
+        models.length ? (
+          <div class="grid grid--3">
+            {models.map((m) => (
+              <ModelCard
+                title={m.data.title}
+                href={`/rx7/models/${slug(m)}/`}
+                description={m.data.description}
+                preview={m.data.preview}
+                category={m.data.category}
+                file={m.data.file}
+              />
+            ))}
+          </div>
+        ) : (
+          <div class="empty">
+            No models published yet — check the Cults3D and Printables links in the footer.
+          </div>
+        )
+      }
+    </div>
+  </main>
+</Base>

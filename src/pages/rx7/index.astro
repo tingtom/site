@@ -1,0 +1,170 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../lib/slug';
+import Base from '../../layouts/Base.astro';
+import DiagramCard from '../../components/DiagramCard.astro';
+import ModelCard from '../../components/ModelCard.astro';
+import PostCard from '../../components/PostCard.astro';
+import { SECTIONS } from '../../lib/nav';
+import { u } from '../../lib/url';
+
+const section = SECTIONS.rx7;
+
+const diagrams = (await getCollection('diagrams')).filter((d) =>
+  d.data.sections.includes('rx7'),
+);
+const models = (await getCollection('models')).filter((m) => m.data.sections.includes('rx7'));
+const posts = (await getCollection('posts'))
+  .filter((p) => p.data.sections.includes('rx7'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const scanned = diagrams.filter((d) => d.data.category).length;
+const featured = diagrams
+  .slice()
+  .sort((a, b) => Number(!!b.data.category) - Number(!!a.data.category))
+  .slice(0, 3);
+---
+
+<Base title="RX7" description={section.lede} section="rx7">
+  <main>
+    <div class="wrap">
+      <header class="page-head hero">
+        <div>
+          <p class="kicker">{section.label}</p>
+          <h1>FD3S wiring,<br />models &amp; notes</h1>
+          <p>{section.lede}</p>
+          <div class="hero__stats">
+            <span><strong>{diagrams.length}</strong> diagram scans</span>
+            <span><strong>{models.length}</strong> 3D models</span>
+            <span><strong>{posts.length}</strong> posts</span>
+          </div>
+        </div>
+        <img class="hero__art" src={u('/images/rx7/rx7-bg.jpg')} alt="" aria-hidden="true" />
+      </header>
+
+      <section>
+        <div class="section-head">
+          <h2>Wiring diagrams</h2>
+          <a class="pill" href="/rx7/diagrams/">Browse all →</a>
+        </div>
+        <p class="muted" style="margin-top: -0.75rem; margin-bottom: 1.5rem">
+          {scanned} of {diagrams.length} scanned pages have extracted metadata — search by colour,
+          connector or component.
+        </p>
+        <div class="grid grid--3">
+          {featured.map((d) => (
+            <DiagramCard
+              title={d.data.title}
+              href={`/rx7/diagrams/${slug(d)}/`}
+              images={d.data.images}
+              description={d.data.description}
+              category={d.data.category}
+              yearRange={d.data.yearRange}
+              wireColors={d.data.wireColors}
+              connectors={d.data.connectors}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section style="margin-top: clamp(2.5rem, 6vw, 4.5rem)">
+        <div class="section-head">
+          <h2>3D models</h2>
+          <a class="pill pill--quiet" href="/rx7/models/">All models →</a>
+        </div>
+        <div class="grid grid--3">
+          {models.slice(0, 3).map((m) => (
+            <ModelCard
+              title={m.data.title}
+              href={`/rx7/models/${slug(m)}/`}
+              description={m.data.description}
+              preview={m.data.preview}
+              category={m.data.category}
+              file={m.data.file}
+            />
+          ))}
+        </div>
+      </section>
+
+      {
+        posts.length > 0 && (
+          <section style="margin-top: clamp(2.5rem, 6vw, 4.5rem)">
+            <div class="section-head">
+              <h2>RX7 posts</h2>
+              <a class="pill pill--quiet" href="/rx7/blog/">
+                All →
+              </a>
+            </div>
+            <div class="grid grid--3">
+              {posts.slice(0, 3).map((p) => (
+                <PostCard
+                  title={p.data.title}
+                  href={`/rx7/blog/${slug(p)}/`}
+                  date={p.data.date}
+                  mins={p.data.mins}
+                  summary={p.data.summary}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius) + 6px);
+    overflow: hidden;
+    background: var(--bg-elev);
+  }
+
+  .hero > div {
+    position: relative;
+    z-index: 1;
+    max-width: 62ch;
+  }
+
+  .hero__art {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 55%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.28;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 65%);
+    mask-image: linear-gradient(to right, transparent, #000 65%);
+    pointer-events: none;
+  }
+
+  .hero__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero__stats span {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+  }
+
+  .hero__stats strong {
+    color: var(--accent);
+    font-weight: 800;
+  }
+</style>

@@ -1,0 +1,245 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../../lib/slug';
+import Base from '../../../layouts/Base.astro';
+import DiagramCard from '../../../components/DiagramCard.astro';
+import { SECTIONS } from '../../../lib/nav';
+
+const diagrams = (await getCollection('diagrams'))
+  .filter((d) => d.data.sections.includes('rx7'))
+  .slice()
+  .sort((a, b) => slug(a).localeCompare(slug(b)));
+
+const uniq = (list: string[]) => [...new Set(list.filter(Boolean))].sort();
+
+const categories = uniq(diagrams.map((d) => d.data.category));
+const colors = uniq(diagrams.flatMap((d) => d.data.wireColors));
+const components = uniq(diagrams.flatMap((d) => d.data.components));
+const connectors = uniq(diagrams.flatMap((d) => d.data.connectors));
+
+const withMeta = diagrams.filter((d) => d.data.category).length;
+
+const options = (label: string, values: string[], key: string) => ({
+  label,
+  key,
+  values,
+});
+const filters = [
+  options('Category', categories, 'category'),
+  options('Wire colour', colors, 'color'),
+  options('Component', components, 'component'),
+  options('Connector', connectors, 'connector'),
+];
+---
+
+<Base
+  title="Wiring diagrams"
+  description={`RX7 FD3S wiring diagram scans — ${diagrams.length} pages, searchable by colour, connector and component.`}
+  section="rx7"
+>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="kicker">RX7</p>
+        <h1>Wiring diagrams</h1>
+        <p>
+          {diagrams.length} scanned pages from the 1993 FD3S service manual. {withMeta} have
+          extracted metadata (colour, connector, component); the rest are browse-only until they're
+          run through the processor.
+        </p>
+      </header>
+
+      <form class="filters" id="filters" role="search" onsubmit="return false">
+        <div class="filters__search">
+          <input
+            type="search"
+            id="q"
+            name="q"
+            placeholder="Search titles, descriptions, pins…"
+            autocomplete="off"
+            aria-label="Search diagrams"
+          />
+        </div>
+
+        {
+          filters.map(
+            (f) =>
+              f.values.length > 0 && (
+                <label class="filters__select">
+                  <span>{f.label}</span>
+                  <select data-filter={f.key} name={f.key}>
+                    <option value="">All</option>
+                    {f.values.map((v) => (
+                      <option value={v}>{v}</option>
+                    ))}
+                  </select>
+                </label>
+              ),
+          )
+        }
+
+        <button type="reset" class="btn btn--ghost" id="reset">Clear</button>
+      </form>
+
+      <p class="filters__status" id="status" role="status" aria-live="polite">
+        Showing {diagrams.length} of {diagrams.length}
+      </p>
+
+      <div class="grid grid--3" id="grid">
+        {
+          diagrams.map((d) => (
+            <div
+              class="filter-item"
+              data-diagram
+              data-category={d.data.category}
+              data-colors={d.data.wireColors.join('|')}
+              data-components={d.data.components.join('|')}
+              data-connectors={d.data.connectors.join('|')}
+              data-text={[
+                d.data.title,
+                d.data.description,
+                d.data.category,
+                d.data.yearRange,
+                d.data.identifier,
+                ...d.data.wireColors,
+                ...d.data.components,
+                ...d.data.connectors,
+                ...d.data.ecuPins,
+                d.data.notes,
+              ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase()}
+            >
+              <DiagramCard
+                title={d.data.title}
+                href={`/rx7/diagrams/${slug(d)}/`}
+                images={d.data.images}
+                description={d.data.description}
+                category={d.data.category}
+                yearRange={d.data.yearRange}
+                wireColors={d.data.wireColors}
+                connectors={d.data.connectors}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="empty" id="empty" hidden>No diagrams match those filters.</div>
+    </div>
+  </main>
+
+  <script>
+    // Static site, so the search runs entirely in the browser over the rendered
+    // cards — no index file, no backend.
+    const grid = document.getElementById('grid')!;
+    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-diagram]'));
+    const status = document.getElementById('status')!;
+    const empty = document.getElementById('empty')!;
+    const form = document.getElementById('filters') as HTMLFormElement;
+    const query = document.getElementById('q') as HTMLInputElement;
+    const selects = Array.from(
+      document.querySelectorAll<HTMLSelectElement>('select[data-filter]'),
+    );
+
+    const apply = () => {
+      const q = query.value.trim().toLowerCase();
+      const active = selects.filter((s) => s.value);
+
+      let shown = 0;
+      for (const item of items) {
+        const text = item.dataset.text ?? '';
+        const matchQuery = !q || q.split(/\s+/).every((term) => text.includes(term));
+        const matchSelects = active.every((s) => {
+          const field = s.dataset.filter!;
+          const raw =
+            field === 'category' ? item.dataset.category ?? '' : item.dataset[`${field}s`] ?? '';
+          return raw.split('|').includes(s.value);
+        });
+
+        const visible = matchQuery && matchSelects;
+        item.hidden = !visible;
+        if (visible) shown++;
+      }
+
+      status.textContent = `Showing ${shown} of ${items.length}`;
+      empty.hidden = shown !== 0;
+      grid.hidden = shown === 0;
+    };
+
+    query.addEventListener('input', apply);
+    selects.forEach((s) => s.addEventListener('change', apply));
+    form.addEventListener('reset', () => setTimeout(apply, 0));
+  </script>
+</Base>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    position: sticky;
+    top: 0.75rem;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+  }
+
+  .filters__search {
+    flex: 1 1 260px;
+  }
+
+  .filters input,
+  .filters select {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+  }
+
+  .filters input:focus,
+  .filters select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .filters__select {
+    display: grid;
+    gap: 0.3rem;
+    flex: 0 1 auto;
+  }
+
+  .filters__select span {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .filters__status {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin: 1rem 0 1.25rem;
+  }
+
+  @media (max-width: 899px) {
+    .filters {
+      position: static;
+    }
+  }
+</style>

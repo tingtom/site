@@ -1,0 +1,30 @@
+---
+import { u } from '../lib/url';
+
+interface Props {
+  title: string;
+  href: string;
+  date: Date;
+  mins?: number;
+  summary?: string;
+}
+
+const { title, href, date, mins = 0, summary = '' } = Astro.props;
+const formatted = new Date(date).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+<a class="card" href={u(href)}>
+  <div class="card__body">
+    <p class="card__meta">
+      <time datetime={date.toISOString()}>{formatted}</time>
+      {mins > 0 && <span>· {mins} min read</span>}
+    </p>
+    <h3 class="card__title">{title}</h3>
+    {summary && <p class="card__summary">{summary}</p>}
+    <span class="card__foot">Read →</span>
+  </div>
+</a>

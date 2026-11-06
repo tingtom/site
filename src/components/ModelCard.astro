@@ -1,0 +1,57 @@
+---
+import { Box } from '@lucide/astro';
+import { u } from '../lib/url';
+
+interface Props {
+  title: string;
+  href: string;
+  description?: string;
+  preview?: string;
+  category?: string;
+  file?: string;
+}
+
+const { title, href, description = '', preview = '', category = '', file = '' } = Astro.props;
+const src = preview ? u(preview) : '';
+---
+
+<a class="card" href={u(href)}>
+  <div class="card__media model-media">
+    {
+      src ? (
+        <img src={src} alt="" loading="lazy" decoding="async" />
+      ) : (
+        <>
+          <span class="model-media__grid" aria-hidden="true" />
+          <Box class="model-media__icon" size={54} stroke-width={1.25} aria-hidden="true" />
+        </>
+      )
+    }
+  </div>
+  <div class="card__body">
+    <p class="card__meta">
+      {category ? <span class="pill">{category}</span> : <span>3D model</span>}
+      {file && <span>· ready to print</span>}
+    </p>
+    <h3 class="card__title">{title}</h3>
+    {description && <p class="card__summary">{description}</p>}
+    <span class="card__foot">View model →</span>
+  </div>
+</a>
+
+<style>
+  .model-media {
+    display: grid;
+    place-items: center;
+    position: relative;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 26px 26px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 26px 26px,
+      var(--panel);
+  }
+
+  .model-media__icon {
+    color: var(--accent);
+    position: relative;
+  }
+</style>

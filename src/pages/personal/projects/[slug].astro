@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from 'astro:content';
+import { slug } from '../../../lib/slug';
+import Base from '../../../layouts/Base.astro';
+import { u } from '../../../lib/url';
+import { asset } from '../../../lib/media';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).filter((p) =>
+    p.data.sections.includes('personal'),
+  );
+
+  return projects.map((project) => ({
+    params: { slug: slug(project) },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const hero = asset(project.data.image, '/images/projects');
+---
+
+<Base title={project.data.title} description={project.data.summary} section="personal">
+  <main>
+    <div class="wrap wrap--narrow">
+      <a class="backlink" href="/personal/projects/">← All projects</a>
+
+      <article>
+        <header class="page-head">
+          <p class="kicker">Project</p>
+          <h1>{project.data.title}</h1>
+          {project.data.summary && <p>{project.data.summary}</p>}
+        </header>
+
+        {
+          hero && (
+            <img
+              src={hero}
+              alt={project.data.title}
+              class="project-hero"
+              loading="eager"
+              decoding="async"
+            />
+          )
+        }
+
+        <div class="prose" style="margin-top: 2rem">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .project-hero {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    margin-bottom: 0.5rem;
+  }
+</style>

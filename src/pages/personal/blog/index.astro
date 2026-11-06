@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../../lib/slug';
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { SECTIONS } from '../../../lib/nav';
+
+const posts = (await getCollection('posts'))
+  .filter((p) => p.data.sections.includes('personal'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base
+  title="Blog"
+  description={`Writing by ${SECTIONS.personal.label} — ${posts.length} posts on Source engine, servers and side projects.`}
+  section="personal"
+>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="kicker">Personal</p>
+        <h1>Blog</h1>
+        <p>{posts.length} posts, newest first.</p>
+      </header>
+
+      {
+        posts.length ? (
+          <div class="grid grid--3">
+            {posts.map((p) => (
+              <PostCard
+                title={p.data.title}
+                href={`/personal/blog/${slug(p)}/`}
+                date={p.data.date}
+                mins={p.data.mins}
+                summary={p.data.summary}
+              />
+            ))}
+          </div>
+        ) : (
+          <div class="empty">Nothing written yet.</div>
+        )
+      }
+    </div>
+  </main>
+</Base>

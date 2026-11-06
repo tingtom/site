@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { SECTIONS } from '../lib/nav';
+---
+
+<Base title="Not found" description="That page doesn't exist." section="landing">
+  <main>
+    <div class="wrap wrap--narrow">
+      <p class="kicker">404</p>
+      <h1>Nothing here</h1>
+      <p class="muted" style="max-width: 52ch">
+        That page doesn't exist — it may have moved when the two sites were merged.
+      </p>
+
+      <div class="grid grid--2" style="margin-top: 2rem">
+        <a class="card" href={SECTIONS.personal.href}>
+          <div class="card__body">
+            <p class="card__meta">Personal</p>
+            <h2 class="card__title">Blog &amp; projects</h2>
+            <span class="card__foot">Go →</span>
+          </div>
+        </a>
+        <a class="card" href={SECTIONS.rx7.href}>
+          <div class="card__body">
+            <p class="card__meta">RX7</p>
+            <h2 class="card__title">Diagrams, models &amp; notes</h2>
+            <span class="card__foot">Go →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+</Base>

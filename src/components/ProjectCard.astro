@@ -1,0 +1,29 @@
+---
+import { u } from '../lib/url';
+import { asset } from '../lib/media';
+
+interface Props {
+  title: string;
+  href: string;
+  summary?: string;
+  image?: string;
+}
+
+const { title, href, summary = '', image = '' } = Astro.props;
+const src = asset(image, '/images/projects');
+---
+
+<a class="card" href={u(href)}>
+  {
+    src && (
+      <div class="card__media">
+        <img src={src} alt="" loading="lazy" decoding="async" />
+      </div>
+    )
+  }
+  <div class="card__body">
+    <h3 class="card__title">{title}</h3>
+    {summary && <p class="card__summary">{summary}</p>}
+    <span class="card__foot">View project →</span>
+  </div>
+</a>

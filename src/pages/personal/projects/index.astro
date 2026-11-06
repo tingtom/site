@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import { slug } from '../../../lib/slug';
+import Base from '../../../layouts/Base.astro';
+import ProjectCard from '../../../components/ProjectCard.astro';
+import { SECTIONS } from '../../../lib/nav';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.sections.includes('personal'))
+  .sort((a, b) => Number(b.data.homepage) - Number(a.data.homepage));
+---
+
+<Base
+  title="Projects"
+  description={`Things I'm building — ${projects.length} projects.`}
+  section="personal"
+>
+  <main>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="kicker">Personal</p>
+        <h1>Projects</h1>
+        <p>{SECTIONS.personal.lede}</p>
+      </header>
+
+      {
+        projects.length ? (
+          <div class="grid grid--3">
+            {projects.map((p) => (
+              <ProjectCard
+                title={p.data.title}
+                href={`/personal/projects/${slug(p)}/`}
+                summary={p.data.summary}
+                image={p.data.image}
+              />
+            ))}
+          </div>
+        ) : (
+          <div class="empty">No projects yet.</div>
+        )
+      }
+    </div>
+  </main>
+</Base>
