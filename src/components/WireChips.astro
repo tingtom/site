@@ -44,6 +44,8 @@ const { colors } = Astro.props;
   }
 
   .wire-chip[style] {
-    border-color: transparent;
+    /* keep the 1px outline on coloured chips too — a black wire would
+       otherwise vanish into the panel behind it */
+    border-color: var(--line);
   }
 </style>

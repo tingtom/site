@@ -60,7 +60,8 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
           <div class="diagram-meta__inner">
             <p class="card__meta">
               {d.category && <span class="pill">{d.category}</span>}
-              {d.yearRange && <span class="pill pill--quiet">{d.yearRange}</span>}
+              {d.yearRange &&
+                d.yearRange.split(',').map((y) => <span class="pill pill--quiet">{y.trim()}</span>)}
               {d.identifier && <span class="pill pill--quiet">ID {d.identifier}</span>}
             </p>
 

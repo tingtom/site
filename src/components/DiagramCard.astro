@@ -41,7 +41,8 @@ const extra = Math.max(images.length - 1, 0);
   <div class="card__body">
     <p class="card__meta">
       {category && <span class="pill">{category}</span>}
-      {yearRange && <span class="pill pill--quiet">{yearRange}</span>}
+      {yearRange &&
+        yearRange.split(',').map((y) => <span class="pill pill--quiet">{y.trim()}</span>)}
       {!category && !yearRange && <span>Wiring diagram</span>}
     </p>
     <h3 class="card__title">{title}</h3>

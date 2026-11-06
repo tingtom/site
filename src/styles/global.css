@@ -288,7 +288,7 @@ img {
 /* below 900px the rail flips to the right edge — same vertical tabs, mirrored */
 @media (max-width: 899px) {
   :root {
-    --rail-width: 3rem;
+    --rail-width: 2.5rem;
   }
 
   /* backdrop for the fixed brand + section toggle */
@@ -328,14 +328,14 @@ img {
     /* flush to the screen edge, rounded into the content */
     border-right: none;
     border-radius: 12px 0 0 12px;
-    padding: 1.1rem 0.55rem;
+    padding: 1.1rem 0.45rem;
     white-space: nowrap;
     background: color-mix(in srgb, var(--bg-elev) 70%, transparent);
   }
 
   .edge-tabs a:hover {
-    padding-left: 0.85rem;
-    padding-right: 0.55rem;
+    padding-left: 0.75rem;
+    padding-right: 0.45rem;
   }
 
   .edge-tabs a[aria-current='page'] {
@@ -343,8 +343,8 @@ img {
     color: var(--accent);
     border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
     /* the active tab bleeds left, into the content */
-    padding-left: 1.15rem;
-    padding-right: 0.55rem;
+    padding-left: 1.05rem;
+    padding-right: 0.45rem;
   }
 
   .brand {

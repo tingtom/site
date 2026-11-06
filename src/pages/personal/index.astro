@@ -28,7 +28,6 @@ const latest = posts.slice(0, 6);
         <h1>Blog &amp; projects</h1>
         <p>{section.lede}</p>
       </header>
-
       <section>
         <div class="section-head">
           <h2>Latest posts</h2>
@@ -66,3 +65,14 @@ const latest = posts.slice(0, 6);
     </div>
   </main>
 </Base>
+
+<style>
+  /* match the landing panel's title treatment: bigger, tighter tracking,
+     tighter leading than the site-wide h1 */
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin: 0 0 0.4em;
+  }
+</style>

@@ -167,4 +167,13 @@ const featured = diagrams
     color: var(--accent);
     font-weight: 800;
   }
+
+  /* match the landing panel's title treatment: bigger, tighter tracking,
+     tighter leading than the site-wide h1 */
+  .page-head h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin: 0 0 0.4em;
+  }
 </style>
