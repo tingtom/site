@@ -16,7 +16,9 @@ const projects = (await getCollection('projects')).filter((p) =>
   p.data.sections.includes('personal'),
 );
 
-const featured = projects.filter((p) => p.data.homepage).slice(0, 4);
+const featured = projects.filter((p) => p.data.homepage);
+/* homepage picks first, then the rest — six of the seven on the site */
+const shown = [...featured, ...projects.filter((p) => !p.data.homepage)].slice(0, 6);
 const latest = posts.slice(0, 6);
 ---
 
@@ -52,7 +54,7 @@ const latest = posts.slice(0, 6);
           <a class="pill pill--quiet" href="/personal/projects/">All {projects.length} projects →</a>
         </div>
         <div class="grid grid--3">
-          {(featured.length ? featured : projects.slice(0, 4)).map((p) => (
+          {shown.map((p) => (
             <ProjectCard
               title={p.data.title}
               href={`/personal/projects/${slug(p)}/`}

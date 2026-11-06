@@ -300,8 +300,10 @@ img {
    but the trailing dot takes each section's accent instead of the landing red. */
 .brand {
   position: fixed;
-  top: 1.05rem;
-  left: 0.9rem;
+  /* same inset as the landing's `tingtom.` so the mark lines up when you
+     cross from the landing into a section */
+  top: 1.35rem;
+  left: var(--pad-x);
   z-index: 60;
   display: inline-flex;
   align-items: baseline;
@@ -328,7 +330,8 @@ img {
 .section-toggle {
   position: fixed;
   top: 0.9rem;
-  right: 1rem;
+  /* mirrors the landing's top bar, where the tagline sits at --pad-x too */
+  right: var(--pad-x);
   z-index: 60;
   display: flex;
   gap: 0.25rem;
@@ -423,7 +426,9 @@ img {
 }
 
 /* Backdrop for the fixed brand + section toggle. The brand is plain display
-   type now, so it needs something to sit on once content scrolls under it. */
+   type now, so it needs something to sit on once content scrolls under it.
+   The hairline is held back until there is actually something scrolling under
+   the bar (see the scroll listener in Base.astro). */
 header::before {
   content: '';
   position: fixed;
@@ -431,9 +436,13 @@ header::before {
   height: 4.25rem;
   background: color-mix(in srgb, var(--bg) 90%, transparent);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid transparent;
   z-index: 50;
   pointer-events: none;
+}
+
+html[data-scrolled] header::before {
+  border-bottom-color: var(--line);
 }
 
 /* The landing renders no chrome, so let it run full-bleed instead of being
@@ -724,6 +733,8 @@ main {
 .social img {
   height: 26px;
   width: auto;
+  /* the channel avatars are square artwork — round them off */
+  border-radius: 50%;
   opacity: 0.7;
 }
 

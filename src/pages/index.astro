@@ -10,9 +10,9 @@ const posts = (await getCollection('posts'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
-const diagrams = (await getCollection('diagrams'))
-  .slice()
-  .sort((a, b) => Number(!!b.data.category) - Number(!!a.data.category))
+const rx7Posts = (await getCollection('posts'))
+  .filter((p) => p.data.sections.includes('rx7'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
 const dateFmt = (d: Date) =>
@@ -80,10 +80,10 @@ const dateFmt = (d: Date) =>
 
           <ul class="panel__list">
             {
-              diagrams.map((d) => (
+              rx7Posts.map((p) => (
                 <li>
-                  <span class="when">{d.data.category || 'scan'}</span>
-                  <span>{d.data.title}</span>
+                  <span class="when">{dateFmt(p.data.date)}</span>
+                  <span>{p.data.title}</span>
                 </li>
               ))
             }
@@ -91,6 +91,7 @@ const dateFmt = (d: Date) =>
 
           <div class="panel__links">
             <span class="panel__chip panel__chip--go">Enter →</span>
+            <span class="panel__chip">Blog</span>
             <span class="panel__chip">Diagrams</span>
             <span class="panel__chip">Models</span>
           </div>

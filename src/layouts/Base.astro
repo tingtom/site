@@ -173,5 +173,13 @@ const social = active ? SOCIAL[active.id] : null;
         </div>
       </footer>
     )}
+    <script>
+      // The top bar's hairline only means something once content has scrolled
+      // under it — at the top of the page there is nothing to separate.
+      const root = document.documentElement;
+      const syncScroll = () => root.toggleAttribute('data-scrolled', window.scrollY > 2);
+      syncScroll();
+      window.addEventListener('scroll', syncScroll, { passive: true });
+    </script>
   </body>
 </html>
