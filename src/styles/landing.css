@@ -291,3 +291,31 @@
     display: none;
   }
 }
+
+/* --- never scroll: the landing is exactly one screen -----------------------
+   With the teaser list the panels need 646-724px of height (more on wide
+   windows, where the list is a single column of longer titles); without it
+   they need 432-552px. So the list is the first thing to go on short
+   windows, and only then does the panel itself compress — below that the
+   chips would start falling off the bottom of the screen. */
+@media (min-width: 1100px) and (max-height: 726px) {
+  .panel__list {
+    display: none;
+  }
+}
+
+@media (min-width: 860px) and (max-width: 1099px) and (max-height: 660px) {
+  .panel__list {
+    display: none;
+  }
+}
+
+@media (min-width: 860px) and (max-height: 560px) {
+  .panel__content {
+    padding: 1.25rem 3vw;
+  }
+
+  .panel__title {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+  }
+}

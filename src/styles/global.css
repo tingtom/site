@@ -376,6 +376,10 @@ img {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  /* cross-axis start is the right edge, so each tab is only as wide as its
+     own padding — without this they all stretch to the widest (the active
+     one) and the selection never looks like it stands proud */
+  align-items: flex-end;
 }
 
 .edge-tabs a {
@@ -390,7 +394,7 @@ img {
   text-transform: uppercase;
   text-decoration: none;
   color: var(--fg-muted);
-  padding: 1.1rem 0.45rem;
+  padding: 1.1rem 0.3rem;
   background: var(--tab-bg);
   border: 1px solid var(--line);
   /* flush to the screen edge, rounded into the content */
@@ -403,17 +407,19 @@ img {
 
 .edge-tabs a:hover {
   color: var(--fg);
-  padding-left: 0.75rem;
-  padding-right: 0.45rem;
+  padding-left: 0.55rem;
+  padding-right: 0.3rem;
 }
 
 .edge-tabs a[aria-current='page'] {
   --tab-bg: var(--bg);
   color: var(--accent);
   border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
-  /* the active tab bleeds left, into the content */
-  padding-left: 1.05rem;
-  padding-right: 0.45rem;
+  /* the active tab is the widest of the three states, so it bleeds left into
+     the content while the others sit back — kept inside --rail-width so it
+     never overlaps the text */
+  padding-left: 0.7rem;
+  padding-right: 0.3rem;
 }
 
 /* Backdrop for the fixed brand + section toggle. The brand is plain display
