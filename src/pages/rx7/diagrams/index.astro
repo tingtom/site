@@ -43,9 +43,18 @@ const filters = [
         <p class="kicker">RX7</p>
         <h1>Wiring diagrams</h1>
         <p>
-          {diagrams.length} scanned pages from the 1993 FD3S service manual. {withMeta} have
-          extracted metadata (colour, connector, component); the rest are browse-only until they're
-          run through the processor.
+          {diagrams.length} scanned pages from the 1993 FD3S service manual.{' '}
+          {withMeta >= diagrams.length ? (
+            <>
+              All {withMeta} have extracted metadata — colour, connector and component — so every
+              filter below covers the whole set.
+            </>
+          ) : (
+            <>
+              {withMeta} have extracted metadata (colour, connector, component); the rest are
+              browse-only until they're run through the processor.
+            </>
+          )}
         </p>
       </header>
 
