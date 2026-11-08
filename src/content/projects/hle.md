@@ -1,10 +1,11 @@
 ---
-title: "\"Half-Life: Element 64\""
+title: '"Half-Life: Element 64"'
 slug: hle64
-summary: ""
+summary: 'Half Life: Element 64 is a HL1 mod that is designed to feel like the a classic FPS'
 image: hle.jpg
 homepage: true
-sections: ["personal"]
+sections:
+  - personal
 ---
 
 Half Life: Element 64 is a HL1 mod that is designed to feel like the a classic FPS, this is the official blurb:
