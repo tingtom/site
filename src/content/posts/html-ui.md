@@ -15,7 +15,7 @@ I had heard of awesomium but that's a bit messy and seems to be dead so I starte
 
 Resurgence has a cool main menu background map and for some reason Valve decided they didn't need transparency when rendering the HTML control, I poked around a bit and came to the conclusion that pretty much everything was in the chromehtml DLL and although the source is available I wasn't able to get it built with a old version of CEF.
 
-I didn't give up and instead had an idea to use a chroma key and set the background to green, this kinda worked but created issues for text and any transparency that we decided to use for the menu. I kept looking for a solution and while checking out the [Source SDK Github]("https://github.com/ValveSoftware/source-sdk-2013") I noticed that the HTML control was slightly different to my version which was weird because Valve have pretty much abandoned it.. I compared the two and basically the off-screen renderer is now handled by the Steam client using the API so I copied over the required files for the HTML control and new Steam API code (which also requires new steam_api and steamvr DLLs) and the off-screen renderer was using a transparent background!
+I didn't give up and instead had an idea to use a chroma key and set the background to green, this kinda worked but created issues for text and any transparency that we decided to use for the menu. I kept looking for a solution and while checking out the [Source SDK Github](https://github.com/ValveSoftware/source-sdk-2013) I noticed that the HTML control was slightly different to my version which was weird because Valve have pretty much abandoned it.. I compared the two and basically the off-screen renderer is now handled by the Steam client using the API so I copied over the required files for the HTML control and new Steam API code (which also requires new steam_api and steamvr DLLs) and the off-screen renderer was using a transparent background!
 
 ## Navigation
 
@@ -27,7 +27,7 @@ The Vue router uses hashes to pretend to be a URL, hashes are normally used for 
 
 Now that I had some kind of structure for the new menu I needed to get game data over to Vue and bind it for buttons, text and images. Communication from C++ to the off-screen renderer is very limited compared to if you setup CEF yourself but there's one function called "ExecuteJavascript" which does exactly what it says and allows you to send JS code.
 
-The best way would be to use a JSON library to create a structure and send it over once the HTML file has loaded to init Vue, the only issue is Source is pretty old and doesn't have a JSON library so after trying 3-4 different libs I ended up using [RapidJSON]("http://rapidjson.org/") since most newer libs use features that the 2010 built tools don't support.
+The best way would be to use a JSON library to create a structure and send it over once the HTML file has loaded to init Vue, the only issue is Source is pretty old and doesn't have a JSON library so after trying 3-4 different libs I ended up using [RapidJSON](http://rapidjson.org/) since most newer libs use features that the 2010 built tools don't support.
 
 The structure contained the different paths and content within the paths, each button either had a URL to another route or had a custom protocol (res://) that did something specific like loading a map or opening a Steam overlay URL which the mod would handle:
 

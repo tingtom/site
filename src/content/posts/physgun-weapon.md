@@ -11,7 +11,7 @@ Back when I worked on Zombie Survival I got bored one day and seeked out how to 
 
 Recently someone asked about it so I decided to make this post and release the code I gathered on it, this version works very well and has a new feature which allows you to freeze and unfreeze objects. While testing the code I also found out a way to get the original beam code working so this also includes that, back when I first worked on it the beam was replaced with a serverside straight beam to the object.
 
-The source code is available [here]("https://gist.github.com/tingtom/47ef360d3183b41676e2552c8193bb1f"), there's no need to edit the c_weapon__stubs_hl2 file like other weapons since the weapon declares itself you just need add the physgun.cpp file to the server project and the c_weapon_gravitygun.cpp file to the client project.
+The source code is available [as a GitHub gist](https://gist.github.com/tingtom/47ef360d3183b41676e2552c8193bb1f), there's no need to edit the c_weapon__stubs_hl2 file like other weapons since the weapon declares itself you just need add the physgun.cpp file to the server project and the c_weapon_gravitygun.cpp file to the client project.
 
 Video of the weapon:
 

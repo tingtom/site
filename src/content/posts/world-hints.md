@@ -80,7 +80,7 @@ void CWorldHint::Activate()
 }
 ```
 
-This is a pretty basic entity setup, the only special thing it does is copy the hint text from hammer to the variable used to send the info over to the client. It also completely hides itself as it's clientside only. This following server-side code is only 200 lines long and does the rest, first it creates a VGUI panel then sets up correct angles and world position and then proceeds to render the VGUI element in the world using the magic function called [DrawPanelIn3DSpace]("https://developer.valvesoftware.com/wiki/IMatSystemSurface").
+This is a pretty basic entity setup, the only special thing it does is copy the hint text from hammer to the variable used to send the info over to the client. It also completely hides itself as it's clientside only. This following server-side code is only 200 lines long and does the rest, first it creates a VGUI panel then sets up correct angles and world position and then proceeds to render the VGUI element in the world using the magic function called [DrawPanelIn3DSpace](https://developer.valvesoftware.com/wiki/IMatSystemSurface).
 
 ```cpp
 #include "cbase.h"
@@ -286,4 +286,4 @@ int C_WorldHint::DrawModel( int flags )
 	return 1;
 }
 ```
-The source code is also available in this [Gist]("https://gist.github.com/tingtom/4b2240b1d681d1e59bdcd338b0823b91").
+The source code is also available in this [GitHub Gist](https://gist.github.com/tingtom/4b2240b1d681d1e59bdcd338b0823b91).
