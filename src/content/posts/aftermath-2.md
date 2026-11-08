@@ -11,7 +11,7 @@ With the mod being inspired from Call of Duty Zombies I had to change a lot of t
 
 The first thing I tested was how the zombies react and get to the player since the existing AI meant the zombies would get bored and walk away from the player, I also tested barricades a lot using brushes with a wood texture using the template entity but it wasn't working until I got better at coding and made my own baricade entity.
 
-### Spawning Zombies
+## Spawning Zombies
 
 The monster_maker entity was the main source of figuring out how to create an endless amount of zombies, the monster_maker takes a template npc and a reference point for spawning the npcs and for some time was the way all the zombies in the mod were spawned (with some changes).
 
@@ -25,7 +25,7 @@ CreateEntityByName( "npc_zombie" )
 
 and was changed so only one entity had to be made (zs_zombiemaker) and up to 100 zs_spawnpoint entities could be made anywhere on the map and be toggled on and off individually which helped map makers make maps easier!
 
-### Changing AI
+## Changing AI
 
 The zombies still had some difficulty finding the player after being spawned so some changes had to be made to how the zombies found the player and in the future how they navigate the map. The changes to these functions in the ai_senses file overrides how zombies find the player so that they can always been found:
 
@@ -100,7 +100,7 @@ int CAI_Senses::LookForHighPriorityEntities( int iDistance )
 
 The above code overrides the distance check between the NPC and the player if the NPC is a zombie.
 
-### Weapons
+## Weapons
 
 The final item for this blog post is the weapons, the weapon system needs to be stripped apart and put back together again. The HL2 weapon system didn't make sense for the mod so I had to get rid of slots and change how weapons where picked up and brought from walls. First I disabled the HUD elements for weapon selection which involved removing code in the **weapon_selection.cpp** and **weapons_resource.cpp** files and then began changing how weapons are picked up.
 

@@ -11,19 +11,19 @@ I always think I've reached the limits of the Source engine but I think I'm just
 
 I had heard of awesomium but that's a bit messy and seems to be dead so I started with the HTML VGUI control which creates a CEF off-screen renderer for rendering and renders the result onto a VGUI panel, this was great as a starting point until I noticed a major issue when overriding the main menu VGUI element.
 
-### Transparency
+## Transparency
 
 Resurgence has a cool main menu background map and for some reason Valve decided they didn't need transparency when rendering the HTML control, I poked around a bit and came to the conclusion that pretty much everything was in the chromehtml DLL and although the source is available I wasn't able to get it built with a old version of CEF.
 
 I didn't give up and instead had an idea to use a chroma key and set the background to green, this kinda worked but created issues for text and any transparency that we decided to use for the menu. I kept looking for a solution and while checking out the [Source SDK Github]("https://github.com/ValveSoftware/source-sdk-2013") I noticed that the HTML control was slightly different to my version which was weird because Valve have pretty much abandoned it.. I compared the two and basically the off-screen renderer is now handled by the Steam client using the API so I copied over the required files for the HTML control and new Steam API code (which also requires new steam_api and steamvr DLLs) and the off-screen renderer was using a transparent background!
 
-### Navigation
+## Navigation
 
 Now that the rendering was working and a HTML file was being loaded I began coding the menu flow and trying to figure out how the user will navigate around the menu. I didn't want a natural website with static HTML files because I wasn't sure how opening a bunch of HTML files would look or how fluid it would be so I poked around Javascript libraries and decided to use Vue and it's Router for navigation.
 
 The Vue router uses hashes to pretend to be a URL, hashes are normally used for anchors to scroll a user to a specific point but with Javascript you can dynamically set, read and react to hash changes so you can navigate to #/play and Vue will swap an entire section from the default component to another component setup when initialising Vue router with a transition.
 
-### Data
+## Data
 
 Now that I had some kind of structure for the new menu I needed to get game data over to Vue and bind it for buttons, text and images. Communication from C++ to the off-screen renderer is very limited compared to if you setup CEF yourself but there's one function called "ExecuteJavascript" which does exactly what it says and allows you to send JS code.
 
@@ -68,7 +68,7 @@ if (strs.Count() >= 0)
 }
 ```
 
-### In-game state
+## In-game state
 
 The menu is also used in game and since the UI is now custom the menu it looks exactly the same and needs to be reset when entering a level so I had to check for the engine->IsInGame() flag to see if it has changed and reset the HTML control and tell Vue to render some components differently, I ended up using the new map game event and navigating the page to root using the router like so:
 
@@ -88,7 +88,7 @@ void FireGameEvent(IGameEvent *event)
 
 As well as navigating back to home, the internal JS game data object is updated with an inGame flag so features such as changing the main menu can be achieved.
 
-### Final points
+## Final points
 
 I've been slowly expanding the menu out to have difficulty selection, collectibles, loadout and want to move achievements to it. I also recently swapped to using webpack to compile all the vue components into 1-2 js files which is easier to deal with. Here's a video showing a bit of it:
 

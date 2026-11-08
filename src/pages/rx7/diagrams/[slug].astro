@@ -74,14 +74,14 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
                 <div class="meta-stack">
                   {d.wireColors.length > 0 && (
                     <section class="meta-block">
-                      <h3>Wire colours</h3>
+                      <h2>Wire colours</h2>
                       <WireChips colors={d.wireColors} />
                     </section>
                   )}
 
                   {d.components.length > 0 && (
                     <section class="meta-block">
-                      <h3>Components</h3>
+                      <h2>Components</h2>
                       <ul>
                         {d.components.map((v) => (
                           <li>{v}</li>
@@ -92,7 +92,7 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
 
                   {d.connectors.length > 0 && (
                     <section class="meta-block">
-                      <h3>Connectors</h3>
+                      <h2>Connectors</h2>
                       <ul>
                         {d.connectors.map((v) => (
                           <li>{v}</li>
@@ -103,7 +103,7 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
 
                   {d.ecuPins.length > 0 && (
                     <section class="meta-block">
-                      <h3>ECU pins</h3>
+                      <h2>ECU pins</h2>
                       <ul>
                         {d.ecuPins.map((v) => (
                           <li>{v}</li>
@@ -114,7 +114,7 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
 
                   {d.notes && (
                     <section class="meta-block">
-                      <h3>Notes</h3>
+                      <h2>Notes</h2>
                       <p class="muted">{d.notes}</p>
                     </section>
                   )}
@@ -205,7 +205,7 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
     gap: 1.15rem;
   }
 
-  .meta-block h3 {
+  .meta-block h2 {
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.16em;
