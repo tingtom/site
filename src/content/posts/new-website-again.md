@@ -1,7 +1,7 @@
 ---
 title: New Website (again)
 slug: ''
-date: yyyy-11-Su
+date: 2026-11-08
 mins: 3
 summary: I've left the website alone for a while and also wanted to build a website for RX7 related things, somewhere for 3d printing models, wiring diagrams and other information that may be useful.
 sections:

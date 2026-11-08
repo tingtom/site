@@ -5,7 +5,12 @@ const sections = z.array(z.string()).default(['personal']);
 
 // Optional: entries authored in the CMS are named after their title, so the
 // filename (entry.id) is used as the slug when the field is left blank.
-const slug = z.string().optional();
+// Sveltia writes an explicit `slug: ''` for a blank field, so empty means
+// absent — without this the post's URL would come out as an empty string.
+const slug = z
+  .string()
+  .optional()
+  .transform((value) => value || undefined);
 
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),

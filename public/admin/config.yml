@@ -28,7 +28,10 @@ collections:
     fields:
       - { label: Title, name: title, widget: string }
       - { label: URL slug, name: slug, widget: string, required: false, hint: 'Leave blank to use the filename' }
-      - { label: Date, name: date, widget: datetime, format: 'yyyy-MM-dd', date_format: 'yyyy-MM-dd', time_format: false }
+      # `format` and `date_format` use Day.js tokens (Sveltia formats with
+      # Day.js): `yyyy-MM-dd` yields "yyyy-11-Su" because Day.js reads `dd` as
+      # the short weekday and has no `yyyy` token at all. YYYY-MM-DD is correct.
+      - { label: Date, name: date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false }
       - { label: Reading time (minutes), name: mins, widget: number, value_type: int, default: 0, required: false }
       - { label: Summary, name: summary, widget: text, required: false, hint: 'Shown on cards and in meta descriptions' }
       - label: Appears in
