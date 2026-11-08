@@ -1,17 +1,20 @@
 // Port of rx7_blog's wireColorUtils — pure logic, no framework.
-const MAP: Record<string, { hex: string; fg: string }> = {
-  red: { hex: '#dc2626', fg: '#ffffff' },
-  black: { hex: '#171717', fg: '#ffffff' },
-  yellow: { hex: '#facc15', fg: '#171717' },
-  green: { hex: '#16a34a', fg: '#ffffff' },
-  white: { hex: '#e5e7eb', fg: '#171717' },
-  blue: { hex: '#2563eb', fg: '#ffffff' },
-  brown: { hex: '#b45309', fg: '#ffffff' },
-  orange: { hex: '#ea580c', fg: '#ffffff' },
-  purple: { hex: '#a855f7', fg: '#ffffff' },
-  pink: { hex: '#ec4899', fg: '#ffffff' },
-  gray: { hex: '#9ca3af', fg: '#171717' },
-  grey: { hex: '#9ca3af', fg: '#171717' },
+const MAP: Record<string, { hex: string }> = {
+  red: { hex: '#dc2626' },
+  black: { hex: '#171717' },
+  yellow: { hex: '#facc15' },
+  green: { hex: '#16a34a' },
+  white: { hex: '#e5e7eb' },
+  blue: { hex: '#2563eb' },
+  brown: { hex: '#b45309' },
+  orange: { hex: '#ea580c' },
+  purple: { hex: '#a855f7' },
+  pink: { hex: '#ec4899' },
+  gray: { hex: '#9ca3af' },
+  grey: { hex: '#9ca3af' },
+  violet: { hex: '#7c3aed' },
+  turquoise: { hex: '#14b8a6' },
+  peach: { hex: '#fdba74' },
 };
 
 const findKey = (s: string) => {
@@ -35,9 +38,13 @@ const contrast = (a: string, b: string) => {
 };
 
 /**
- * Black or white, whichever still reads against *both* halves of a split
- * swatch — a 50/50 gradient can't use one fixed text colour, so take the one
- * with the better worst case instead of defaulting to white.
+ * Black or white, whichever reads better — and for a split swatch, whichever
+ * has the better *worst case* across both halves, since a 50/50 gradient
+ * can't use one fixed text colour.
+ *
+ * Applied to solid chips too: green/pink/orange/purple all fail WCAG with
+ * white (3.3–4.0 against 4.5 needed), which is what Lighthouse flagged on the
+ * diagrams index.
  */
 const bestFg = (...bgs: string[]) => {
   const worst = (fg: string) => Math.min(...bgs.map((bg) => contrast(fg, bg)));
@@ -61,7 +68,7 @@ export function wireStyle(color: string): string | null {
   }
 
   const k = findKey(color);
-  if (k) return `background:${MAP[k].hex};color:${MAP[k].fg}`;
+  if (k) return `background:${MAP[k].hex};color:${bestFg(MAP[k].hex)}`;
   return null;
 }
 
