@@ -794,6 +794,15 @@ main {
   padding: 0;
 }
 
+/* Shiki's GitHub-dark comment grey (#6a737d) is 3.05:1 on its own token
+   background (#24292e) — the only one of the seven token colours that fails
+   Lighthouse's 4.5 (the rest run 5.5–11.5). Lift just that token; the colour
+   is emitted as an inline style, so it needs !important to be overridden. */
+pre.astro-code span[style*='#6A737D'],
+pre.astro-code span[style*='#6a737d'] {
+  color: #909aa5 !important;
+}
+
 .prose table {
   width: 100%;
   border-collapse: collapse;

@@ -15,4 +15,4 @@ The source code is available [here]("https://gist.github.com/tingtom/47ef360d318
 
 Video of the weapon:
 
-<iframe style="display: block; margin-left: auto; margin-right: auto;max-width:560px" src="//www.youtube.com/embed/OEVRGoE1T7o?rel=0" allowfullscreen="allowfullscreen" width="100%" height="315" frameborder="0"></iframe>
+<iframe title="HL2 Modding - Physgun" style="display: block; margin-left: auto; margin-right: auto;max-width:560px" src="//www.youtube.com/embed/OEVRGoE1T7o?rel=0" allowfullscreen="allowfullscreen" width="100%" height="315" frameborder="0"></iframe>

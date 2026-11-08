@@ -66,4 +66,4 @@ EmitSound(filter, entindex(), t );
 
 All of the sprint code has been put in the PostThink of the hl2_player.cpp file and I have two variables in the header file for the start time of the sprint and the end time of the sprint, click here for the full source code in a gist and here's the result in video form:
 
-<iframe style="display: block; margin-left: auto; margin-right: auto;max-width:560px" src="https://www.youtube.com/embed/0RxOiKM2xqA?rel=0" allowfullscreen="allowfullscreen" width="100%" height="315" frameborder="0"></iframe>
+<iframe title="HL2 Modding - Looping sprint sounds" style="display: block; margin-left: auto; margin-right: auto;max-width:560px" src="https://www.youtube.com/embed/0RxOiKM2xqA?rel=0" allowfullscreen="allowfullscreen" width="100%" height="315" frameborder="0"></iframe>

@@ -92,4 +92,4 @@ As well as navigating back to home, the internal JS game data object is updated 
 
 I've been slowly expanding the menu out to have difficulty selection, collectibles, loadout and want to move achievements to it. I also recently swapped to using webpack to compile all the vue components into 1-2 js files which is easier to deal with. Here's a video showing a bit of it:
 
-<iframe style="display: block; margin-left: auto; margin-right: auto;max-width:560px" src="https://www.youtube.com/embed/eyWjmHOO4ko" allowfullscreen="allowfullscreen" width="100%" height="315" frameborder="0"></iframe>
+<iframe title="HL2 Modding - HTML Menu" style="display: block; margin-left: auto; margin-right: auto;max-width:560px" src="https://www.youtube.com/embed/eyWjmHOO4ko" allowfullscreen="allowfullscreen" width="100%" height="315" frameborder="0"></iframe>
