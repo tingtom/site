@@ -12,7 +12,7 @@ export async function getStaticPaths() {
     params: { slug: slug(post) },
     props: {
       post,
-      more: sorted.filter((p) => slug(p) !== slug(post)).slice(0, 3),
+      more: sorted.filter((p) => slug(p) !== slug(post)).slice(0, 2),
     },
   }));
 }
@@ -53,7 +53,7 @@ const formatted = date.toLocaleDateString('en-GB', {
             <div class="section-head">
               <h2>More RX7 posts</h2>
             </div>
-            <div class="grid grid--3">
+            <div class="grid grid--2">
               {more.map((p) => (
                 <a class="card" href={u(`/rx7/blog/${slug(p)}/`)}>
                   <div class="card__body">
