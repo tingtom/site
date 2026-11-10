@@ -21,10 +21,4 @@ sections:
 
 The rectangular bung at the back of the FD sills.
 
-Published under your rx7.pro account.
-
-## Where it comes from
-
-Hosted on Printables by **rx7.pro** under Creative Commons — Attribution — Noncommercial — Share Alike, and free — no paywall and no account needed. Nothing is mirrored here: the link above goes to the original page, which is where the files, the licence text and any updates live.
-
-The non-commercial clause is the designer’s to set, so treat it as theirs: print for yourself and for others at no charge, but don’t sell parts printed from these files.
+Published under your rx7.pro account on Printables.

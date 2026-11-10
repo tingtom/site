@@ -22,9 +22,3 @@ sections:
 Replacement HVAC control knobs shaped like the 13B rotor.
 
 CC0 — public domain, no conditions.
-
-## Where it comes from
-
-Hosted on Printables by **Watch_ME** under Creative Commons — Public Domain, and free — no paywall and no account needed. Nothing is mirrored here: the link above goes to the original page, which is where the files, the licence text and any updates live.
-
-Check the licence on the original page before you reuse or redistribute anything beyond printing it.

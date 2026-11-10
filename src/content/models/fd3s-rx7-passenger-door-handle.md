@@ -22,9 +22,3 @@ sections:
 A 3D scan of the passenger side interior door handle pull, as a bolt-in replacement for the OEM handle — a part that is very prone to failure.
 
 The pictured one was printed in PLA; the designer recommends something tougher.
-
-## Where it comes from
-
-Hosted on Printables by **cs900** under Creative Commons — Attribution — Noncommercial, and free — no paywall and no account needed. Nothing is mirrored here: the link above goes to the original page, which is where the files, the licence text and any updates live.
-
-The non-commercial clause is the designer’s to set, so treat it as theirs: print for yourself and for others at no charge, but don’t sell parts printed from these files.

@@ -17,42 +17,74 @@ export async function getStaticPaths() {
 const { model } = Astro.props;
 const m = model.data;
 const { Content } = await render(model);
+const hasBody = Boolean(model.body?.trim());
 
 const hasFile = Boolean(m.file);
 const fileUrl = hasFile ? u(m.file) : '';
 const ext = hasFile ? (m.file!.split('.').pop()?.toLowerCase() ?? 'stl') : '';
 
-// Every download on the page: the previewed file first, then the rest of the
-// set. `files` carries what the single `file` field cannot — the other side
-// of a pair, STEP originals, a zip, print notes. When `files` already names
-// the previewed file, keep its wording ("Left — STL") rather than falling
-// back to a bare "Download STL" next to a "Download Right — STL".
-//
-// With no local file the model lives on someone else's site: `files` becomes
-// the whole list, led by whatever it points at.
-const named = (m.files ?? []).find((f) => f.href === m.file);
-const source = hasFile
-  ? [
-      {
-        label: named ? `Download ${named.label}` : `Download ${ext.toUpperCase()}`,
-        href: m.file!,
-        note: named?.note ?? 'previewed above',
-      },
-      ...(m.files ?? [])
-        .filter((f) => f.href !== m.file)
-        .map((f) => ({ ...f, label: `Download ${f.label}` })),
-    ]
-  : // No local file: the labels are already written for it ("Download on
-    // Printables"), so they go through unchanged.
-    (m.files ?? []).map((f) => ({ ...f }));
+// Every downloadable part is its own row — label, note, link — under its own
+// section. `files` carries what the single `file` field cannot: the other
+// side of a pair, STEP originals, a zip, print notes. An entry with a file
+// but no list gets the one obvious row so nothing is ever download-less.
+const downloads = m.files?.length
+  ? m.files
+  : hasFile
+    ? [{ label: ext.toUpperCase(), href: m.file!, note: '' }]
+    : [];
 
-// No file means no mesh to orbit: swap the viewer for a panel that says where
-// the files actually are, rather than showing a broken preview.
-const viewerNote = hasFile
-  ? 'Loading 3D preview…'
-  : m.source
-    ? 'These files are hosted on Printables — open the link to download them.'
-    : 'These files are hosted elsewhere — use the links to download them.';
+// The API hands back long-form licence names ("Creative Commons —
+// Attribution — Noncommercial"); the headings want the short code. Data keeps
+// whatever was recorded verbatim — only the display is shortened.
+const licenceCode = (() => {
+  const l = (m.licence || '').trim();
+  if (!l) return '';
+  if (/^CC[\s-]/i.test(l)) return l;
+  const s = l.toLowerCase();
+  if (s.includes('public domain') || s.includes('cc0')) return 'CC0';
+  const t: string[] = [];
+  if (s.includes('attribution')) t.push('by');
+  if (s.includes('noncommercial')) t.push('nc');
+  if (s.includes('no derivatives')) t.push('nd');
+  if (s.includes('share alike')) t.push('sa');
+  return t.length ? `CC ${t.join('-').toUpperCase()}` : l;
+})();
+
+const licenceUrl = (() => {
+  const s = (m.licence || '').toLowerCase();
+  if (!s) return '';
+  if (s.includes('public domain') || s.includes('cc0'))
+    return 'https://creativecommons.org/publicdomain/zero/1.0/';
+  const t: string[] = [];
+  if (s.includes('attribution')) t.push('by');
+  if (s.includes('noncommercial')) t.push('nc');
+  if (s.includes('no derivatives')) t.push('nd');
+  if (s.includes('share alike')) t.push('sa');
+  return t.length ? `https://creativecommons.org/licenses/${t.join('-')}/4.0/` : '';
+})();
+
+// What the licence actually forbids, so nobody has to decode the code. The
+// stored value may be long form ("Creative Commons — Attribution —
+// Noncommercial") or short ("CC BY-NC-ND 4.0"), so both are matched — checking
+// only for the spelled-out words left the headlight covers with a single
+// term when it should carry three.
+const terms: string[] = [];
+if (licenceCode) {
+  const s = (m.licence || '').toLowerCase();
+  const isCC0 = s.includes('public domain') || s.includes('cc0');
+  const nc = s.includes('noncommercial') || /(^|[^a-z])nc([^a-z]|$)/.test(s);
+  const nd = s.includes('no derivatives') || /(^|[^a-z])nd([^a-z]|$)/.test(s);
+  const sa = s.includes('share alike') || /(^|[^a-z])sa([^a-z]|$)/.test(s);
+
+  if (isCC0) {
+    terms.push('No conditions — reuse it however you like.');
+  } else {
+    terms.push('Credit stays with the files.');
+    if (nc) terms.push("Don't sell the files, or anything printed from them.");
+    if (nd) terms.push('Unmodified copies only — no publishing or sharing a changed version.');
+    if (sa) terms.push('Share any adaptation under this same licence.');
+  }
+}
 ---
 
 <Base title={m.title} description={m.description || `${m.title} — 3D model`} section="rx7">
@@ -61,24 +93,31 @@ const viewerNote = hasFile
       <a class="backlink" href={u('/rx7/models/')}>← All models</a>
 
       <div class="model-layout">
-        {
-          hasFile ? (
-            <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
-              <p class="viewer__hint">{viewerNote}</p>
-            </div>
-          ) : (
-            <div class="viewer viewer--external">
-              <div class="viewer__external">
-                <p class="viewer__hint">{viewerNote}</p>
+        <div class="model-preview">
+          {
+            hasFile ? (
+              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
+                <p class="viewer__hint">Loading 3D preview…</p>
               </div>
-            </div>
-          )
-        }
+            ) : (
+              <div class="viewer viewer--external">
+                <div class="viewer__external">
+                  <p class="viewer__hint">
+                    {m.source
+                      ? 'These files are hosted on Printables — get them from the link below.'
+                      : 'These files are hosted elsewhere — use the links below.'}
+                  </p>
+                </div>
+              </div>
+            )
+          }
+          {hasFile && <p class="viewer__sub">Drag to orbit, scroll to zoom.</p>}
+        </div>
 
         <aside class="model-meta">
           <p class="card__meta">
             {m.category ? <span class="pill">{m.category}</span> : <span>3D model</span>}
-            <span>· {ext.toUpperCase()}</span>
+            {hasFile && <span>· {ext.toUpperCase()}</span>}
           </p>
 
           <h1>{m.title}</h1>
@@ -88,68 +127,96 @@ const viewerNote = hasFile
             m.credit && (
               <p class="model-credit">
                 Designed by <b>{m.credit}</b>
-                {m.licence && (
+                {licenceCode && (
                   <>
                     {' '}
-                    · <a href={m.source || 'https://creativecommons.org/licenses/by-nc-nd/4.0/'}>{m.licence}</a>
+                    · <a href={licenceUrl || '#licence'}>{licenceCode}</a>
                   </>
                 )}
-              </p>
-            )
-          }
-
-          <div class="model-downloads">
-            {
-              source.map((f) => (
-                <a
-                  class={f.href === m.file ? 'btn' : 'btn btn--ghost'}
-                  href={u(f.href)}
-                  download={!/^https?:/.test(f.href)}
-                  rel="noopener"
-                >
-                  {f.label}
-                </a>
-              ))
-            }
-            <a class="btn btn--ghost" href={u('/rx7/models/')}>All models</a>
-          </div>
-
-          {
-            source.some((f) => f.note) && (
-              <ul class="model-files">
-                {source.map(
-                  (f) =>
-                    f.note && (
-                      <li>
-                        <span>{f.label.replace(/^Download /, '')}</span>
-                        <span class="muted">{f.note}</span>
-                      </li>
-                    ),
-                )}
-              </ul>
-            )
-          }
-
-          <p class="muted model-hint">
-            Drag to orbit, scroll to zoom. Download the file to slice it for
-            printing.
-          </p>
-
-          {
-            m.source && hasFile && (
-              <p class="muted model-hint">
-                <a href={m.source} target="_blank" rel="noopener">
-                  Original files and licence →
-                </a>
               </p>
             )
           }
         </aside>
       </div>
 
-      <div class="prose model-body">
-        <Content />
-      </div>
+      {hasBody && <div class="prose model-body"><Content /></div>}
+
+      {
+        downloads.length > 0 && (
+          <section class="model-section">
+            <div class="section-head">
+              <h2>Models</h2>
+            </div>
+            <ul class="model-list">
+              {downloads.map((f) => (
+                <li>
+                  <a
+                    class="model-list__row"
+                    href={u(f.href)}
+                    download={!/^https?:/.test(f.href)}
+                    rel="noopener"
+                  >
+                    <span class="model-list__name">{f.label}</span>
+                    {f.note && <span class="model-list__note">{f.note}</span>}
+                    <span class="model-list__arrow" aria-hidden="true">
+                      ↓
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        licenceCode && (
+          <section class="model-section" id="licence">
+            <div class="section-head">
+              <h2>Licence — {licenceCode}</h2>
+              {
+                m.source && (
+                  <a class="btn" href={m.source} target="_blank" rel="noopener">
+                    {m.source.includes('printables') ? 'View on Printables →' : 'Open original site →'}
+                  </a>
+                )
+              }
+            </div>
+            <div class="licence">
+              {m.credit && (
+                <p>
+                  Designed by <b>{m.credit}</b>.{' '}
+                  {hasFile ? (
+                    <>
+                      These files are hosted here unmodified, exactly as published, under{' '}
+                      <a href={licenceUrl} target="_blank" rel="noopener">
+                        {licenceCode}
+                      </a>
+                      .
+                    </>
+                  ) : (
+                    <>
+                      Nothing is mirrored here — the link above takes you to the original
+                      page, where the files and the licence live under{' '}
+                      <a href={licenceUrl} target="_blank" rel="noopener">
+                        {licenceCode}
+                      </a>
+                      .
+                    </>
+                  )}
+                </p>
+              )}
+              {terms.length > 0 && (
+                <ul class="licence__terms">
+                  {terms.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section>
+        )
+      }
     </div>
   </main>
 
@@ -191,7 +258,8 @@ const viewerNote = hasFile
 
         const key = new THREE.DirectionalLight(0xffffff, 2.4);
         key.position.set(1, 2, 3);
-        scene.add(key, new THREE.AmbientLight(0xffffff, 0.9));
+        scene.add(key);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.9));
 
         const grid = new THREE.GridHelper(200, 40, 0x3f3f46, 0x27272b);
         grid.position.y = -0.001;
@@ -286,7 +354,7 @@ const viewerNote = hasFile
 
     function fail(el: HTMLElement) {
       el.innerHTML =
-        '<p class="viewer__hint">This model can\'t be previewed in your browser — use the download button.</p>';
+        '<p class="viewer__hint">This model can\'t be previewed in your browser — use the download links below.</p>';
     }
   </script>
 </Base>
@@ -297,6 +365,15 @@ const viewerNote = hasFile
     grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
     gap: clamp(1.5rem, 3vw, 2.5rem);
     align-items: start;
+  }
+
+  /* Preview column: the viewer plus its caption, so the hint sits directly
+     under the box it describes rather than in the sidebar. */
+  .model-preview {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: stretch;
+    min-width: 0;
   }
 
   .viewer {
@@ -320,6 +397,13 @@ const viewerNote = hasFile
     color: var(--fg-muted);
     font-size: 0.92rem;
     margin: 0;
+  }
+
+  .viewer__sub {
+    color: var(--fg-muted);
+    font-size: 0.82rem;
+    margin: 0;
+    text-align: center;
   }
 
   /* No local file: the panel says where the files are instead of showing a
@@ -360,12 +444,6 @@ const viewerNote = hasFile
     margin: 0;
   }
 
-  .model-downloads {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-
   .model-credit {
     font-size: 0.88rem;
     color: var(--fg-muted);
@@ -378,36 +456,71 @@ const viewerNote = hasFile
     font-weight: 600;
   }
 
-  .model-hint {
-    font-size: 0.84rem;
+  /* Downloads and licence each get their own full-width section beneath the
+     preview and the text, instead of competing with the title in the sidebar. */
+  .model-section {
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    border-top: 1px solid var(--line);
+    max-width: 74ch;
   }
 
-  /* What each download actually is: side, format, size. Sits under the
-     buttons so the buttons stay a compact row. */
-  .model-files {
+  .model-list {
     list-style: none;
     margin: 0;
-    padding: 0.7rem 0 0;
+    padding: 0;
     border-top: 1px solid var(--line);
-    display: grid;
-    gap: 0.3rem;
-    font-size: 0.8rem;
   }
 
-  .model-files li {
+  .model-list li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .model-list__row {
     display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
     align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0.15rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
   }
 
-  .model-files li span:first-child {
+  .model-list__row:hover {
+    background: var(--bg-elev);
+  }
+
+  .model-list__name {
+    font-weight: 600;
     color: var(--fg);
     white-space: nowrap;
   }
 
-  /* Specs, print caveats and the licence sit under the viewer: the sidebar
-     already carries the downloads, and the table needs the full column width. */
+  .model-list__note {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    flex: 1;
+  }
+
+  .model-list__arrow {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .licence p {
+    margin: 0 0 0.9rem;
+  }
+
+  .licence__terms {
+    margin: 0;
+    padding-left: 1.15rem;
+    color: var(--fg-muted);
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  /* Specs, print caveats sit under the viewer: the sidebar already carries
+     the description, and a table needs the full column width. */
   .model-body {
     margin-top: clamp(2rem, 5vw, 3.5rem);
     padding-top: clamp(1.5rem, 4vw, 2.5rem);
@@ -422,6 +535,11 @@ const viewerNote = hasFile
 
     .model-meta {
       position: static;
+    }
+
+    .model-list__row {
+      flex-wrap: wrap;
+      gap: 0.35rem 1rem;
     }
   }
 </style>

@@ -23,9 +23,3 @@ sections:
 The plastic clip that holds the trunk tool cover. OEM ones snap, and they are getting hard to find — this is a direct replacement.
 
 One of the few here under plain CC BY, so it can be reused most freely.
-
-## Where it comes from
-
-Hosted on Printables by **Code Red Performance** under Creative Commons — Attribution, and free — no paywall and no account needed. Nothing is mirrored here: the link above goes to the original page, which is where the files, the licence text and any updates live.
-
-Check the licence on the original page before you reuse or redistribute anything beyond printing it.

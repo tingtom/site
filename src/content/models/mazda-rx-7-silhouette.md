@@ -22,9 +22,3 @@ sections:
 A flat silhouette of the RX-7 FD, for a plate, badge or sticker.
 
 Plain CC BY: attribution is the only requirement.
-
-## Where it comes from
-
-Hosted on Printables by **WAVER** under Creative Commons — Attribution, and free — no paywall and no account needed. Nothing is mirrored here: the link above goes to the original page, which is where the files, the licence text and any updates live.
-
-Check the licence on the original page before you reuse or redistribute anything beyond printing it.
