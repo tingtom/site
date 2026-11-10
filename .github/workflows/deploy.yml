@@ -3,6 +3,17 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    # A push that touches only CI config or dev tooling produces an identical
+    # dist, so it should not cost a build and deploy. Patterns here are
+    # root-scoped (`*.md` does not cross `/`), so content under src/content and
+    # everything in public/ still triggers a deploy — this only skips pushes
+    # where nothing the site is built from changed.
+    paths-ignore:
+      - '.github/**'
+      - 'scripts/**'
+      - '*.md'
+      - '.gitignore'
+      - '.editorconfig'
   workflow_dispatch:
 
 permissions:
@@ -12,7 +23,12 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  # Newest push wins. Sveltia commits on every save, so without this a run of
+  # quick edits queues behind each other and each waits its full turn.
+  # Cancelling an in-flight run cannot take the site down: Pages keeps serving
+  # the last successful deployment, and the newer run deploys newer content
+  # anyway.
+  cancel-in-progress: true
 
 jobs:
   build:
