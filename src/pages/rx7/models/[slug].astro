@@ -17,24 +17,42 @@ export async function getStaticPaths() {
 const { model } = Astro.props;
 const m = model.data;
 const { Content } = await render(model);
-const fileUrl = u(m.file);
-const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
+
+const hasFile = Boolean(m.file);
+const fileUrl = hasFile ? u(m.file) : '';
+const ext = hasFile ? (m.file!.split('.').pop()?.toLowerCase() ?? 'stl') : '';
 
 // Every download on the page: the previewed file first, then the rest of the
 // set. `files` carries what the single `file` field cannot — the other side
 // of a pair, STEP originals, a zip, print notes. When `files` already names
 // the previewed file, keep its wording ("Left — STL") rather than falling
 // back to a bare "Download STL" next to a "Download Right — STL".
+//
+// With no local file the model lives on someone else's site: `files` becomes
+// the whole list, led by whatever it points at.
 const named = (m.files ?? []).find((f) => f.href === m.file);
-const primaryLabel = named ? `Download ${named.label}` : `Download ${ext.toUpperCase()}`;
-const source = m.files?.length
+const source = hasFile
   ? [
-      { label: primaryLabel, href: m.file, note: named?.note ?? 'previewed above' },
+      {
+        label: named ? `Download ${named.label}` : `Download ${ext.toUpperCase()}`,
+        href: m.file!,
+        note: named?.note ?? 'previewed above',
+      },
       ...(m.files ?? [])
         .filter((f) => f.href !== m.file)
         .map((f) => ({ ...f, label: `Download ${f.label}` })),
     ]
-  : [{ label: primaryLabel, href: m.file, note: '' }];
+  : // No local file: the labels are already written for it ("Download on
+    // Printables"), so they go through unchanged.
+    (m.files ?? []).map((f) => ({ ...f }));
+
+// No file means no mesh to orbit: swap the viewer for a panel that says where
+// the files actually are, rather than showing a broken preview.
+const viewerNote = hasFile
+  ? 'Loading 3D preview…'
+  : m.source
+    ? 'These files are hosted on Printables — open the link to download them.'
+    : 'These files are hosted elsewhere — use the links to download them.';
 ---
 
 <Base title={m.title} description={m.description || `${m.title} — 3D model`} section="rx7">
@@ -43,9 +61,19 @@ const source = m.files?.length
       <a class="backlink" href={u('/rx7/models/')}>← All models</a>
 
       <div class="model-layout">
-        <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
-          <p class="viewer__hint">Loading 3D preview…</p>
-        </div>
+        {
+          hasFile ? (
+            <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
+              <p class="viewer__hint">{viewerNote}</p>
+            </div>
+          ) : (
+            <div class="viewer viewer--external">
+              <div class="viewer__external">
+                <p class="viewer__hint">{viewerNote}</p>
+              </div>
+            </div>
+          )
+        }
 
         <aside class="model-meta">
           <p class="card__meta">
@@ -108,7 +136,7 @@ const source = m.files?.length
           </p>
 
           {
-            m.source && (
+            m.source && hasFile && (
               <p class="muted model-hint">
                 <a href={m.source} target="_blank" rel="noopener">
                   Original files and licence →
@@ -126,11 +154,6 @@ const source = m.files?.length
   </main>
 
   <script>
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-    import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
-    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
     const host = document.getElementById('viewer');
 
     // The preview parses the STL on the main thread — the left cover is 1.7 MB
@@ -138,10 +161,20 @@ const source = m.files?.length
     // 89 → 70). The page's text and images matter first; the mesh can wait for
     // an idle slot. The viewer keeps its aspect-ratio box meanwhile, so nothing
     // shifts when it arrives.
-    const startViewer = () => {
+    //
+    // three.js is imported dynamically inside this function: a model with no
+    // local file (its files live on Printables) renders no #viewer at all, and
+    // a static import would still ship ~155 KB of renderer to a page that can
+    // never use it.
+    const startViewer = async () => {
       if (!host) return;
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
+
+      const THREE = await import('three');
+      const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
+      const { STLLoader } = await import('three/examples/jsm/loaders/STLLoader.js');
+      const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
 
       try {
         const width = host.clientWidth || 640;
@@ -287,6 +320,24 @@ const source = m.files?.length
     color: var(--fg-muted);
     font-size: 0.92rem;
     margin: 0;
+  }
+
+  /* No local file: the panel says where the files are instead of showing a
+     mesh. Keeps the 4/3 box so the sidebar never jumps when it renders. */
+  .viewer__external {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    max-width: 34ch;
+  }
+
+  .viewer--external {
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 26px 26px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 26px 26px,
+      var(--bg-elev);
   }
 
   .model-meta {

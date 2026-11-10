@@ -1,5 +1,5 @@
 ---
-import { Box } from '@lucide/astro';
+import { Box, ExternalLink } from '@lucide/astro';
 import { u } from '../lib/url';
 import { imageSize } from '../lib/media';
 
@@ -10,6 +10,8 @@ interface Props {
   preview?: string;
   category?: string;
   file?: string;
+  /** Where the files live when they aren't hosted here (Printables, GitHub). */
+  source?: string;
   /** Designer, when the model isn't mine — shown so attribution is visible
    *  on the grid, not only after clicking through. */
   credit?: string;
@@ -25,6 +27,7 @@ const {
   preview = '',
   category = '',
   file = '',
+  source = '',
   credit = '',
   licence = '',
   headingLevel = 3,
@@ -32,6 +35,11 @@ const {
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
 const src = preview ? u(preview) : '';
 const dims = preview ? await imageSize(preview, '/images') : null;
+// A model with no local file downloads from somewhere else. Saying so on the
+// card sets the expectation before the click — the grid icon changes too, so
+// "ready to print" and "hosted elsewhere" never look interchangeable.
+const external = !file && Boolean(source);
+const host = source.includes('printables') ? 'on Printables' : 'hosted elsewhere';
 ---
 
 <a class="card" href={u(href)}>
@@ -42,7 +50,11 @@ const dims = preview ? await imageSize(preview, '/images') : null;
       ) : (
         <>
           <span class="model-media__grid" aria-hidden="true" />
-          <Box class="model-media__icon" size={54} stroke-width={1.25} aria-hidden="true" />
+          {external ? (
+            <ExternalLink class="model-media__icon" size={54} stroke-width={1.25} aria-hidden="true" />
+          ) : (
+            <Box class="model-media__icon" size={54} stroke-width={1.25} aria-hidden="true" />
+          )}
         </>
       )
     }
@@ -51,6 +63,7 @@ const dims = preview ? await imageSize(preview, '/images') : null;
     <p class="card__meta">
       {category ? <span class="pill">{category}</span> : <span>3D model</span>}
       {file && <span>· ready to print</span>}
+      {external && <span>· {host}</span>}
     </p>
     <Heading class="card__title">{title}</Heading>
     {description && <p class="card__summary">{description}</p>}

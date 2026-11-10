@@ -42,7 +42,11 @@ const models = defineCollection({
     title: z.string(),
     slug,
     description: z.string().default(''),
-    file: z.string(),
+    // Optional: a model whose files live somewhere else (Printables, GitHub
+    // releases) has no local STL to preview, and forcing one would mean
+    // rehosting someone else's work under a licence that may not allow it.
+    // With no file the detail page skips the 3D viewer and leads with `files`.
+    file: z.string().optional(),
     preview: z.string().default(''),
     category: z.string().default(''),
     downloads: z.number().default(0),
