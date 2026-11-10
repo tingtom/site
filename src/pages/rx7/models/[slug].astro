@@ -21,15 +21,19 @@ const hasFile = Boolean(m.file);
 const fileUrl = hasFile ? u(m.file) : '';
 const ext = hasFile ? (m.file!.split('.').pop()?.toLowerCase() ?? 'stl') : '';
 
-// Every downloadable part is its own row — label, note, link — under its own
-// section. `files` carries what the single `file` field cannot: the other
-// side of a pair, STEP originals, a zip, print notes. An entry with a file
-// but no list gets the one obvious row so nothing is ever download-less.
-const downloads = m.files?.length
-  ? m.files
-  : hasFile
-    ? [{ label: ext.toUpperCase(), href: m.file!, note: '' }]
-    : [];
+// Every downloadable part is its own row — label, note, link. `files` carries
+// what the single `file` field cannot: the other side of a pair, STEP
+// originals, a zip, print notes.
+//
+// The previewed file always gets its own row, reusing the label and note from
+// `files` when one points at it. Without that, adding any row to `files` would
+// silently hide the local file: the list used to be `files` verbatim, so the
+// primary download only appeared when `files` happened to be empty.
+const listed = m.files ?? [];
+const primaryFile = hasFile
+  ? [listed.find((f) => f.href === m.file) ?? { label: ext.toUpperCase(), href: m.file!, note: '' }]
+  : [];
+const downloads = [...primaryFile, ...listed.filter((f) => f.href !== m.file)];
 
 // The API hands back long-form licence names ("Creative Commons —
 // Attribution — Noncommercial"); the headings want the short code. Data keeps

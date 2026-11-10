@@ -128,7 +128,7 @@ collections:
         name: files
         widget: list
         required: false
-        hint: 'Extra files beyond the model file above — the other side of a pair, STEP originals, print notes'
+        hint: 'Extra files — the other side of a pair, STEP originals, print notes. A row whose URL matches the model file relabels that download instead of adding a second one.'
         fields:
           - { label: Label, name: label, widget: string, hint: 'e.g. Right — STL' }
           - { label: URL, name: href, widget: string, hint: 'File in public/ (starts with /) or a full https URL' }
