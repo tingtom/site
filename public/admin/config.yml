@@ -128,10 +128,17 @@ collections:
         name: files
         widget: list
         required: false
-        hint: 'Extra files — the other side of a pair, STEP originals, print notes. A row whose URL matches the model file relabels that download instead of adding a second one.'
+        hint: 'Extra files — the other side of a pair, STEP originals, print notes. Upload a file OR paste a URL per row. A row whose address matches the model file relabels that download instead of adding a second one.'
         fields:
           - { label: Label, name: label, widget: string, hint: 'e.g. Right — STL' }
-          - { label: URL, name: href, widget: string, hint: 'File in public/ (starts with /) or a full https URL' }
+          - label: Upload a file
+            name: file
+            widget: file
+            required: false
+            hint: 'Uploaded to public/models — leave empty to use the URL below instead'
+            media_folder: /public/models
+            public_folder: /models
+          - { label: Or link to it, name: href, widget: string, required: false, hint: 'A full https URL, or a path in public/ starting with / — leave empty if you uploaded' }
           - { label: Note, name: note, widget: string, required: false, hint: 'e.g. printable · passenger side · 1.8 MB' }
       - label: Appears in
         name: sections

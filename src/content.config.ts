@@ -63,12 +63,16 @@ const models = defineCollection({
     licence: z.string().default(''),
     source: z.string().default(''),
     // Downloads that are not the previewed file: the other side of a pair, the
-    // STEP originals, a zip, print notes.
+    // STEP originals, a zip, print notes. Each row can either hold an uploaded
+    // file (`file`) or point somewhere else (`href`) — upload OR link, not
+    // forced to one. `href` stays optional so existing URL-only rows and
+    // hand-written frontmatter keep parsing.
     files: z
       .array(
         z.object({
           label: z.string(),
-          href: z.string(),
+          file: z.string().default(''),
+          href: z.string().default(''),
           note: z.string().default(''),
         }),
       )
