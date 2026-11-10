@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
 import { u } from '../../../lib/url';
@@ -16,14 +16,31 @@ export async function getStaticPaths() {
 
 const { model } = Astro.props;
 const m = model.data;
+const { Content } = await render(model);
 const fileUrl = u(m.file);
 const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
+
+// Every download on the page: the previewed file first, then the rest of the
+// set. `files` carries what the single `file` field cannot — the other side
+// of a pair, STEP originals, a zip, print notes. When `files` already names
+// the previewed file, keep its wording ("Left — STL") rather than falling
+// back to a bare "Download STL" next to a "Download Right — STL".
+const named = (m.files ?? []).find((f) => f.href === m.file);
+const primaryLabel = named ? `Download ${named.label}` : `Download ${ext.toUpperCase()}`;
+const source = m.files?.length
+  ? [
+      { label: primaryLabel, href: m.file, note: named?.note ?? 'previewed above' },
+      ...(m.files ?? [])
+        .filter((f) => f.href !== m.file)
+        .map((f) => ({ ...f, label: `Download ${f.label}` })),
+    ]
+  : [{ label: primaryLabel, href: m.file, note: '' }];
 ---
 
 <Base title={m.title} description={m.description || `${m.title} — 3D model`} section="rx7">
   <main>
     <div class="wrap">
-      <a class="backlink" href="/rx7/models/">← All models</a>
+      <a class="backlink" href={u('/rx7/models/')}>← All models</a>
 
       <div class="model-layout">
         <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
@@ -39,15 +56,71 @@ const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
           <h1>{m.title}</h1>
           {m.description && <p class="muted">{m.description}</p>}
 
-          <div class="model-actions">
-            <a class="btn" href={fileUrl} download>Download {ext.toUpperCase()}</a>
-            <a class="btn btn--ghost" href="/rx7/models/">All models</a>
+          {
+            m.credit && (
+              <p class="model-credit">
+                Designed by <b>{m.credit}</b>
+                {m.licence && (
+                  <>
+                    {' '}
+                    · <a href={m.source || 'https://creativecommons.org/licenses/by-nc-nd/4.0/'}>{m.licence}</a>
+                  </>
+                )}
+              </p>
+            )
+          }
+
+          <div class="model-downloads">
+            {
+              source.map((f) => (
+                <a
+                  class={f.href === m.file ? 'btn' : 'btn btn--ghost'}
+                  href={u(f.href)}
+                  download={!/^https?:/.test(f.href)}
+                  rel="noopener"
+                >
+                  {f.label}
+                </a>
+              ))
+            }
+            <a class="btn btn--ghost" href={u('/rx7/models/')}>All models</a>
           </div>
 
+          {
+            source.some((f) => f.note) && (
+              <ul class="model-files">
+                {source.map(
+                  (f) =>
+                    f.note && (
+                      <li>
+                        <span>{f.label.replace(/^Download /, '')}</span>
+                        <span class="muted">{f.note}</span>
+                      </li>
+                    ),
+                )}
+              </ul>
+            )
+          }
+
           <p class="muted model-hint">
-            Drag to orbit, scroll to zoom. Download the file to slice it for printing.
+            Drag to orbit, scroll to zoom. Download the file to slice it for
+            printing.
           </p>
+
+          {
+            m.source && (
+              <p class="muted model-hint">
+                <a href={m.source} target="_blank" rel="noopener">
+                  Original files and licence →
+                </a>
+              </p>
+            )
+          }
         </aside>
+      </div>
+
+      <div class="prose model-body">
+        <Content />
       </div>
     </div>
   </main>
@@ -59,7 +132,14 @@ const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
     import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
     const host = document.getElementById('viewer');
-    if (host) {
+
+    // The preview parses the STL on the main thread — the left cover is 1.7 MB
+    // and doing that during load pushed TBT from 440ms to 7.6s (Lighthouse perf
+    // 89 → 70). The page's text and images matter first; the mesh can wait for
+    // an idle slot. The viewer keeps its aspect-ratio box meanwhile, so nothing
+    // shifts when it arrives.
+    const startViewer = () => {
+      if (!host) return;
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
 
@@ -158,7 +238,18 @@ const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
       } catch {
         fail(host);
       }
-    }
+    };
+
+    const schedule = () => {
+      if ('requestIdleCallback' in window) {
+        (window as Window & { requestIdleCallback: (cb: () => void, o?: object) => void })
+          .requestIdleCallback(startViewer, { timeout: 3000 });
+      } else {
+        setTimeout(startViewer, 1);
+      }
+    };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
 
     function fail(el: HTMLElement) {
       el.innerHTML =
@@ -218,14 +309,59 @@ const ext = m.file.split('.').pop()?.toLowerCase() ?? 'stl';
     margin: 0;
   }
 
-  .model-actions {
+  .model-downloads {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
   }
 
+  .model-credit {
+    font-size: 0.88rem;
+    color: var(--fg-muted);
+    border-left: 2px solid var(--accent);
+    padding-left: 0.7rem;
+  }
+
+  .model-credit b {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
   .model-hint {
     font-size: 0.84rem;
+  }
+
+  /* What each download actually is: side, format, size. Sits under the
+     buttons so the buttons stay a compact row. */
+  .model-files {
+    list-style: none;
+    margin: 0;
+    padding: 0.7rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .model-files li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+
+  .model-files li span:first-child {
+    color: var(--fg);
+    white-space: nowrap;
+  }
+
+  /* Specs, print caveats and the licence sit under the viewer: the sidebar
+     already carries the downloads, and the table needs the full column width. */
+  .model-body {
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    border-top: 1px solid var(--line);
+    max-width: 74ch;
   }
 
   @media (max-width: 900px) {

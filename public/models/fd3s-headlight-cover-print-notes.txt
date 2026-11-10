@@ -1,0 +1,65 @@
+MAZDA RX-7 FD3S - VENTED HEADLIGHT COVERS
+Free files. Not for resale. No modified versions.
+=====================================================================
+
+LICENCE
+  Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+  (CC BY-NC-ND 4.0). Copyright (c) 2026 Ryan DeClue.
+
+  YOU MAY
+    - download and print these files for your own car
+    - print a set for someone else, at no charge
+    - scale, split or repair the model privately so it fits your own printer
+    - post photos and link to this page
+
+  YOU MAY NOT
+    - sell the files, alone or in a pack, or converted to another format
+    - sell parts printed from them (that is commercial use)
+    - publish or share a modified version of any file
+    - remove or obscure the copyright notice, or claim the design as your own
+
+  Full legal text: LICENSE. Plain English: NOTICE.md.
+
+---------------------------------------------------------------------
+
+WHAT THESE ARE
+Vented headlight covers (lids) for the FD3S RX-7, 1993-2002. The OEM lids are a
+sealed panel; these let air past the headlight housing. Same outer shape as the
+lid, with the vent cut through.
+
+FILES
+  FD3S-headlight-cover-LEFT.stl    printable, driver side
+  FD3S-headlight-cover-RIGHT.stl   printable, passenger side (mirror)
+  FD3S-headlight-cover-LEFT.step   CAD, driver side
+  FD3S-headlight-cover-RIGHT.step  CAD, passenger side
+
+  The car is mirrored, the lid is not - left and right are separate files.
+
+MEASURED SIZE (per side)
+  269.2 x 308.3 x 263.5 mm
+  338.08 cm3 of material
+  35,704 triangles (the raised mark accounts for the extra triangles)
+
+BED SIZE - READ THIS FIRST
+  269 and 308 mm both exceed a 256 mm bed, and it is over on two axes, so no
+  rotation fixes it. You need a printer that genuinely takes ~270 x 310 mm, or
+  you split the part and join it. Splitting for your own printer is private use
+  and is fine. Check your bed before you slice.
+
+MATERIAL
+  PC-ABS or ASA. Not PLA. The cover sits over the headlight and in the engine
+  bay; PLA goes soft and sags well before the temperature the part sees.
+  ASA/PC-ABS also take paint, which is how you finish them.
+
+PRINT SETTINGS THAT WORKED
+  0.4-0.6 mm nozzle, 0.2 mm layers
+  5 perimeters, 25-30% infill
+  The mounting tabs are the part that breaks on the OEM covers - do not skimp
+  the walls there.
+
+THE ONE CATCH, SAY IT UP FRONT
+  You either trim the thin alignment tab off your headlight bezels, or you
+  leave the bezels off. Neither is hard. It is not a bolt-on to a fully
+  assembled stock bezel.
+
+Designed and prototyped by Ryan DeClue.

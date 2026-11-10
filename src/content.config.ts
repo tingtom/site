@@ -47,6 +47,23 @@ const models = defineCollection({
     category: z.string().default(''),
     downloads: z.number().default(0),
     date: z.coerce.date().optional(),
+    // Attribution for a model designed by someone else. CC BY-NC-ND work can be
+    // hosted here only with the credit and licence kept intact, so both are
+    // rendered on the card and the detail page rather than buried in prose.
+    credit: z.string().default(''),
+    licence: z.string().default(''),
+    source: z.string().default(''),
+    // Downloads that are not the previewed file: the other side of a pair, the
+    // STEP originals, a zip, print notes.
+    files: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          note: z.string().default(''),
+        }),
+      )
+      .default([]),
     sections,
   }),
 });

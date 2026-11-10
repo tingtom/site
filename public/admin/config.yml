@@ -104,6 +104,30 @@ collections:
           - { label: Interior, value: interior }
           - { label: Accessories, value: accessories }
       - { label: Downloads, name: downloads, widget: number, value_type: int, default: 0, required: false }
+      - label: Designed by
+        name: credit
+        widget: string
+        required: false
+        hint: 'Leave blank for your own model. Name the designer if someone else made it.'
+      - label: Licence
+        name: licence
+        widget: string
+        required: false
+        hint: 'e.g. CC BY-NC-ND 4.0 — shown next to the credit'
+      - label: Source page
+        name: source
+        widget: string
+        required: false
+        hint: 'Where the files originally come from, linked from the detail page'
+      - label: More downloads
+        name: files
+        widget: list
+        required: false
+        hint: 'Extra files beyond the model file above — the other side of a pair, STEP originals, print notes'
+        fields:
+          - { label: Label, name: label, widget: string, hint: 'e.g. Right — STL' }
+          - { label: URL, name: href, widget: string, hint: 'File in public/ (starts with /) or a full https URL' }
+          - { label: Note, name: note, widget: string, required: false, hint: 'e.g. printable · passenger side · 1.8 MB' }
       - label: Appears in
         name: sections
         widget: select
