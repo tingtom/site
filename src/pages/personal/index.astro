@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { SECTIONS } from '../../lib/nav';
+import { u } from '../../lib/url';
 
 const section = SECTIONS.personal;
 
@@ -33,7 +34,7 @@ const latest = posts.slice(0, 6);
       <section>
         <div class="section-head">
           <h2>Latest posts</h2>
-          <a class="pill pill--quiet" href="/personal/blog/">All {posts.length} posts →</a>
+          <a class="pill pill--quiet" href={u('/personal/blog/')}>All {posts.length} posts →</a>
         </div>
         <div class="grid grid--3">
           {latest.map((p) => (
@@ -51,7 +52,7 @@ const latest = posts.slice(0, 6);
       <section style="margin-top: clamp(2.5rem, 6vw, 4.5rem)">
         <div class="section-head">
           <h2>Projects</h2>
-          <a class="pill pill--quiet" href="/personal/projects/">All {projects.length} projects →</a>
+          <a class="pill pill--quiet" href={u('/personal/projects/')}>All {projects.length} projects →</a>
         </div>
         <div class="grid grid--3">
           {shown.map((p) => (

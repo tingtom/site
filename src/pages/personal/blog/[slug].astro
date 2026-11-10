@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
+import { u } from '../../../lib/url';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).filter((p) =>
@@ -31,7 +32,7 @@ const formatted = date.toLocaleDateString('en-GB', {
 <Base title={post.data.title} description={post.data.summary} section="personal">
   <main>
     <div class="wrap wrap--narrow">
-      <a class="backlink" href="/personal/blog/">← All posts</a>
+      <a class="backlink" href={u('/personal/blog/')}>← All posts</a>
 
       <article>
         <header class="page-head">
@@ -56,7 +57,7 @@ const formatted = date.toLocaleDateString('en-GB', {
             </div>
             <div class="grid grid--3">
               {more.map((p) => (
-                <a class="card" href={`/personal/blog/${slug(p)}/`}>
+                <a class="card" href={u(`/personal/blog/${slug(p)}/`)}>
                   <div class="card__body">
                     <p class="card__meta">
                       <time datetime={p.data.date.toISOString()}>

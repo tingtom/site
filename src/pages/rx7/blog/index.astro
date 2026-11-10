@@ -4,6 +4,7 @@ import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
 import PostCard from '../../../components/PostCard.astro';
 import { SECTIONS } from '../../../lib/nav';
+import { u } from '../../../lib/url';
 
 const posts = (await getCollection('posts'))
   .filter((p) => p.data.sections.includes('rx7'))
@@ -22,7 +23,7 @@ const posts = (await getCollection('posts'))
         <h1>Blog</h1>
         <p>
           The RX7-filtered view of the blog.{' '}
-          <a href="/personal/blog/">See everything I've written →</a>
+          <a href={u('/personal/blog/')}>See everything I've written →</a>
         </p>
       </header>
 

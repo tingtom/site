@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { SECTIONS } from '../lib/nav';
+import { u } from '../lib/url';
 ---
 
 <Base title="Not found" description="That page doesn't exist." section="landing">
@@ -13,14 +14,14 @@ import { SECTIONS } from '../lib/nav';
       </p>
 
       <div class="grid grid--2" style="margin-top: 2rem">
-        <a class="card" href={SECTIONS.personal.href}>
+        <a class="card" href={u(SECTIONS.personal.href)}>
           <div class="card__body">
             <p class="card__meta">Personal</p>
             <h2 class="card__title">Blog &amp; projects</h2>
             <span class="card__foot">Go →</span>
           </div>
         </a>
-        <a class="card" href={SECTIONS.rx7.href}>
+        <a class="card" href={u(SECTIONS.rx7.href)}>
           <div class="card__body">
             <p class="card__meta">RX7</p>
             <h2 class="card__title">Diagrams, models &amp; notes</h2>

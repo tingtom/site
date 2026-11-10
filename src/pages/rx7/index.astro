@@ -58,7 +58,7 @@ const featured = diagrams
         <section>
           <div class="section-head">
             <h2>RX7 posts</h2>
-            <a class="pill pill--quiet" href="/rx7/blog/">
+            <a class="pill pill--quiet" href={u('/rx7/blog/')}>
               All →
             </a>
           </div>
@@ -79,7 +79,7 @@ const featured = diagrams
       <section style="margin-top: clamp(2.5rem, 6vw, 4.5rem)">
         <div class="section-head">
           <h2>Wiring diagrams</h2>
-          <a class="pill" href="/rx7/diagrams/">Browse all →</a>
+          <a class="pill" href={u('/rx7/diagrams/')}>Browse all →</a>
         </div>
         <p class="muted" style="margin-top: -0.75rem; margin-bottom: 1.5rem">
           {scanned} of {diagrams.length} scanned pages have extracted metadata — search by colour,
@@ -104,7 +104,7 @@ const featured = diagrams
       <section style="margin-top: clamp(2.5rem, 6vw, 4.5rem)">
         <div class="section-head">
           <h2>3D models</h2>
-          <a class="pill pill--quiet" href="/rx7/models/">All models →</a>
+          <a class="pill pill--quiet" href={u('/rx7/models/')}>All models →</a>
         </div>
         <div class="grid grid--3">
           {models.slice(0, 3).map((m) => (
@@ -115,6 +115,8 @@ const featured = diagrams
               preview={m.data.preview}
               category={m.data.category}
               file={m.data.file}
+              credit={m.data.credit}
+              licence={m.data.licence}
             />
           ))}
         </div>

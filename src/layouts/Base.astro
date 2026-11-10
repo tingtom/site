@@ -10,6 +10,27 @@ import '@fontsource/archivo/700.css';
 import '@fontsource/archivo/800.css';
 import '@fontsource/archivo/900.css';
 
+// The Latin subsets only — 91 KB of the 418 KB the CSS references. fontsource
+// emits `font-display: swap`, so without a head start the browser paints in
+// the fallback face and reflows when the webfont lands: that swap is the whole
+// of the CLS Lighthouse reports on text-heavy pages. Preloading them lets the
+// swap finish before first paint. The other 28 files (cyrillic, greek,
+// vietnamese, latin-ext) stay lazy behind their unicode-range and are never
+// fetched for an English page.
+import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
+import archivo600 from '@fontsource/archivo/files/archivo-latin-600-normal.woff2?url';
+import archivo700 from '@fontsource/archivo/files/archivo-latin-700-normal.woff2?url';
+import archivo800 from '@fontsource/archivo/files/archivo-latin-800-normal.woff2?url';
+
+const FONT_PRELOADS = [
+  { href: inter400, weight: '400' },
+  { href: inter600, weight: '600' },
+  { href: archivo600, weight: '600' },
+  { href: archivo700, weight: '700' },
+  { href: archivo800, weight: '800' },
+];
+
 interface Props {
   title: string;
   description?: string;
@@ -42,6 +63,13 @@ const social = active ? SOCIAL[active.id] : null;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      // No u() here: Vite's ?url import already carries the deployed base,
+      // so wrapping it again produced /site/site/… and 404'd every preload.
+      FONT_PRELOADS.map((f) => (
+        <link rel="preload" as="font" type="font/woff2" href={f.href} crossorigin />
+      ))
+    }
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />

@@ -640,6 +640,18 @@ main {
   color: var(--accent);
 }
 
+/* Attribution on a card for a model someone else designed — CC BY-NC-ND
+   work has to carry its credit wherever it is shown, not only on the page
+   you click through to. Sits above the "View model" link.
+
+   No opacity on the licence: --fg-muted at 75% lands at 4.20:1 on the card
+   background, under the 4.5:1 AA threshold, and Lighthouse drops a11y to 95. */
+.card__credit {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+}
+
 /* --- pills / badges ----------------------------------------------------- */
 
 .pill {

@@ -10,6 +10,10 @@ interface Props {
   preview?: string;
   category?: string;
   file?: string;
+  /** Designer, when the model isn't mine — shown so attribution is visible
+   *  on the grid, not only after clicking through. */
+  credit?: string;
+  licence?: string;
   /** h2 on list pages, h3 under the hub's section headings. */
   headingLevel?: 2 | 3;
 }
@@ -21,6 +25,8 @@ const {
   preview = '',
   category = '',
   file = '',
+  credit = '',
+  licence = '',
   headingLevel = 3,
 } = Astro.props;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
@@ -48,6 +54,14 @@ const dims = preview ? await imageSize(preview, '/images') : null;
     </p>
     <Heading class="card__title">{title}</Heading>
     {description && <p class="card__summary">{description}</p>}
+    {
+      credit && (
+        <p class="card__credit">
+          Designed by {credit}
+          {licence && <span> · {licence}</span>}
+        </p>
+      )
+    }
     <span class="card__foot">View model →</span>
   </div>
 </a>
