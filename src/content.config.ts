@@ -42,6 +42,11 @@ const models = defineCollection({
     title: z.string(),
     slug,
     description: z.string().default(''),
+    // A second line for the sidebar: print times, material hints, provenance.
+    // Model pages render no body markdown — the description sits in the
+    // sidebar next to the preview, and repeating it under a second heading
+    // made every page say the same thing twice.
+    notes: z.string().default(''),
     // Optional: a model whose files live somewhere else (Printables, GitHub
     // releases) has no local STL to preview, and forcing one would mean
     // rehosting someone else's work under a licence that may not allow it.

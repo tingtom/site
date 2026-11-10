@@ -17,9 +17,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## RX-7 FD3S kit card (1:24)
-
-A Mazda RX-7 FD3S as a kit card at 1:24 scale — print the sheet, snap the parts out and build it. Separate exhaust included, and the 13B-REW is in there too.
-
-NoDerivatives: unmodified files only.

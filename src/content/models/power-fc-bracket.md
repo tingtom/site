@@ -16,7 +16,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Power FC bracket
-
-Upper and lower brackets for supporting a Power FC in the FD engine bay.

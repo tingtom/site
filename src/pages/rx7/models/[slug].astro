@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
 import { u } from '../../../lib/url';
@@ -16,8 +16,6 @@ export async function getStaticPaths() {
 
 const { model } = Astro.props;
 const m = model.data;
-const { Content } = await render(model);
-const hasBody = Boolean(model.body?.trim());
 
 const hasFile = Boolean(m.file);
 const fileUrl = hasFile ? u(m.file) : '';
@@ -122,6 +120,7 @@ if (licenceCode) {
 
           <h1>{m.title}</h1>
           {m.description && <p class="muted">{m.description}</p>}
+          {m.notes && <p class="muted model-notes">{m.notes}</p>}
 
           {
             m.credit && (
@@ -138,8 +137,6 @@ if (licenceCode) {
           }
         </aside>
       </div>
-
-      {hasBody && <div class="prose model-body"><Content /></div>}
 
       {
         downloads.length > 0 && (
@@ -444,6 +441,14 @@ if (licenceCode) {
     margin: 0;
   }
 
+  /* Print time, material, provenance — the second line under the
+     description. Kept visually subordinate so it reads as a footnote to it
+     rather than a second paragraph competing for attention. */
+  .model-notes {
+    font-size: 0.88rem;
+    opacity: 0.85;
+  }
+
   .model-credit {
     font-size: 0.88rem;
     color: var(--fg-muted);
@@ -517,15 +522,6 @@ if (licenceCode) {
     color: var(--fg-muted);
     display: grid;
     gap: 0.35rem;
-  }
-
-  /* Specs, print caveats sit under the viewer: the sidebar already carries
-     the description, and a table needs the full column width. */
-  .model-body {
-    margin-top: clamp(2rem, 5vw, 3.5rem);
-    padding-top: clamp(1.5rem, 4vw, 2.5rem);
-    border-top: 1px solid var(--line);
-    max-width: 74ch;
   }
 
   @media (max-width: 900px) {

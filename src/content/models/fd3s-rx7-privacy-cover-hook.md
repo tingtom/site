@@ -3,6 +3,7 @@ title: Privacy cover hook
 slug: fd3s-rx7-privacy-cover-hook
 description: >-
   Replacement hooks for the rear privacy cover, attaching to the rear strut tower bar with three #6 x 8/8 Phillips truss head screws.
+notes: Prints without supports.
 category: Automotive
 downloads: 0
 credit: Code Red Performance
@@ -16,9 +17,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Privacy cover hook
-
-Replacement hooks for the rear privacy cover, attaching to the rear strut tower bar with three #6 x 8/8 Phillips truss head screws.
-
-Prints without supports.

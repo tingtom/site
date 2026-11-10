@@ -5,6 +5,7 @@ description: >-
   Rubber stopper for the RX7 fuel door.
   Two are needed, and it may fit other Mazdas.
   The dealer part is about $3; this is a few cents of filament.
+notes: Print in TPU 95A at a fine layer height, no supports, extra walls for stiffness.
 category: Automotive
 downloads: 0
 credit: rx7.pro
@@ -18,9 +19,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Fuel door stopper
-
-Rubber stopper for the RX7 fuel door. Two are needed, and it may fit other Mazdas. The dealer part is about $3; this is a few cents of filament.
-
-Print in TPU 95A at a fine layer height, no supports, extra walls for stiffness.

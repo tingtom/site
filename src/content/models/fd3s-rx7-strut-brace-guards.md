@@ -16,7 +16,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Strut brace guards
-
-Guards for the strut brace mount points.

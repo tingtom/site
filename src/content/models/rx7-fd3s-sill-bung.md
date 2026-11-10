@@ -16,9 +16,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Sill bung
-
-The rectangular bung at the back of the FD sills.
-
-Published under your rx7.pro account on Printables.

@@ -16,9 +16,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## RX-7 FD silhouette
-
-A flat silhouette of the RX-7 FD, for a plate, badge or sticker.
-
-Plain CC BY: attribution is the only requirement.

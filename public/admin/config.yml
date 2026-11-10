@@ -82,6 +82,11 @@ collections:
       - { label: Title, name: title, widget: string }
       - { label: URL slug, name: slug, widget: string, required: false, hint: 'Leave blank to use the filename' }
       - { label: Description, name: description, widget: text, required: false }
+      - label: Notes
+        name: notes
+        widget: text
+        required: false
+        hint: 'Second line under the description — print time, material, provenance. Model pages show no body text.'
       - label: Model file
         name: file
         widget: file

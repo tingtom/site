@@ -4,6 +4,7 @@ slug: fd3s-armrest-cupholder-phone-mount
 description: >-
   A cupholder and phone mount for the FD3S armrest, adapted from a Thingiverse
   design.
+notes: Listed as a work in progress, with simple fill and armrest-style variants planned.
 category: Automotive
 downloads: 0
 credit: AL
@@ -17,11 +18,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Armrest cupholder / phone mount
-
-A cupholder and phone mount for the FD3S armrest, adapted by the designer
-from a Thingiverse design.
-
-Listed as a work in progress, with simple fill and armrest-style variants
-planned.

@@ -4,6 +4,7 @@ slug: fd3s-map-pocket-lid
 description: >-
   A drop-in replacement for the FD3S door map pocket lid — light sanding and
   it fits without fuss.
+notes: Watch_ME refined TsiaOne's original design so it drops straight in — credit for the original belongs to TsiaOne.
 category: Automotive
 downloads: 0
 credit: Watch_ME
@@ -17,11 +18,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## FD3S map pocket lid
-
-A drop-in replacement for the FD3S door map pocket lid — light sanding and
-it fits without fuss.
-
-Watch_ME refined TsiaOne's original design so it drops straight in; credit
-for the original belongs to TsiaOne.

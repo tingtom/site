@@ -17,9 +17,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Trunk tool cover clip
-
-The plastic clip that holds the trunk tool cover. OEM ones snap, and they are getting hard to find — this is a direct replacement.
-
-One of the few here under plain CC BY, so it can be reused most freely.

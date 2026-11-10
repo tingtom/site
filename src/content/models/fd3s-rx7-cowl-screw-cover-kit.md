@@ -18,9 +18,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Cowl screw cover kit
-
-A direct replacement for the OEM cowl screw covers. Years of sitting exposed
-to the elements make the originals so brittle they fall apart — and Mazda
-never sold replacements, so there was nothing to buy until this.

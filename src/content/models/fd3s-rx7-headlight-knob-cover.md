@@ -17,7 +17,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Headlight adjuster knob cover
-
-Replacement cover for the manual headlight adjuster knob. The stock-design version copies the OEM part and prints well in TPU or another semi-flexible material; a second variant takes a 024 O-ring.

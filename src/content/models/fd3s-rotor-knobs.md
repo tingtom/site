@@ -16,9 +16,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Rotor knobs
-
-Replacement HVAC control knobs shaped like the 13B rotor.
-
-CC0 — public domain, no conditions.

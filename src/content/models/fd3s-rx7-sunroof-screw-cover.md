@@ -16,7 +16,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Sunroof screw cover
-
-Matching screw cover for the sunroof, from the same set as the door handle one.

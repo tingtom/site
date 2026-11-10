@@ -17,9 +17,3 @@ date: 2026-11-10
 sections:
   - rx7
 ---
-
-## Defrost vent centre clip
-
-A copy of the clip between the two defrost vents, made in Fusion 360 after a request in the RX7 Facebook group. Version 2 beefs up the triangles on the clip.
-
-Listed as untested on car by the designer — which is you.
