@@ -12,7 +12,7 @@ site_url: https://tmathews.co.uk/site/
 logo:
   src: /site/favicon.png
 
-media_folder: public/images/uploads
+media_folder: /public/images/uploads
 public_folder: /images/uploads
 
 collections:
@@ -59,7 +59,7 @@ collections:
         name: image
         widget: file
         required: false
-        media_folder: public/images/projects
+        media_folder: /public/images/projects
         public_folder: /images/projects
       - { label: Feature on the home page, name: homepage, widget: boolean, default: false }
       - label: Appears in
@@ -91,13 +91,13 @@ collections:
         name: file
         widget: file
         hint: 'STL, OBJ or GLB — uploaded to public/models'
-        media_folder: public/models
+        media_folder: /public/models
         public_folder: /models
       - label: Preview image
         name: preview
         widget: file
         required: false
-        media_folder: public/images/models
+        media_folder: /public/images/models
         public_folder: /images/models
       - label: Category
         name: category
@@ -164,7 +164,7 @@ collections:
           name: file
           label: Scan
           widget: file
-          media_folder: public/diagrams
+          media_folder: /public/diagrams
           public_folder: /diagrams
       - { label: Category, name: category, widget: string, required: false, hint: 'e.g. Engine/ECU, Airbag, Chassis' }
       - { label: Year range, name: yearRange, widget: string, required: false, hint: 'e.g. 1993-1996' }
