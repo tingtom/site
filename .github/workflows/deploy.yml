@@ -49,5 +49,24 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # A healthy deploy finishes in 20-32s, but the action's default timeout is
+      # 10 minutes: when GitHub's Pages API accepts the deployment and then
+      # never reports a status, the run sits polling for the full 10 minutes
+      # before aborting. Four runs were lost to that this week.
+      #
+      # Cap each attempt at 3 minutes — still 5x the slowest success seen — and
+      # retry once, so a transient blip recovers on its own and a genuinely
+      # wedged deployment fails in ~3 minutes instead of 10. A retry against
+      # the same artifact only helps for transient faults; a SHA-specific wedge
+      # still needs a new commit, but at least it is obvious quickly.
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 180000
+        continue-on-error: true
+
+      - id: deployment2
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 180000
