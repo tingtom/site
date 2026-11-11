@@ -4,7 +4,7 @@ slug: fd3s-rx7-strut-brace-guards
 description: Guards for the strut brace mount points.
 notes: ''
 file: /models/CodeRedPerformance_StrutBraceGuard-Full.3mf
-preview: /images/models/pasted-image-1794406066002.png
+preview: /images/models/pasted-image-1794406100328.png
 category: Automotive
 downloads: 0
 credit: Code Red Performance
