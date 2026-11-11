@@ -90,7 +90,7 @@ collections:
       - label: Model file
         name: file
         widget: file
-        hint: 'STL, OBJ or GLB — uploaded to public/models'
+        hint: 'STL, 3MF, OBJ, GLB or glTF — uploaded to public/models'
         media_folder: /public/models
         public_folder: /models
       - label: Preview image

@@ -308,24 +308,44 @@ if (licenceCode) {
           controls.update();
         };
 
+        // glTF, 3MF and OBJ all arrive as a Group rather than a bare geometry,
+        // so they skip the mesh/material step but share the framing. Without a
+        // branch for each, every format other than STL was handed to
+        // GLTFLoader and simply failed — which is how 3MF, common on
+        // Printables, ended up unpreviewable.
+        const frame = (object) => {
+          const box = new THREE.Box3().setFromObject(object);
+          const center = box.getCenter(new THREE.Vector3());
+          object.position.sub(center);
+          scene.add(object);
+
+          const size = box.getSize(new THREE.Vector3()).length();
+          camera.position.set(size * -0.54, size * 0.64, size * 0.54);
+          camera.near = size / 100;
+          camera.far = size * 40;
+          camera.updateProjectionMatrix();
+          controls.target.set(0, 0, 0);
+          controls.minDistance = size * 0.15;
+          controls.maxDistance = size * 6;
+          controls.update();
+        };
+
+        const onError = () => fail(host);
+
         if (ext === 'stl') {
-          new STLLoader().load(src, finish, undefined, () => fail(host));
-        } else {
-          const loader = new GLTFLoader();
-          loader.load(
-            src,
-            (gltf) => {
-              const box = new THREE.Box3().setFromObject(gltf.scene);
-              const center = box.getCenter(new THREE.Vector3());
-              gltf.scene.position.sub(center);
-              scene.add(gltf.scene);
-              const size = box.getSize(new THREE.Vector3()).length();
-              camera.position.set(size * -0.54, size * 0.64, size * 0.54);
-              controls.update();
-            },
-            undefined,
-            () => fail(host),
+          new STLLoader().load(src, finish, undefined, onError);
+        } else if (ext === '3mf') {
+          const { ThreeMFLoader } = await import(
+            'three/examples/jsm/loaders/3MFLoader.js'
           );
+          new ThreeMFLoader().load(src, frame, undefined, onError);
+        } else if (ext === 'obj') {
+          const { OBJLoader } = await import('three/examples/jsm/loaders/OBJLoader.js');
+          new OBJLoader().load(src, frame, undefined, onError);
+        } else if (ext === 'glb' || ext === 'gltf') {
+          new GLTFLoader().load(src, (gltf) => frame(gltf.scene), undefined, onError);
+        } else {
+          fail(host, `.${ext} can't be previewed here — download it below.`);
         }
 
         let raf = 0;
@@ -366,9 +386,17 @@ if (licenceCode) {
     if (document.readyState === 'complete') schedule();
     else window.addEventListener('load', schedule, { once: true });
 
-    function fail(el: HTMLElement) {
-      el.innerHTML =
-        '<p class="viewer__hint">This model can\'t be previewed in your browser — use the download links below.</p>';
+    // textContent rather than innerHTML: the unsupported-format message quotes
+    // the file extension, which comes from an uploaded filename.
+    function fail(el: HTMLElement, message?: string) {
+      const text =
+        message ??
+        "This model can't be previewed in your browser — use the download links below.";
+      el.textContent = '';
+      const p = document.createElement('p');
+      p.className = 'viewer__hint';
+      p.textContent = text;
+      el.appendChild(p);
     }
   </script>
 </Base>
