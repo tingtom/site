@@ -1,5 +1,5 @@
 ---
-title: '"Half-Life: Element 64"'
+title: 'Half-Life: Element 64'
 slug: hle64
 summary: 'Half Life: Element 64 is a HL1 mod that is designed to feel like the a classic FPS'
 image: hle.jpg
