@@ -555,6 +555,11 @@ if (licenceCode) {
   .model-list__arrow {
     color: var(--accent);
     font-weight: 700;
+    /* Pushed to the right edge by its own margin rather than by the note
+       flexing: rows with no note (the strap-down entries) had nothing
+       stretching, so the arrow sat right next to the label instead of at the
+       end of the row. */
+    margin-left: auto;
   }
 
   .licence p {
