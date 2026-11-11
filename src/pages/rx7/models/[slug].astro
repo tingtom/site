@@ -269,28 +269,16 @@ if (licenceCode) {
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        // No continuous auto-rotate: it sweeps through every azimuth, and this
-        // part reads as an edge-on fin around 90°/180° — measured from a
-        // 12-angle render grid (el 20/40/60 × az 0/90/180/270), where 0° and
-        // 270° show the vent and the outer surface and the other two do not.
-        // Swing through the range where the shape reads instead.
-        controls.autoRotate = false;
-
-        // Azimuth centre and half-range in radians: -45° ± 40°, which keeps the
-        // camera between the two angles that render well.
-        const SWING_CENTRE = -Math.PI / 4;
-        const SWING_RANGE = (40 * Math.PI) / 180;
-        const SWING_SPEED = 0.35;
-
-        let swingT = 0;
-        let lastFrame = performance.now();
-        let userActive = false;
-        renderer.domElement.addEventListener('pointerdown', () => {
-          userActive = true;
-        });
-        window.addEventListener('pointerup', () => {
-          userActive = false;
-        });
+        // Plain continuous rotation, as it was before. A bounded swing was
+        // tried to keep the camera off the angles where this part reads as an
+        // edge-on fin (90°/180° in a 12-angle render grid), but writing the
+        // camera position every frame meant releasing a drag teleported it
+        // back to the swing target — a visible jump — and continuous motion
+        // was preferred regardless. The camera still STARTS at the angle where
+        // the vent reads (-45° azimuth, 40° elevation), so the first frame and
+        // any early screenshot are good; OrbitControls handles dragging itself.
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.4;
 
         const finish = (geometry: THREE.BufferGeometry) => {
           geometry.computeVertexNormals();
@@ -342,31 +330,6 @@ if (licenceCode) {
 
         let raf = 0;
         const tick = () => {
-          const now = performance.now();
-          const dt = Math.min(0.05, (now - lastFrame) / 1000);
-          lastFrame = now;
-
-          // Ease the azimuth toward the swing target rather than snapping it:
-          // a drag is never fought, and on release the view drifts back to the
-          // angle where the part reads. Wrapping the difference to [-π, π]
-          // stops it taking the long way round through the bad angles.
-          //
-          // The camera position is written directly rather than through
-          // controls.setAzimuthalAngle(): that method does not exist in the
-          // OrbitControls build this site bundles (only getAzimuthalAngle,
-          // getPolarAngle and getDistance do), and calling it threw — which is
-          // why the preview fell back to "can't be previewed".
-          if (!userActive) {
-            swingT += dt;
-            const target = SWING_CENTRE + Math.sin(swingT * SWING_SPEED) * SWING_RANGE;
-            const offset = new THREE.Vector3().setFromSphericalCoords(
-              controls.getDistance(),
-              controls.getPolarAngle(),
-              target,
-            );
-            controls.object.position.copy(controls.target).add(offset);
-          }
-
           controls.update();
           renderer.render(scene, camera);
           raf = requestAnimationFrame(tick);
