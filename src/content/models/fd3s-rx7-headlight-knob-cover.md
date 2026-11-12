@@ -1,6 +1,7 @@
 ---
 title: Headlight adjuster knob cover
 slug: fd3s-rx7-headlight-knob-cover
+file: /models/fd-headlight-knob-cover_stock.stl
 description: >-
   Replacement cover for the manual headlight adjuster knob.
   The stock-design version copies the OEM part and prints well in TPU or another semi-flexible material; a second variant takes a 024 O-ring.

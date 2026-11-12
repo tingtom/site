@@ -4,8 +4,6 @@ slug: fd3s-map-pocket-lid
 description: A drop-in replacement for the FD3S door map pocket lid — light sanding and it fits without fuss.
 notes: Watch_ME refined TsiaOne's original design so it drops straight in — credit for the original belongs to TsiaOne.
 file: /models/fd3s-map-pocket-lid-rhd.stl
-orientation: fix
-yaw: 0
 rotation: ''
 preview: ''
 category: interior
