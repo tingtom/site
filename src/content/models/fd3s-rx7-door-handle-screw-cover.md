@@ -4,7 +4,7 @@ slug: fd3s-rx7-door-handle-screw-cover
 description: Replaces the screw cover inside the driver and passenger door handles — the one that falls out, dries in the sun or simply goes missing.
 notes: About 15 minutes at 100% infill.
 file: /models/DoorHandleScrewCover_CRP.stl
-preview: /images/models/door-handle-screw-cover.webp
+preview: /images/models/fd3s-rx7-door-handle-screw-cover.webp
 category: interior
 downloads: 0
 credit: Code Red Performance

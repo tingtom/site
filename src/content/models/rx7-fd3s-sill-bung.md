@@ -4,7 +4,7 @@ slug: rx7-fd3s-sill-bung
 description: The rectangular bung at the back of the FD sills.
 notes: ''
 file: /models/sill bung.stl
-preview: /images/models/pasted-image-1794406610565.png
+preview: /images/models/rx7-fd3s-sill-bung.webp
 category: exterior
 downloads: 0
 credit: rx7.pro

@@ -225,6 +225,32 @@ if (licenceCode) {
   <script>
     const host = document.getElementById('viewer');
 
+    // ?render=1 turns this page into a screenshot target for
+    // scripts/render-model-previews.mjs: the viewer is pinned to the viewport,
+    // everything else is hidden, and the auto-rotation stops so the frame is
+    // deterministic. It runs the same code a visitor does, so a generated
+    // preview cannot drift from the real one.
+    //
+    // The CSS ships with the flag rather than in a stylesheet: it only ever
+    // applies here, and tying it to the same statement as the class means the
+    // two can't disagree about whether render mode is on.
+    const renderMode = new URLSearchParams(location.search).has('render');
+    if (renderMode) {
+      document.documentElement.classList.add('render-mode');
+      document.head.insertAdjacentHTML(
+        'beforeend',
+        `<style>
+          html.render-mode, html.render-mode body { overflow: hidden; margin: 0; }
+          html.render-mode body * { visibility: hidden; }
+          html.render-mode #viewer, html.render-mode #viewer * { visibility: visible; }
+          html.render-mode #viewer {
+            position: fixed; inset: 0; width: 100vw; height: 100vh;
+            aspect-ratio: auto; border: 0; border-radius: 0;
+          }
+        </style>`,
+      );
+    }
+
     // The preview parses the STL on the main thread — the left cover is 1.7 MB
     // and doing that during load pushed TBT from 440ms to 7.6s (Lighthouse perf
     // 89 → 70). The page's text and images matter first; the mesh can wait for
@@ -263,10 +289,6 @@ if (licenceCode) {
         scene.add(key);
         scene.add(new THREE.AmbientLight(0xffffff, 0.9));
 
-        const grid = new THREE.GridHelper(200, 40, 0x3f3f46, 0x27272b);
-        grid.position.y = -0.001;
-        scene.add(grid);
-
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         // Plain continuous rotation, as it was before. A bounded swing was
@@ -277,17 +299,70 @@ if (licenceCode) {
         // was preferred regardless. The camera still STARTS at the angle where
         // the vent reads (-45° azimuth, 40° elevation), so the first frame and
         // any early screenshot are good; OrbitControls handles dragging itself.
-        controls.autoRotate = true;
+        // Frozen in ?render mode, where a reproducible angle is the point.
+        controls.autoRotate = !renderMode;
         controls.autoRotateSpeed = 1.4;
+
+        // The direction the camera starts from: -45° azimuth, 40° elevation,
+        // the angle these parts read at. Length is irrelevant — fit() scales
+        // it — only the direction.
+        const START_DIR = new THREE.Vector3(-0.54, 0.64, 0.54).normalize();
+
+        // The floor. A fixed 200-unit grid was six times the trunk clip and
+        // *smaller* than the headlight cover, so on the big parts the model
+        // sat on a patch of grid floating inside itself. Size it from the
+        // model instead, and drop it just under the lowest point: at y = 0 it
+        // sliced every model in half, because the mesh is centred on the
+        // origin.
+        const layoutGrid = (box: THREE.Box3) => {
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
+          const grid = new THREE.GridHelper(maxDim * 4, 40, 0x3f3f46, 0x27272b);
+          // A hair below, or the bottom face and the grid are coplanar and
+          // z-fight.
+          grid.position.y = box.min.y - maxDim * 0.005;
+          scene.add(grid);
+        };
+
+        // Frame the camera around a bounding box by *solving* for the
+        // distance instead of guessing it. A sphere of radius R fits a
+        // frustum of half-angle θ from R / sin θ away, and at 45° fov that
+        // is 2.61 R — but the old code sat at the box diagonal, which is
+        // exactly 2 R, so every model opened cropped. The armrest cupholder
+        // lost the top third of itself; the headlight cover lost its top
+        // edge and half of the right.
+        //
+        // Fitting the bounding *sphere* rather than the box matters because
+        // autoRotate turns the camera through every azimuth: a distance that
+        // just fits the box at the start angle lets the model slide out of
+        // frame half a rotation later.
+        const fit = (box: THREE.Box3) => {
+          const sphere = box.getBoundingSphere(new THREE.Sphere());
+          const radius = Math.max(sphere.radius, 1e-6);
+
+          const vHalf = (camera.fov * Math.PI) / 360;
+          const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
+          // The narrower of the two governs; on the 4/3 viewer that is always
+          // the vertical, but a narrow window would flip it.
+          const distance = (radius / Math.sin(Math.min(vHalf, hHalf))) * 1.08;
+
+          camera.position.copy(sphere.center).addScaledVector(START_DIR, distance);
+          camera.near = distance / 100;
+          camera.far = distance * 40;
+          camera.updateProjectionMatrix();
+
+          controls.target.copy(sphere.center);
+          controls.minDistance = distance * 0.15;
+          controls.maxDistance = distance * 6;
+          controls.update();
+
+          layoutGrid(box);
+        };
 
         const finish = (geometry: THREE.BufferGeometry) => {
           geometry.computeVertexNormals();
           geometry.center();
 
-          const box = new THREE.Box3().setFromObject(
-            new THREE.Mesh(geometry, new THREE.MeshStandardMaterial()),
-          );
-          const size = box.getSize(new THREE.Vector3()).length();
           const mesh = new THREE.Mesh(
             geometry,
             new THREE.MeshStandardMaterial({
@@ -297,15 +372,7 @@ if (licenceCode) {
             }),
           );
           scene.add(mesh);
-
-          camera.position.set(size * -0.54, size * 0.64, size * 0.54);
-          camera.near = size / 100;
-          camera.far = size * 40;
-          camera.updateProjectionMatrix();
-          controls.target.set(0, 0, 0);
-          controls.minDistance = size * 0.15;
-          controls.maxDistance = size * 6;
-          controls.update();
+          fit(new THREE.Box3().setFromObject(mesh));
         };
 
         // glTF, 3MF and OBJ all arrive as a Group rather than a bare geometry,
@@ -319,15 +386,11 @@ if (licenceCode) {
           object.position.sub(center);
           scene.add(object);
 
-          const size = box.getSize(new THREE.Vector3()).length();
-          camera.position.set(size * -0.54, size * 0.64, size * 0.54);
-          camera.near = size / 100;
-          camera.far = size * 40;
-          camera.updateProjectionMatrix();
-          controls.target.set(0, 0, 0);
-          controls.minDistance = size * 0.15;
-          controls.maxDistance = size * 6;
-          controls.update();
+          // Shift the box by the same amount, so fit() sees it in the
+          // coordinates the camera will actually look at.
+          box.min.sub(center);
+          box.max.sub(center);
+          fit(box);
         };
 
         const onError = () => fail(host);
