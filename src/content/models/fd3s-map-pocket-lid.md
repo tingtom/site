@@ -5,7 +5,7 @@ description: A drop-in replacement for the FD3S door map pocket lid — light sa
 notes: Watch_ME refined TsiaOne's original design so it drops straight in — credit for the original belongs to TsiaOne.
 file: /models/fd3s-map-pocket-lid-rhd.stl
 rotation: ''
-preview: ''
+preview: /images/models/fd3s-map-pocket-lid.webp
 category: interior
 downloads: 0
 credit: Watch_ME

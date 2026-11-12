@@ -5,7 +5,7 @@ description: A copy of the clip between the two defrost vents, made in Fusion 36
 notes: ''
 file: /models/defrost-center-clip-with-text.stl
 rotation: ''
-preview: ''
+preview: /images/models/rx7-fd3s-defrost-vent-center-clip.webp
 category: interior
 downloads: 0
 credit: rx7.pro

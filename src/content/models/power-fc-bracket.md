@@ -5,7 +5,7 @@ description: Upper and lower brackets for supporting a Power FC in the FD engine
 notes: ''
 file: /models/RX-7 Power FC Bracket - Upper.stl
 rotation: ''
-preview: ''
+preview: /images/models/power-fc-bracket.webp
 category: interior
 downloads: 0
 credit: 13brew

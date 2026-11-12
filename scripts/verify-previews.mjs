@@ -9,23 +9,28 @@
 //
 // Usage: BASE_URL=http://localhost:4399/site node scripts/verify-previews.mjs
 import { execFileSync } from 'node:child_process';
-import { rmSync } from 'node:fs';
+import { rmSync, readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import sharp from 'sharp';
 
 const BASE = process.env.BASE_URL || 'http://localhost:4399/site';
-const MODELS = [
-  'fd3s-armrest-cupholder-phone-mount',
-  'fd3s-headlight-covers',
-  'fd3s-rx7-door-handle-screw-cover',
-  'fd3s-rx7-strut-brace-guards',
-  'fd3s-rx7-trunk-tool-cover-clip',
-  'rx7-fd3s-sill-bung',
-];
+const CONTENT = path.join(process.cwd(), 'src/content/models');
+
+// Every model that has a local file — the set grows as files are uploaded,
+// so it is discovered rather than listed.
+const MODELS = readdirSync(CONTENT)
+  .filter((f) => f.endsWith('.md'))
+  .map((f) => ({
+    slug: (readFileSync(path.join(CONTENT, f), 'utf8').match(/^slug:\s*(\S+)/m) || [])[1] ?? f.replace(/\.md$/, ''),
+    file: (readFileSync(path.join(CONTENT, f), 'utf8').match(/^file:\s*(.+)$/m) || [])[1] ?? '',
+  }))
+  .filter((m) => m.file.startsWith('/models/'))
+  .map((m) => m.slug);
 
 async function silhouette(file) {
   const { data, info } = await sharp(file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   const { width: W, height: H, channels: C } = info;
-  let minX = W, maxX = 0, minY = H, maxY = 0, lit = 0;
+  let minX = W, maxX = 0, minY = H, maxY = 0, lit = 0, edge = 0;
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       const i = (y * W + x) * C;
@@ -35,9 +40,11 @@ async function silhouette(file) {
         if (x > maxX) maxX = x;
         if (y < minY) minY = y;
         if (y > maxY) maxY = y;
+        // touching the frame means the model is cropped out of the card
+        if (y < 4 || y > H - 5 || x < 4 || x > W - 5) edge++;
       }
     }
-  return { w: maxX - minX, h: maxY - minY, lit };
+  return { w: maxX - minX, h: maxY - minY, lit, edge, W, H };
 }
 
 let failures = 0;
@@ -61,13 +68,17 @@ for (const slug of MODELS) {
   // A few pixels of tolerance: same geometry, same camera, so it should be
   // near-identical; a real regression shows up as a different bounding box.
   const same = Math.abs(a.w - b.w) <= 2 && Math.abs(a.h - b.h) <= 2;
-  if (!same) failures++;
+  // The saved preview must also be a usable card image in its own right.
+  const usable = a.W === 1600 && a.H === 1000 && a.edge === 0 && a.lit > 3000;
+  const ok = same && usable;
+  if (!ok) failures++;
+  const why = !same ? 'silhouette changed' : !usable ? `cropped (edge ${a.edge})` : '';
   console.log(
     slug.padEnd(36),
     `${a.w}×${a.h}`.padEnd(12),
     `${b.w}×${b.h}`.padEnd(12),
-    same ? '✓ unchanged' : '✗ CHANGED',
+    ok ? '✓ unchanged' : `✗ ${why}`,
   );
 }
-console.log(failures === 0 ? '\nmigration is appearance-preserving' : `\n${failures} model(s) changed`);
+console.log(failures === 0 ? `\nall ${MODELS.length} previews: correct size, uncropped, reproducible` : `\n${failures} FAILED`);
 process.exit(failures ? 1 : 0);

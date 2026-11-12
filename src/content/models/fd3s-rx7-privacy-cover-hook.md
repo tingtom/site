@@ -5,7 +5,7 @@ description: 'Replacement hooks for the rear privacy cover, attaching to the rea
 notes: Prints without supports.
 file: /models/PrivacyCoverHook.3mf
 rotation: ''
-preview: ''
+preview: /images/models/fd3s-rx7-privacy-cover-hook.webp
 category: interior
 downloads: 0
 credit: Code Red Performance

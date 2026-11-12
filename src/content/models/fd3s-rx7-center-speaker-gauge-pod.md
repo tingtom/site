@@ -5,7 +5,7 @@ description: A dual or triple gauge pod (52 mm or 60 mm) that takes the place of
 notes: ''
 file: /models/CRP_DualGaugePod_52mm.3mf
 rotation: ''
-preview: ''
+preview: /images/models/fd3s-rx7-center-speaker-gauge-pod.webp
 category: interior
 downloads: 0
 credit: Code Red Performance

@@ -5,7 +5,7 @@ description: A 3D scan of the passenger side interior door handle pull, as a bol
 notes: The pictured one was printed in PLA; the designer recommends something tougher.
 file: /models/fd-handle.stl
 rotation: ''
-preview: ''
+preview: /images/models/fd3s-rx7-passenger-door-handle.webp
 category: interior
 downloads: 0
 credit: cs900

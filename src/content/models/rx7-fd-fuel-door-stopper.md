@@ -5,7 +5,7 @@ description: Rubber stopper for the RX7 fuel door. Two are needed, and it may fi
 notes: Print in TPU 95A at a fine layer height, no supports, extra walls for stiffness.
 file: /models/fuel-flap-nipple-v1.stl
 rotation: ''
-preview: ''
+preview: /images/models/rx7-fd-fuel-door-stopper.webp
 category: exterior
 downloads: 0
 credit: rx7.pro

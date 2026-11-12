@@ -5,7 +5,7 @@ description: Replacement HVAC control knobs shaped like the 13B rotor.
 notes: ''
 file: /models/Rotor knobs.stl
 rotation: ''
-preview: ''
+preview: /images/models/fd3s-rotor-knobs.webp
 category: interior
 downloads: 0
 credit: Watch_ME

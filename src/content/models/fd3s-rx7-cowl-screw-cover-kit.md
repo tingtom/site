@@ -5,7 +5,7 @@ description: Direct replacement for the OEM cowl screw covers, which go brittle 
 notes: ''
 file: /models/SmallClip_CRP.stl
 rotation: ''
-preview: ''
+preview: /images/models/fd3s-rx7-cowl-screw-cover-kit.webp
 category: exterior
 downloads: 0
 credit: Code Red Performance
