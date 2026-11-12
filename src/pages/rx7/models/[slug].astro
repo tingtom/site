@@ -99,7 +99,7 @@ if (licenceCode) {
         <div class="model-preview">
           {
             hasFile ? (
-              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-orientation={m.orientation} data-yaw={String(m.yaw)}>
+              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-orientation={m.orientation} data-yaw={String(m.yaw)} data-rotation={m.rotation}>
                 <p class="viewer__hint">Loading 3D preview…</p>
               </div>
             ) : (
@@ -251,6 +251,12 @@ if (licenceCode) {
       );
     }
 
+    // ?rotate parks the camera and hands the drag to the model itself —
+    // OrbitControls moves the viewpoint, not the part, so there was no way to
+    // preview an arbitrary rotation before saving one. Same handle the console
+    // gets: __model.enableDrag().
+    const rotateMode = new URLSearchParams(location.search).has('rotate');
+
     // The preview parses the STL on the main thread — the left cover is 1.7 MB
     // and doing that during load pushed TBT from 440ms to 7.6s (Lighthouse perf
     // 89 → 70). The page's text and images matter first; the mesh can wait for
@@ -265,14 +271,27 @@ if (licenceCode) {
       if (!host) return;
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
-      // Which orientation to show this model in — see axisFix(). The query
-      // string wins over the saved value so a choice can be previewed in
-      // seconds rather than saved, committed and waited out through a deploy —
-      // which matters when the right answer is an eye decision.
-      const orientationParam = new URLSearchParams(location.search).get('orientation');
-      const orientation = orientationParam || host.dataset.orientation || 'fix';
-      const yawParam = new URLSearchParams(location.search).get('yaw');
-      const yaw = Number(yawParam !== null ? yawParam : host.dataset.yaw || 0);
+      const query = new URLSearchParams(location.search);
+      // An explicit `rotation` outranks the presets, because four axis-aligned
+      // faces plus a turn cannot express every angle a part may need — which
+      // is exactly the position the vented headlight cover is in. Asking for
+      // ?orientation= or ?yaw= steps around it, so a preset can still be
+      // previewed after one has been saved.
+      const manual =
+        query.has('orientation') || query.has('yaw')
+          ? ''
+          : query.get('rot') || host.dataset.rotation || '';
+      const orientation = query.get('orientation') || host.dataset.orientation || 'fix';
+      const yaw = Number(query.has('yaw') ? query.get('yaw') : host.dataset.yaw || 0);
+
+      // "12,0,-35" in degrees; anything unparseable falls back to the presets.
+      const manualRotation = manual
+        ? (() => {
+            const parts = manual.split(',').map((p) => Number(p.trim()));
+            if (parts.some((n) => !Number.isFinite(n))) return null;
+            return [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0];
+          })()
+        : null;
 
       const THREE = await import('three');
       const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
@@ -307,8 +326,9 @@ if (licenceCode) {
         // was preferred regardless. The camera still STARTS at the angle where
         // the vent reads (-45° azimuth, 40° elevation), so the first frame and
         // any early screenshot are good; OrbitControls handles dragging itself.
-        // Frozen in ?render mode, where a reproducible angle is the point.
-        controls.autoRotate = !renderMode;
+        // Frozen in ?render mode, where a reproducible angle is the point, and
+        // in ?rotate mode, where the model turns under your hand instead.
+        controls.autoRotate = !renderMode && !rotateMode;
         controls.autoRotateSpeed = 1.4;
 
         // The direction the camera starts from: -45° azimuth, 40° elevation,
@@ -362,12 +382,95 @@ if (licenceCode) {
         // sits. ?yaw= previews it the same way ?orientation= does.
         const axisFix = (object: THREE.Object3D) => {
           const outer = new THREE.Group();
-          outer.rotation.y = (yaw * Math.PI) / 180;
           const inner = new THREE.Group();
-          inner.rotation.set(...(ORIENTATIONS[orientation] ?? ORIENTATIONS.fix));
+          if (manualRotation) {
+            outer.rotation.set(
+              (manualRotation[0] * Math.PI) / 180,
+              (manualRotation[1] * Math.PI) / 180,
+              (manualRotation[2] * Math.PI) / 180,
+            );
+          } else {
+            outer.rotation.y = (yaw * Math.PI) / 180;
+            inner.rotation.set(...(ORIENTATIONS[orientation] ?? ORIENTATIONS.fix));
+          }
           inner.add(object);
           outer.add(inner);
+          // Exposed so exposeModel() can fold the two rotations into one.
+          outer.userData.base = inner;
           return outer;
+        };
+
+        // The console handle. OrbitControls drags the *camera*, not the part,
+        // so before this there was no way to see an arbitrary rotation before
+        // committing to it — which is why the headlight cover went through
+        // four guesses. enableDrag() hands the drag to the model itself and
+        // prints the line to save when you let go.
+        const exposeModel = (pivot: THREE.Object3D) => {
+          const base = pivot.userData.base as THREE.Object3D;
+
+          // Fold the preset into a single rotation first: otherwise what is
+          // dragged is a nudge *on top of* the saved orientation, and the
+          // printed line would not reproduce what is on screen.
+          const bake = () => {
+            pivot.quaternion.copy(pivot.quaternion.clone().multiply(base.quaternion));
+            base.rotation.set(0, 0, 0);
+          };
+
+          const line = () => {
+            const d = [pivot.rotation.x, pivot.rotation.y, pivot.rotation.z].map((r) =>
+              Math.round((r * 180) / Math.PI),
+            );
+            return `rotation: ${d.join(',')}`;
+          };
+
+          const report = () => {
+            const text = line();
+            console.log(`%c${text}`, 'font-size:1.4em;font-weight:bold');
+            console.log('paste into the model\'s `rotation` field, or open:');
+            console.log(`${location.pathname}?rot=${text.replace('rotation: ', '')}`);
+            return text;
+          };
+
+          let last: { x: number; y: number } | null = null;
+          const canvas = renderer.domElement;
+          const enableDrag = () => {
+            bake();
+            controls.enabled = false; // the camera would otherwise fight for it
+            canvas.style.cursor = 'grab';
+            canvas.addEventListener('pointerdown', (e) => {
+              last = { x: e.clientX, y: e.clientY };
+              canvas.setPointerCapture(e.pointerId);
+              canvas.style.cursor = 'grabbing';
+            });
+            canvas.addEventListener('pointermove', (e) => {
+              if (!last) return;
+              pivot.rotation.y += (e.clientX - last.x) * 0.008;
+              pivot.rotation.x += (e.clientY - last.y) * 0.008;
+              last = { x: e.clientX, y: e.clientY };
+            });
+            const stop = () => {
+              if (!last) return;
+              last = null;
+              canvas.style.cursor = 'grab';
+              report();
+            };
+            canvas.addEventListener('pointerup', stop);
+            canvas.addEventListener('pointercancel', stop);
+            console.log(
+              'Drag the model to rotate it — the camera is parked. ' +
+                'The line to save prints when you let go, or run __model.report().',
+            );
+          };
+
+          (window as unknown as Record<string, unknown>).__model = {
+            pivot,
+            bake,
+            enableDrag,
+            report,
+            line,
+          };
+
+          if (rotateMode) enableDrag();
         };
 
         // Paint untextured models with the shared material, so a 3MF matches
@@ -462,6 +565,7 @@ if (licenceCode) {
           const pivot = axisFix(new THREE.Mesh(geometry, accentMaterial));
           scene.add(pivot);
           fit(new THREE.Box3().setFromObject(pivot));
+          exposeModel(pivot);
         };
 
         // glTF, 3MF and OBJ all arrive as a Group rather than a bare geometry,
@@ -483,6 +587,7 @@ if (licenceCode) {
 
           recolour(pivot);
           fit(new THREE.Box3().setFromObject(pivot));
+          exposeModel(pivot);
         };
 
         const onError = () => fail(host);

@@ -111,6 +111,12 @@ collections:
         required: false
         default: 0
         hint: 'Spins the model about the vertical without changing which face is down — use it to stop a model balancing on a point. 0, 90, 180 and 270 are the useful values; the query string ?yaw= previews one without saving.'
+      - label: Exact rotation
+        name: rotation
+        widget: string
+        required: false
+        default: ''
+        hint: 'x,y,z in degrees. Overrides both fields above — use it when no preset sits right, which happens on a curved part with no flat face. Open the model page with ?rotate to drag it until it looks right; the console prints this line as you let go.'
       - label: Preview image
         name: preview
         widget: file

@@ -67,6 +67,12 @@ const models = defineCollection({
     // balancing. For the vented headlight cover, the same face scores a 7%
     // wide base at 0° and 48% at 90° — so the choice is worth having.
     yaw: z.coerce.number().min(0).max(360).default(0),
+    // An explicit rotation in degrees, "x,y,z", that supersedes the two fields
+    // above. The presets only reach four axis-aligned faces plus a turn, and a
+    // part with no flat face — the vented headlight cover — may need an angle
+    // none of them expresses. Filled in from the page: ?rotate turns the drag
+    // over to the model and prints this line as you let go.
+    rotation: z.string().default(''),
     preview: z.string().default(''),
     category: z.string().default(''),
     downloads: z.number().default(0),
