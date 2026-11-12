@@ -93,6 +93,12 @@ collections:
         hint: 'STL, 3MF, OBJ, GLB or glTF — uploaded to public/models'
         media_folder: /public/models
         public_folder: /models
+      - label: Flip model
+        name: flip
+        widget: boolean
+        required: false
+        default: false
+        hint: 'Ticks when the Z-up fix leaves this part upside down. It stays lying flat either way — only which face is up changes, so this cannot make a model stand up again.'
       - label: Preview image
         name: preview
         widget: file

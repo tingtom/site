@@ -52,6 +52,12 @@ const models = defineCollection({
     // rehosting someone else's work under a licence that may not allow it.
     // With no file the detail page skips the 3D viewer and leads with `files`.
     file: z.string().optional(),
+    // The viewer applies one axis fix to every model (Z-up → Y-up), which is
+    // right for CAD exports but not for a file modelled the other way round:
+    // the vented headlight cover came out upside down. Ticking this turns that
+    // part over. It stays lying flat either way — only which face is up
+    // changes — so the checkbox cannot make a model stand up again.
+    flip: z.boolean().default(false),
     preview: z.string().default(''),
     category: z.string().default(''),
     downloads: z.number().default(0),

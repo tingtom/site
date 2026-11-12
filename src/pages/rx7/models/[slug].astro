@@ -99,7 +99,7 @@ if (licenceCode) {
         <div class="model-preview">
           {
             hasFile ? (
-              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext}>
+              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-flip={String(m.flip)}>
                 <p class="viewer__hint">Loading 3D preview…</p>
               </div>
             ) : (
@@ -265,6 +265,8 @@ if (licenceCode) {
       if (!host) return;
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
+      // Per-model escape hatch for the axis fix — see axisFix().
+      const flip = host.dataset.flip === 'true';
 
       const THREE = await import('three');
       const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
@@ -323,16 +325,23 @@ if (licenceCode) {
         // the build plate is thin along Z — while three.js is Y-up. So a
         // plate that lies flat in its own file arrives standing on its edge:
         // five of the six models are thinnest along Z and the sixth is
-        // near-cubic, which is not how randomly-oriented files land. -90°
-        // about X is the Z-up → Y-up conversion glTF itself specifies, and
-        // it is what puts each part down the way it would print.
+        // near-cubic, which is not how randomly-oriented files land (about 2%
+        // likely). -90° about X is the Z-up → Y-up conversion glTF itself
+        // specifies, and it is what puts each part down the way it would print.
+        //
+        // `flip` runs the same conversion the other way: +90° maps Z to -Y, so
+        // the part lands just as flat but with the opposite face upward. That
+        // is the whole fix for a file modelled upside down — the vented
+        // headlight cover — and why the checkbox cannot make anything stand up
+        // again: both directions give identical extents, they only disagree
+        // about which end of Z counts as up.
         //
         // Wrapped in a pivot rather than written onto the object: a glTF or
         // 3MF root can carry a transform of its own, and rotating in place
         // would throw that away.
         const axisFix = (object: THREE.Object3D) => {
           const pivot = new THREE.Group();
-          pivot.rotation.x = -Math.PI / 2;
+          pivot.rotation.x = flip ? Math.PI / 2 : -Math.PI / 2;
           pivot.add(object);
           return pivot;
         };

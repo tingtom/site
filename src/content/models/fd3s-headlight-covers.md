@@ -6,6 +6,7 @@ description: >-
   sealed panel with the vent cut through, so air can pass the headlight
   housing. Free to download and print.
 file: /models/fd3s-headlight-cover-left.stl
+flip: true
 preview: /images/models/fd3s-headlight-covers.webp
 category: exterior
 downloads: 0
