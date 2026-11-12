@@ -93,30 +93,12 @@ collections:
         hint: 'STL, 3MF, OBJ, GLB or glTF — uploaded to public/models'
         media_folder: /public/models
         public_folder: /models
-      - label: Model orientation
-        name: orientation
-        widget: select
-        required: false
-        default: fix
-        hint: 'How to show this model. The default lays a Z-up CAD export down, and is correct for almost everything — check it only if a model arrives upside down or on edge.'
-        options:
-          - { label: Laid down (default), value: fix }
-          - { label: Laid down, the other way up, value: flip }
-          - { label: Turned onto its side, value: side }
-          - { label: Exactly as exported, value: asis }
-      - label: Turn (degrees)
-        name: yaw
-        widget: number
-        value_type: int
-        required: false
-        default: 0
-        hint: 'Spins the model about the vertical without changing which face is down — use it to stop a model balancing on a point. 0, 90, 180 and 270 are the useful values; the query string ?yaw= previews one without saving.'
       - label: Exact rotation
         name: rotation
         widget: string
         required: false
         default: ''
-        hint: 'x,y,z in degrees. Overrides both fields above — use it when no preset sits right, which happens on a curved part with no flat face. Open the model page with ?rotate to drag it until it looks right; the console prints this line as you let go.'
+        hint: 'x,y,z in degrees. Blank means the Z-up fix (−90,0,0), which is what CAD exports need. Set it only when a model still sits wrong — open the page with ?rotate to drag it until it looks right, and the console prints this line as you let go. ?rot= previews a value without saving.'
       - label: Preview image
         name: preview
         widget: file

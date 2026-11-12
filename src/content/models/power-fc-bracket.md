@@ -4,8 +4,6 @@ slug: power-fc-bracket
 description: Upper and lower brackets for supporting a Power FC in the FD engine bay.
 notes: ''
 file: /models/RX-7 Power FC Bracket - Upper.stl
-orientation: fix
-yaw: 0
 rotation: ''
 preview: ''
 category: interior

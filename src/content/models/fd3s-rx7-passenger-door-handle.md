@@ -4,8 +4,6 @@ slug: fd3s-rx7-passenger-door-handle
 description: A 3D scan of the passenger side interior door handle pull, as a bolt-in replacement for the OEM handle — a part that is very prone to failure.
 notes: The pictured one was printed in PLA; the designer recommends something tougher.
 file: /models/fd-headlight-knob-cover_stock.stl
-orientation: fix
-yaw: 0
 rotation: ''
 preview: ''
 category: engine

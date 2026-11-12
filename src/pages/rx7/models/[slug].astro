@@ -99,7 +99,7 @@ if (licenceCode) {
         <div class="model-preview">
           {
             hasFile ? (
-              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-orientation={m.orientation} data-yaw={String(m.yaw)} data-rotation={m.rotation}>
+              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-rotation={m.rotation}>
                 <p class="viewer__hint">Loading 3D preview…</p>
               </div>
             ) : (
@@ -272,26 +272,16 @@ if (licenceCode) {
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
       const query = new URLSearchParams(location.search);
-      // An explicit `rotation` outranks the presets, because four axis-aligned
-      // faces plus a turn cannot express every angle a part may need — which
-      // is exactly the position the vented headlight cover is in. Asking for
-      // ?orientation= or ?yaw= steps around it, so a preset can still be
-      // previewed after one has been saved.
-      const manual =
-        query.has('orientation') || query.has('yaw')
-          ? ''
-          : query.get('rot') || host.dataset.rotation || '';
-      const orientation = query.get('orientation') || host.dataset.orientation || 'fix';
-      const yaw = Number(query.has('yaw') ? query.get('yaw') : host.dataset.yaw || 0);
-
-      // "12,0,-35" in degrees; anything unparseable falls back to the presets.
-      const manualRotation = manual
-        ? (() => {
-            const parts = manual.split(',').map((p) => Number(p.trim()));
-            if (parts.some((n) => !Number.isFinite(n))) return null;
-            return [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0];
-          })()
-        : null;
+      // "12,0,-35" in degrees. Blank means the Z-up fix (−90,0,0) — CAD is
+      // Z-up and three.js is Y-up, so that is what a normal export needs. A
+      // value that does not parse falls back to it rather than failing to
+      // render, and ?rot= previews one without saving it.
+      const raw = query.get('rot') ?? host.dataset.rotation ?? '';
+      const parts = raw.split(',').map((p) => Number(p.trim()));
+      const rotation: [number, number, number] =
+        raw && parts.length && parts.every((n) => Number.isFinite(n))
+          ? [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0]
+          : [-90, 0, 0];
 
       const THREE = await import('three');
       const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
@@ -347,75 +337,35 @@ if (licenceCode) {
           roughness: 0.45,
         });
 
-        // Which of the four axis-aligned orientations to show, and why a single
-        // rule was never going to be right for every file.
+        // The model's own rotation, applied through a pivot rather than
+        // written onto the object: a glTF or 3MF root can carry a transform of
+        // its own, and rotating in place would throw that away.
         //
-        // Every file here is Z-up — CAD's convention, where a part on the build
-        // plate is thin along Z — while three.js is Y-up, so `fix` (-90° about
-        // X, the conversion glTF specifies) lays it down. Scored over all 24
-        // axis-aligned orientations, by how much of each model's surface forms
-        // a broad flat base facing down, `fix` is the outright best for every
-        // model that looks right today: 28%, 44%, 15%, 20%, against 0-4% for
-        // every alternative on those same parts.
-        //
-        // The vented headlight cover is the exception that proves flatness
-        // alone cannot decide: every rotation about X scores 0-1% for it —
-        // including both ends of the old flip — and its best of all 24 is
-        // +90° about Z, at 4%. It is a curved shell with no flat face to rest
-        // on, so no orientation makes it level; `side` is simply least bad.
-        //
-        // Wrapped in a pivot rather than written onto the object: a glTF or
-        // 3MF root can carry a transform of its own, and rotating in place
-        // would throw that away.
-        const ORIENTATIONS: Record<string, [number, number, number]> = {
-          fix: [-Math.PI / 2, 0, 0], // Z-up → Y-up: lay it down
-          flip: [Math.PI / 2, 0, 0], // the same part, the other face up
-          side: [0, 0, Math.PI / 2], // a different edge down
-          asis: [0, 0, 0], // exactly as exported
-        };
-
-        // Which orientation to show, and how far to twist it about the
-        // vertical. The twist matters: two models can rest on the same face
-        // and still differ by whether their bulk is over the contact patch, so
-        // `yaw` spins the part about the axis that is already pointing up —
-        // it can never change which face is down, only how the silhouette
-        // sits. ?yaw= previews it the same way ?orientation= does.
+        // One field rather than a preset menu. Every part here except the
+        // vented headlight cover is served by the blank default (−90,0,0, the
+        // Z-up → Y-up conversion glTF specifies); that cover has no flat face
+        // at all — largest planar region 5% of surface, tilted 36° from the
+        // nearest axis — so no axis-aligned preset can sit it right and it
+        // needs an angle only the eye can pick.
         const axisFix = (object: THREE.Object3D) => {
-          const outer = new THREE.Group();
-          const inner = new THREE.Group();
-          if (manualRotation) {
-            outer.rotation.set(
-              (manualRotation[0] * Math.PI) / 180,
-              (manualRotation[1] * Math.PI) / 180,
-              (manualRotation[2] * Math.PI) / 180,
-            );
-          } else {
-            outer.rotation.y = (yaw * Math.PI) / 180;
-            inner.rotation.set(...(ORIENTATIONS[orientation] ?? ORIENTATIONS.fix));
-          }
-          inner.add(object);
-          outer.add(inner);
-          // Exposed so exposeModel() can fold the two rotations into one.
-          outer.userData.base = inner;
-          return outer;
+          const pivot = new THREE.Group();
+          pivot.rotation.set(
+            (rotation[0] * Math.PI) / 180,
+            (rotation[1] * Math.PI) / 180,
+            (rotation[2] * Math.PI) / 180,
+          );
+          pivot.add(object);
+          return pivot;
         };
 
         // The console handle. OrbitControls drags the *camera*, not the part,
         // so before this there was no way to see an arbitrary rotation before
         // committing to it — which is why the headlight cover went through
         // four guesses. enableDrag() hands the drag to the model itself and
-        // prints the line to save when you let go.
+        // prints the line to save when you let go. There is a single pivot
+        // carrying the whole rotation, so what is dragged is exactly what
+        // `rotation` stores — nothing to fold first.
         const exposeModel = (pivot: THREE.Object3D) => {
-          const base = pivot.userData.base as THREE.Object3D;
-
-          // Fold the preset into a single rotation first: otherwise what is
-          // dragged is a nudge *on top of* the saved orientation, and the
-          // printed line would not reproduce what is on screen.
-          const bake = () => {
-            pivot.quaternion.copy(pivot.quaternion.clone().multiply(base.quaternion));
-            base.rotation.set(0, 0, 0);
-          };
-
           const line = () => {
             const d = [pivot.rotation.x, pivot.rotation.y, pivot.rotation.z].map((r) =>
               Math.round((r * 180) / Math.PI),
@@ -434,7 +384,6 @@ if (licenceCode) {
           let last: { x: number; y: number } | null = null;
           const canvas = renderer.domElement;
           const enableDrag = () => {
-            bake();
             controls.enabled = false; // the camera would otherwise fight for it
             canvas.style.cursor = 'grab';
             canvas.addEventListener('pointerdown', (e) => {
@@ -464,7 +413,6 @@ if (licenceCode) {
 
           (window as unknown as Record<string, unknown>).__model = {
             pivot,
-            bake,
             enableDrag,
             report,
             line,

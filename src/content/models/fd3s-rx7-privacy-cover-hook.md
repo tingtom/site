@@ -4,8 +4,6 @@ slug: fd3s-rx7-privacy-cover-hook
 description: 'Replacement hooks for the rear privacy cover, attaching to the rear strut tower bar with three #6 x 8/8 Phillips truss head screws.'
 notes: Prints without supports.
 file: /models/PrivacyCoverHook.3mf
-orientation: fix
-yaw: 0
 rotation: ''
 preview: ''
 category: interior

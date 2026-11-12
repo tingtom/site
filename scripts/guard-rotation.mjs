@@ -102,8 +102,9 @@ await send('Page.navigate', { url: PAGE });
 await sleep(9000);
 const line = await evalJs(`window.__model ? __model.line() : null`);
 check('__model exists and line() returns a rotation', typeof line === 'string' && line.startsWith('rotation:'), line);
-const bakeOk = await evalJs(`(() => { try { __model.bake(); return __model.line(); } catch (e) { return 'THREW: ' + e.message; } })()`);
-check('bake() folds the preset without throwing', String(bakeOk).startsWith('rotation:'), String(bakeOk));
+// The saved rotation must round-trip: line() reads back what axisFix applied.
+const saved = await evalJs(`document.getElementById('viewer').dataset.rotation`);
+check('saved rotation reaches line() unchanged', line === `rotation: ${saved}`, `saved "${saved}" vs "${line}"`);
 const dragOk = await evalJs(`(() => { try { __model.enableDrag(); return 'enabled'; } catch (e) { return 'THREW: ' + e.message; } })()`);
 check('enableDrag() wires up without throwing', dragOk === 'enabled', String(dragOk));
 

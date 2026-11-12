@@ -4,8 +4,6 @@ slug: fd3s-headlight-covers
 description: Vented headlight lids for the FD3S, 1993–2002. Same outer shape as the OEM sealed panel with the vent cut through, so air can pass the headlight housing. Free to download and print.
 notes: ''
 file: /models/fd3s-headlight-cover-left.stl
-orientation: flip
-yaw: 90
 rotation: 110,-15,-90
 preview: /images/models/fd3s-headlight-covers.webp
 category: exterior

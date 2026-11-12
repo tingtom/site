@@ -52,26 +52,17 @@ const models = defineCollection({
     // rehosting someone else's work under a licence that may not allow it.
     // With no file the detail page skips the 3D viewer and leads with `files`.
     file: z.string().optional(),
-    // Which of four axis-aligned orientations to show. The default lays a
-    // Z-up CAD export down; scored against all 24 axis-aligned orientations
-    // by how much of the model's surface forms a flat base facing down, it is
-    // the outright best for every model here except the vented headlight
-    // cover, where every rotation about X scores 0-1% and the least-bad
-    // choice is +90° about Z. Flatness cannot decide between two equally flat
-    // faces either (the strut brace scores 44% either way up), so the field
-    // stays explicit rather than guessed.
-    orientation: z.enum(['fix', 'flip', 'side', 'asis']).default('fix'),
-    // Turn the model about the axis that is already pointing up, in degrees.
-    // Orientation chooses which face is down; yaw chooses how the part's bulk
-    // sits over that face, which is the difference between resting and
-    // balancing. For the vented headlight cover, the same face scores a 7%
-    // wide base at 0° and 48% at 90° — so the choice is worth having.
-    yaw: z.coerce.number().min(0).max(360).default(0),
-    // An explicit rotation in degrees, "x,y,z", that supersedes the two fields
-    // above. The presets only reach four axis-aligned faces plus a turn, and a
-    // part with no flat face — the vented headlight cover — may need an angle
-    // none of them expresses. Filled in from the page: ?rotate turns the drag
-    // over to the model and prints this line as you let go.
+    // How to orient the model: "x,y,z" in degrees. Left blank it means the
+    // Z-up fix (−90,0,0), because CAD exports are Z-up while three.js is
+    // Y-up — without it a part lying flat in its own file arrives standing on
+    // its edge, which is what five of the six models here needed.
+    //
+    // An explicit value supersedes that, for the parts no single axis-aligned
+    // rule can serve: the vented headlight cover has no flat face at all
+    // (largest planar region 5% of surface, tilted 36° from the nearest
+    // axis), so it needs an angle none of the presets could express. Set one
+    // from the page — ?rotate hands the drag to the model and prints this
+    // line as you let go, and ?rot= previews a value without saving it.
     rotation: z.string().default(''),
     preview: z.string().default(''),
     category: z.string().default(''),
