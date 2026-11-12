@@ -1,18 +1,20 @@
 ---
 title: Rotor knobs
 slug: fd3s-rotor-knobs
-description: >-
-  Replacement HVAC control knobs shaped like the 13B rotor.
-category: Automotive
+description: Replacement HVAC control knobs shaped like the 13B rotor.
+notes: ''
+file: /models/Rotor knobs.stl
+orientation: fix
+yaw: 0
+rotation: ''
+preview: ''
+category: interior
 downloads: 0
 credit: Watch_ME
 licence: Creative Commons — Public Domain
 source: https://www.printables.com/model/1054249-fd3s-rotor-knobs
-files:
-  - label: Download on Printables
-    href: https://www.printables.com/model/1054249-fd3s-rotor-knobs
-    note: free · cc public domain
-date: 2026-11-10
+files: []
 sections:
   - rx7
+date: 2026-11-10
 ---
