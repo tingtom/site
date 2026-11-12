@@ -99,7 +99,7 @@ if (licenceCode) {
         <div class="model-preview">
           {
             hasFile ? (
-              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-orientation={m.orientation}>
+              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-orientation={m.orientation} data-yaw={String(m.yaw)}>
                 <p class="viewer__hint">Loading 3D preview…</p>
               </div>
             ) : (
@@ -265,8 +265,14 @@ if (licenceCode) {
       if (!host) return;
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
-      // Which orientation to show this model in — see axisFix().
-      const orientation = host.dataset.orientation || 'fix';
+      // Which orientation to show this model in — see axisFix(). The query
+      // string wins over the saved value so a choice can be previewed in
+      // seconds rather than saved, committed and waited out through a deploy —
+      // which matters when the right answer is an eye decision.
+      const orientationParam = new URLSearchParams(location.search).get('orientation');
+      const orientation = orientationParam || host.dataset.orientation || 'fix';
+      const yawParam = new URLSearchParams(location.search).get('yaw');
+      const yaw = Number(yawParam !== null ? yawParam : host.dataset.yaw || 0);
 
       const THREE = await import('three');
       const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
@@ -348,11 +354,20 @@ if (licenceCode) {
           asis: [0, 0, 0], // exactly as exported
         };
 
+        // Which orientation to show, and how far to twist it about the
+        // vertical. The twist matters: two models can rest on the same face
+        // and still differ by whether their bulk is over the contact patch, so
+        // `yaw` spins the part about the axis that is already pointing up —
+        // it can never change which face is down, only how the silhouette
+        // sits. ?yaw= previews it the same way ?orientation= does.
         const axisFix = (object: THREE.Object3D) => {
-          const pivot = new THREE.Group();
-          pivot.rotation.set(...(ORIENTATIONS[orientation] ?? ORIENTATIONS.fix));
-          pivot.add(object);
-          return pivot;
+          const outer = new THREE.Group();
+          outer.rotation.y = (yaw * Math.PI) / 180;
+          const inner = new THREE.Group();
+          inner.rotation.set(...(ORIENTATIONS[orientation] ?? ORIENTATIONS.fix));
+          inner.add(object);
+          outer.add(inner);
+          return outer;
         };
 
         // Paint untextured models with the shared material, so a 3MF matches

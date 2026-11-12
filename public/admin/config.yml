@@ -104,6 +104,13 @@ collections:
           - { label: Laid down, the other way up, value: flip }
           - { label: Turned onto its side, value: side }
           - { label: Exactly as exported, value: asis }
+      - label: Turn (degrees)
+        name: yaw
+        widget: number
+        value_type: int
+        required: false
+        default: 0
+        hint: 'Spins the model about the vertical without changing which face is down — use it to stop a model balancing on a point. 0, 90, 180 and 270 are the useful values; the query string ?yaw= previews one without saving.'
       - label: Preview image
         name: preview
         widget: file

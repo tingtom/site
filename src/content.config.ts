@@ -61,6 +61,12 @@ const models = defineCollection({
     // faces either (the strut brace scores 44% either way up), so the field
     // stays explicit rather than guessed.
     orientation: z.enum(['fix', 'flip', 'side', 'asis']).default('fix'),
+    // Turn the model about the axis that is already pointing up, in degrees.
+    // Orientation chooses which face is down; yaw chooses how the part's bulk
+    // sits over that face, which is the difference between resting and
+    // balancing. For the vented headlight cover, the same face scores a 7%
+    // wide base at 0° and 48% at 90° — so the choice is worth having.
+    yaw: z.coerce.number().min(0).max(360).default(0),
     preview: z.string().default(''),
     category: z.string().default(''),
     downloads: z.number().default(0),
