@@ -11,11 +11,7 @@ downloads: 0
 credit: cs900
 licence: Creative Commons — Attribution — Noncommercial
 source: https://www.printables.com/model/1152286-fd3s-rx7-passenger-door-handle
-files:
-  - label: Download on Printables
-    file: ''
-    href: https://www.printables.com/model/1152286-fd3s-rx7-passenger-door-handle
-    note: free · cc attribution — noncommercial
+files: []
 sections:
   - rx7
 date: 2026-11-10
