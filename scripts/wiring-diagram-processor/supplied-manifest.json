@@ -1,0 +1,528 @@
+{
+  "generated": "2026-11-12T23:28:52.412Z",
+  "source": "Wiring diagram 1993 translation",
+  "counts": {
+    "supplied": 84,
+    "mapped": 83,
+    "duplicates": 1,
+    "missing": 4
+  },
+  "pages": {
+    "wiring-1993-p0094.jpg": {
+      "file": "ABS diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0093.jpg": {
+      "file": "ABS.jpg",
+      "score": 0.99,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0098.jpg": {
+      "file": "Air bag system diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0097.jpg": {
+      "file": "Air bag system.jpg",
+      "score": 0.998,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0078.jpg": {
+      "file": "Audio system type 1 diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0077.jpg": {
+      "file": "Audio system type 1.jpg",
+      "score": 0.997,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0080.jpg": {
+      "file": "Audio system type 2 diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0079.jpg": {
+      "file": "Audio system type 2.jpg",
+      "score": 0.995,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0066.jpg": {
+      "file": "Auto control system 2 diagram.jpg",
+      "score": 0.999,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0065.jpg": {
+      "file": "Auto control system 2.jpg",
+      "score": 0.965,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0064.jpg": {
+      "file": "Auto control system diagram.jpg",
+      "score": 0.996,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0063.jpg": {
+      "file": "Auto control system.jpg",
+      "score": 0.973,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0054.jpg": {
+      "file": "Backup light diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0053.jpg": {
+      "file": "Backup light.jpg",
+      "score": 0.078,
+      "rot": 0,
+      "method": "spread-partner",
+      "note": "does not correlate; placed by its “Backup light diagram” partner on the next page"
+    },
+    "wiring-1993-p0038.jpg": {
+      "file": "Combination meter_warning lights diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0037.jpg": {
+      "file": "Combination meter_warning lights.jpg",
+      "score": 0.981,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0036.jpg": {
+      "file": "Combination meter_warning lights_sensors diagram.jpg",
+      "score": 0.998,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0035.jpg": {
+      "file": "Combination meter_warning lights_sensors.jpg",
+      "score": 0.986,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0103.jpg": {
+      "file": "Connectors 1.jpg",
+      "score": 0.988,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0105.jpg": {
+      "file": "Connectors 2.jpg",
+      "score": 0.994,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0106.jpg": {
+      "file": "Connectors 3.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0034.jpg": {
+      "file": "Cooling system diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0033.jpg": {
+      "file": "Cooling system.jpg",
+      "score": 0.973,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0096.jpg": {
+      "file": "Cruise control system diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0095.jpg": {
+      "file": "Cruise control system.jpg",
+      "score": 0.995,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0102.jpg": {
+      "file": "Diagnosis connector diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0101.jpg": {
+      "file": "Diagnosis connector.jpg",
+      "score": 0.97,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0100.jpg": {
+      "file": "ELR solenoid diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0099.jpg": {
+      "file": "ELR solenoid.jpg",
+      "score": 0.999,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0030.jpg": {
+      "file": "Engine control system (sensors) - 1 diagram.jpg",
+      "score": 0.997,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0029.jpg": {
+      "file": "Engine control system (sensors) - 1.jpg",
+      "score": 0.97,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0032.jpg": {
+      "file": "Engine control system (sensors) diagram.jpg",
+      "score": 0.998,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0031.jpg": {
+      "file": "Engine control system (sensors).jpg",
+      "score": 0.975,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0040.jpg": {
+      "file": "Front wiper_washer diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0039.jpg": {
+      "file": "Front wiper_washer.jpg",
+      "score": 0.993,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0108.jpg": {
+      "file": "Fuse box and CPU 2.jpg",
+      "score": 0.981,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0057.jpg": {
+      "file": "Heater and air con 2.jpg",
+      "score": 0.979,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0059.jpg": {
+      "file": "Heater and air con 3.jpg",
+      "score": 0.996,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0058.jpg": {
+      "file": "Heater and air con diagram 2.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0060.jpg": {
+      "file": "Heater and air con diagram 3.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0056.jpg": {
+      "file": "Heater and air con diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0055.jpg": {
+      "file": "Heater and air con.jpg",
+      "score": 0.15,
+      "rot": 0,
+      "method": "spread-partner",
+      "note": "does not correlate; placed by its “Heater and air con diagram” partner on the next page"
+    },
+    "wiring-1993-p0062.jpg": {
+      "file": "Heater_air con diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0061.jpg": {
+      "file": "Heater_air con.jpg",
+      "score": 0.994,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0028.jpg": {
+      "file": "Ignition_fuel_engine control diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0027.jpg": {
+      "file": "Ignition_fuel_engine control.jpg",
+      "score": 0.959,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0074.jpg": {
+      "file": "Illumination lights diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0073.jpg": {
+      "file": "Illumination lights.jpg",
+      "score": 0.993,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0076.jpg": {
+      "file": "Key_Room illumination diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0075.jpg": {
+      "file": "Key_Room illumination.jpg",
+      "score": 0.975,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0082.jpg": {
+      "file": "Power antenna diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0081.jpg": {
+      "file": "Power antenna.jpg",
+      "score": 0.998,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0088.jpg": {
+      "file": "Power door lock system diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0087.jpg": {
+      "file": "Power door lock system.jpg",
+      "score": 0.978,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0086.jpg": {
+      "file": "Power windows diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0085.jpg": {
+      "file": "Power windows.jpg",
+      "score": 0.963,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0072.jpg": {
+      "file": "Rear defroster_lighter diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0071.jpg": {
+      "file": "Rear defroster_lighter.jpg",
+      "score": 0.996,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0048.jpg": {
+      "file": "Rear lights, cargo light diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0047.jpg": {
+      "file": "Rear lights, cargo light.jpg",
+      "score": 0.981,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0042.jpg": {
+      "file": "Rear wiper and motor diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0041.jpg": {
+      "file": "Rear wiper and motor.jpg",
+      "score": 0.995,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0090.jpg": {
+      "file": "Remove control door mirrors diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0089.jpg": {
+      "file": "Remove control door mirrors.jpg",
+      "score": 0.998,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0044.jpg": {
+      "file": "Retract system diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0043.jpg": {
+      "file": "Retract system.jpg",
+      "score": 0.151,
+      "rot": 0,
+      "method": "spread-partner",
+      "note": "does not correlate; placed by its “Retract system diagram” partner on the next page"
+    },
+    "wiring-1993-p0068.jpg": {
+      "file": "Shift lock system diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0067.jpg": {
+      "file": "Shift lock system.jpg",
+      "score": 0.993,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0026.jpg": {
+      "file": "Starter_alternator diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0025.jpg": {
+      "file": "Starter_alternator.jpg",
+      "score": 0.98,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0052.jpg": {
+      "file": "Stop light diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0051.jpg": {
+      "file": "Stop light.jpg",
+      "score": 0.994,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0092.jpg": {
+      "file": "Sunroof diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0091.jpg": {
+      "file": "Sunroof.jpg",
+      "score": 0.983,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0084.jpg": {
+      "file": "TEL adapter diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0083.jpg": {
+      "file": "TEL adapter.jpg",
+      "score": 0.999,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0046.jpg": {
+      "file": "TNS_Headlight_front fog diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0045.jpg": {
+      "file": "TNS_Headlight_front fog.jpg",
+      "score": 0.984,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0050.jpg": {
+      "file": "Turn signals diagram.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0049.jpg": {
+      "file": "Turn signals.jpg",
+      "score": 0.12,
+      "rot": 0,
+      "method": "spread-partner",
+      "note": "does not correlate; placed by its “Turn signals diagram” partner on the next page"
+    },
+    "wiring-1993-p0069.jpg": {
+      "file": "Wiring diagram 1993_page-0069.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0070.jpg": {
+      "file": "Wiring diagram 1993_page-0070.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    },
+    "wiring-1993-p0107.jpg": {
+      "file": "Wiring diagram 1993_page-0107.jpg",
+      "score": 1,
+      "rot": 0,
+      "method": "correlation"
+    }
+  },
+  "duplicates": [
+    {
+      "file": "Ignition_fuel_engine control(1).jpg",
+      "duplicateOf": "Ignition_fuel_engine control.jpg",
+      "page": "wiring-1993-p0027.jpg"
+    }
+  ],
+  "missing": [
+    "wiring-1993-p0019.jpg",
+    "wiring-1993-p0020.jpg",
+    "wiring-1993-p0022.jpg",
+    "wiring-1993-p0024.jpg"
+  ],
+  "unmatched": []
+}
