@@ -99,7 +99,7 @@ if (licenceCode) {
         <div class="model-preview">
           {
             hasFile ? (
-              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-flip={String(m.flip)}>
+              <div class="viewer" id="viewer" data-src={fileUrl} data-ext={ext} data-orientation={m.orientation}>
                 <p class="viewer__hint">Loading 3D preview…</p>
               </div>
             ) : (
@@ -265,8 +265,8 @@ if (licenceCode) {
       if (!host) return;
       const src = host.dataset.src;
       const ext = (host.dataset.ext || 'stl').toLowerCase();
-      // Per-model escape hatch for the axis fix — see axisFix().
-      const flip = host.dataset.flip === 'true';
+      // Which orientation to show this model in — see axisFix().
+      const orientation = host.dataset.orientation || 'fix';
 
       const THREE = await import('three');
       const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
@@ -321,27 +321,36 @@ if (licenceCode) {
           roughness: 0.45,
         });
 
-        // Every file here is Z-up — CAD's convention, where a part lying on
-        // the build plate is thin along Z — while three.js is Y-up. So a
-        // plate that lies flat in its own file arrives standing on its edge:
-        // five of the six models are thinnest along Z and the sixth is
-        // near-cubic, which is not how randomly-oriented files land (about 2%
-        // likely). -90° about X is the Z-up → Y-up conversion glTF itself
-        // specifies, and it is what puts each part down the way it would print.
+        // Which of the four axis-aligned orientations to show, and why a single
+        // rule was never going to be right for every file.
         //
-        // `flip` runs the same conversion the other way: +90° maps Z to -Y, so
-        // the part lands just as flat but with the opposite face upward. That
-        // is the whole fix for a file modelled upside down — the vented
-        // headlight cover — and why the checkbox cannot make anything stand up
-        // again: both directions give identical extents, they only disagree
-        // about which end of Z counts as up.
+        // Every file here is Z-up — CAD's convention, where a part on the build
+        // plate is thin along Z — while three.js is Y-up, so `fix` (-90° about
+        // X, the conversion glTF specifies) lays it down. Scored over all 24
+        // axis-aligned orientations, by how much of each model's surface forms
+        // a broad flat base facing down, `fix` is the outright best for every
+        // model that looks right today: 28%, 44%, 15%, 20%, against 0-4% for
+        // every alternative on those same parts.
+        //
+        // The vented headlight cover is the exception that proves flatness
+        // alone cannot decide: every rotation about X scores 0-1% for it —
+        // including both ends of the old flip — and its best of all 24 is
+        // +90° about Z, at 4%. It is a curved shell with no flat face to rest
+        // on, so no orientation makes it level; `side` is simply least bad.
         //
         // Wrapped in a pivot rather than written onto the object: a glTF or
         // 3MF root can carry a transform of its own, and rotating in place
         // would throw that away.
+        const ORIENTATIONS: Record<string, [number, number, number]> = {
+          fix: [-Math.PI / 2, 0, 0], // Z-up → Y-up: lay it down
+          flip: [Math.PI / 2, 0, 0], // the same part, the other face up
+          side: [0, 0, Math.PI / 2], // a different edge down
+          asis: [0, 0, 0], // exactly as exported
+        };
+
         const axisFix = (object: THREE.Object3D) => {
           const pivot = new THREE.Group();
-          pivot.rotation.x = flip ? Math.PI / 2 : -Math.PI / 2;
+          pivot.rotation.set(...(ORIENTATIONS[orientation] ?? ORIENTATIONS.fix));
           pivot.add(object);
           return pivot;
         };

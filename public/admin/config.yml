@@ -93,12 +93,17 @@ collections:
         hint: 'STL, 3MF, OBJ, GLB or glTF — uploaded to public/models'
         media_folder: /public/models
         public_folder: /models
-      - label: Flip model
-        name: flip
-        widget: boolean
+      - label: Model orientation
+        name: orientation
+        widget: select
         required: false
-        default: false
-        hint: 'Ticks when the Z-up fix leaves this part upside down. It stays lying flat either way — only which face is up changes, so this cannot make a model stand up again.'
+        default: fix
+        hint: 'How to show this model. The default lays a Z-up CAD export down, and is correct for almost everything — check it only if a model arrives upside down or on edge.'
+        options:
+          - { label: Laid down (default), value: fix }
+          - { label: Laid down, the other way up, value: flip }
+          - { label: Turned onto its side, value: side }
+          - { label: Exactly as exported, value: asis }
       - label: Preview image
         name: preview
         widget: file

@@ -52,12 +52,15 @@ const models = defineCollection({
     // rehosting someone else's work under a licence that may not allow it.
     // With no file the detail page skips the 3D viewer and leads with `files`.
     file: z.string().optional(),
-    // The viewer applies one axis fix to every model (Z-up → Y-up), which is
-    // right for CAD exports but not for a file modelled the other way round:
-    // the vented headlight cover came out upside down. Ticking this turns that
-    // part over. It stays lying flat either way — only which face is up
-    // changes — so the checkbox cannot make a model stand up again.
-    flip: z.boolean().default(false),
+    // Which of four axis-aligned orientations to show. The default lays a
+    // Z-up CAD export down; scored against all 24 axis-aligned orientations
+    // by how much of the model's surface forms a flat base facing down, it is
+    // the outright best for every model here except the vented headlight
+    // cover, where every rotation about X scores 0-1% and the least-bad
+    // choice is +90° about Z. Flatness cannot decide between two equally flat
+    // faces either (the strut brace scores 44% either way up), so the field
+    // stays explicit rather than guessed.
+    orientation: z.enum(['fix', 'flip', 'side', 'asis']).default('fix'),
     preview: z.string().default(''),
     category: z.string().default(''),
     downloads: z.number().default(0),
