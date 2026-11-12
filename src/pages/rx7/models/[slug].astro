@@ -308,6 +308,69 @@ if (licenceCode) {
         // it — only the direction.
         const START_DIR = new THREE.Vector3(-0.54, 0.64, 0.54).normalize();
 
+        // The site's material for a part with no colour of its own. STL
+        // carries none, so it always got this; formats that *do* carry one
+        // were left untouched, which is why the strut brace guard — the only
+        // 3MF here — rendered the file's grey and sat on the grid as the one
+        // model that didn't match the others.
+        const accentMaterial = new THREE.MeshStandardMaterial({
+          color: 0xef4444,
+          metalness: 0.25,
+          roughness: 0.45,
+        });
+
+        // Every file here is Z-up — CAD's convention, where a part lying on
+        // the build plate is thin along Z — while three.js is Y-up. So a
+        // plate that lies flat in its own file arrives standing on its edge:
+        // five of the six models are thinnest along Z and the sixth is
+        // near-cubic, which is not how randomly-oriented files land. -90°
+        // about X is the Z-up → Y-up conversion glTF itself specifies, and
+        // it is what puts each part down the way it would print.
+        //
+        // Wrapped in a pivot rather than written onto the object: a glTF or
+        // 3MF root can carry a transform of its own, and rotating in place
+        // would throw that away.
+        const axisFix = (object: THREE.Object3D) => {
+          const pivot = new THREE.Group();
+          pivot.rotation.x = -Math.PI / 2;
+          pivot.add(object);
+          return pivot;
+        };
+
+        // Paint untextured models with the shared material, so a 3MF matches
+        // the STL beside it. Two things are worth preserving rather than
+        // painting over: a texture, and vertex colours that actually vary.
+        // A file that declares one flat grey over every vertex carries no
+        // more information than an STL does — and that is exactly how the
+        // strut brace guard arrives (#A0A0A0 on every vertex), which is why
+        // it sat on the grid as the only grey model beside five red ones.
+        const coloursVary = (geometry: THREE.BufferGeometry) => {
+          const attr = geometry.getAttribute('color');
+          // three.js writes vertex colours as RGB or RGBA. Anything thinner
+          // isn't something this viewer could have shown faithfully anyway,
+          // so there is nothing here worth preserving.
+          if (!attr || attr.itemSize < 3 || attr.count === 0) return false;
+          const [r0, g0, b0] = [attr.getX(0), attr.getY(0), attr.getZ(0)];
+          for (let i = 1; i < attr.count; i++) {
+            if (attr.getX(i) !== r0 || attr.getY(i) !== g0 || attr.getZ(i) !== b0) return true;
+          }
+          return false;
+        };
+
+        const recolour = (root: THREE.Object3D) => {
+          root.traverse((child) => {
+            if (!(child as THREE.Mesh).isMesh) return;
+            const mesh = child as THREE.Mesh;
+            const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            const hasTexture = materials.some((m) =>
+              Boolean((m as THREE.MeshStandardMaterial).map),
+            );
+            const hasDetail =
+              materials.some((m) => m.vertexColors) && coloursVary(mesh.geometry);
+            if (!hasTexture && !hasDetail) mesh.material = accentMaterial;
+          });
+        };
+
         // The floor. A fixed 200-unit grid was six times the trunk clip and
         // *smaller* than the headlight cover, so on the big parts the model
         // sat on a patch of grid floating inside itself. Size it from the
@@ -363,16 +426,9 @@ if (licenceCode) {
           geometry.computeVertexNormals();
           geometry.center();
 
-          const mesh = new THREE.Mesh(
-            geometry,
-            new THREE.MeshStandardMaterial({
-              color: 0xef4444,
-              metalness: 0.25,
-              roughness: 0.45,
-            }),
-          );
-          scene.add(mesh);
-          fit(new THREE.Box3().setFromObject(mesh));
+          const pivot = axisFix(new THREE.Mesh(geometry, accentMaterial));
+          scene.add(pivot);
+          fit(new THREE.Box3().setFromObject(pivot));
         };
 
         // glTF, 3MF and OBJ all arrive as a Group rather than a bare geometry,
@@ -381,16 +437,19 @@ if (licenceCode) {
         // GLTFLoader and simply failed — which is how 3MF, common on
         // Printables, ended up unpreviewable.
         const frame = (object) => {
-          const box = new THREE.Box3().setFromObject(object);
-          const center = box.getCenter(new THREE.Vector3());
-          object.position.sub(center);
-          scene.add(object);
+          const pivot = axisFix(object);
+          scene.add(pivot);
 
-          // Shift the box by the same amount, so fit() sees it in the
-          // coordinates the camera will actually look at.
-          box.min.sub(center);
-          box.max.sub(center);
-          fit(box);
+          // Centre the whole assembly on the origin. An exported scene sits
+          // wherever its exporter left it, and both the orbit target and the
+          // floor are derived from the origin. The box is recomputed after
+          // the move rather than shifted by hand — setFromObject() refreshes
+          // world matrices, so it picks up the pivot's rotation as well.
+          const box = new THREE.Box3().setFromObject(pivot);
+          pivot.position.sub(box.getCenter(new THREE.Vector3()));
+
+          recolour(pivot);
+          fit(new THREE.Box3().setFromObject(pivot));
         };
 
         const onError = () => fail(host);
