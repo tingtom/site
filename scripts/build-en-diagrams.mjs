@@ -99,9 +99,15 @@ for (const { page, entry } of todo) {
   const out = path.join(OUT, page);
   await sharp(src)
     .rotate() // apply EXIF if present; the tight-crop scans carry none
-    // longest edge 1800, matching view/: the four tight-cropped supplies are
-    // portrait, and sizing them by width alone would have made them 1800×2600
-    // and heavier than the scan they replace.
+    // Longest edge 1800 at quality 78, the same recipe as view/.
+    //
+    // Deliberately not tuned per page to match the weight of the Japanese
+    // scan it replaces: four supplied scans are tight crops of the drawing
+    // with no white margins, so they put far more ink in every pixel and even
+    // quality 58 could not bring them under the full-page scan (p0049: 163 KB
+    // against 138 KB). Buying those bytes back would have meant visibly
+    // degrading dense line art that people zoom into, to save at most 84 KB on
+    // four pages of 87 — the four are named in the task notes instead.
     .resize({ width: 1800, height: 1800, fit: 'inside', withoutEnlargement: true })
     .jpeg({ quality: 78, progressive: true, mozjpeg: true })
     .toFile(out);
