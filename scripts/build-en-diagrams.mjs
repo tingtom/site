@@ -5,8 +5,10 @@
  *
  * The supplied scans (`scripts/wiring-diagram-processor/.source/…zip`, kept out
  * of git because they are 195 MB) are matched to page numbers by
- * `wiring-diagram-processor/build-manifest.mjs`. This turns that manifest into
- * something the site can serve:
+ * `wiring-diagram-processor/build-manifest.mjs`. Pages the author's set does
+ * not cover take the machine pipeline instead: drop its full-size output at
+ * `.source/machine/<page>.jpg` and this picks it up as `machine`, never
+ * `supplied`. This turns that manifest into something the site can serve:
  *
  *   public/diagrams/en/<page>.jpg   ~1800 px wide, the figure on the page
  *   public/diagrams/en/sizes.json   intrinsic sizes, so the box is reserved
@@ -25,6 +27,7 @@ import {
   readFileSync,
   readdirSync,
   statSync,
+  unlinkSync,
   writeFileSync,
 } from 'node:fs';
 import path from 'node:path';
@@ -70,11 +73,28 @@ const sizes = {};
 const provenance = {};
 let bytes = 0;
 
-for (const [page, entry] of Object.entries(manifest.pages)) {
-  const src = path.join(DIR_OF_FILES, entry.file);
+// Pages the author did not cover get the machine pipeline instead; its raw
+// output lands beside the supplied scans (gitignored, full size) and is sized
+// the same way here. `provenance` records which is which so the page can say
+// "Machine-translated" rather than implying the same hands made both.
+const MACHINE = path.join(ZIP, 'machine');
+const todo = [
+  ...Object.entries(manifest.pages).map(([page, entry]) => ({ page, entry })),
+  ...(manifest.missing ?? []).map((page) => ({ page, entry: null })),
+];
+
+for (const { page, entry } of todo) {
+  const supplied = entry ? path.join(DIR_OF_FILES, entry.file) : null;
+  const machine = path.join(MACHINE, page);
+  const isMachine = supplied === null || !existsSync(supplied);
+  const src = isMachine ? machine : supplied;
   if (!exists(src)) {
-    console.error(`  missing supplied file: ${entry.file}`);
-    process.exit(1);
+    console.error(
+      isMachine
+        ? `  still Japanese: ${page} — run translate-one.mjs for it`
+        : `  no source: supplied "${entry.file}" for ${page}`,
+    );
+    continue;
   }
   const out = path.join(OUT, page);
   await sharp(src)
@@ -87,25 +107,45 @@ for (const [page, entry] of Object.entries(manifest.pages)) {
     .toFile(out);
   const meta = await sharp(out).metadata();
   sizes[page] = { w: meta.width, h: meta.height };
-  // Every page in `pages` came from the author's own translations, whether it
-  // was placed by correlation or by its spread partner; `method` records which,
-  // `provenance` records what a reader should be told.
-  provenance[page] = 'supplied';
+  // Every page in `pages` came from a translation of its own, placed either by
+  // correlation or by its spread partner; `method` records which, `provenance`
+  // records whose hands a reader should be told about.
+  provenance[page] = isMachine ? 'machine' : 'supplied';
   bytes += statSync(out).size;
-  if (entry.method === 'spread-partner') console.log(`  ${page} ← ${entry.file} (spread partner)`);
+  if (entry?.method === 'spread-partner') console.log(`  ${page} ← ${entry.file} (spread partner)`);
+  if (isMachine) console.log(`  ${page} ← machine pipeline`);
+}
+
+// A page whose machine output is deleted must not keep serving the old
+// derivative: rebuild the directory from exactly what this run produced.
+const produced = new Set(Object.keys(sizes));
+for (const f of readdirSync(OUT).filter((f) => f.endsWith('.jpg'))) {
+  if (!produced.has(f)) {
+    unlinkSync(path.join(OUT, f));
+    console.log(`  removed stale en/${f}`);
+  }
 }
 
 // Pages nobody has translated yet stay Japanese; the provenance record says so
-// rather than leaving the reader to wonder.
-const missing = manifest.missing ?? [];
-for (const page of missing) provenance[page] = 'none';
+// rather than leaving the reader to wonder. `??=` because a page that just got
+// a machine translation keeps that fact instead.
+for (const page of manifest.missing ?? []) provenance[page] ??= 'none';
 // A duplicate supplied file covers a page already handled above.
 
 writeFileSync(path.join(OUT, 'sizes.json'), `${JSON.stringify(sizes, null, 2)}\n`);
 writeFileSync(path.join(OUT, 'provenance.json'), `${JSON.stringify(provenance, null, 2)}\n`);
 
-const count = Object.keys(manifest.pages).length;
+const still = Object.entries(provenance)
+  .filter(([, v]) => v === 'none')
+  .map(([k]) => k);
+const machine = Object.entries(provenance)
+  .filter(([, v]) => v === 'machine')
+  .map(([k]) => k);
 console.log(
-  `en: ${count} pages → ${kb(bytes)} of English derivatives, ${missing.length} still Japanese (${missing.join(' ') || 'none'})`,
+  `en: ${produced.size} pages → ${kb(bytes)} of English derivatives` +
+    (machine.length
+      ? `, ${machine.length} of them machine-translated (${machine.join(' ')})`
+      : ', none machine-translated') +
+    (still.length ? `, ${still.length} still Japanese (${still.join(' ')})` : ', none still Japanese'),
 );
 console.log(`written to public/diagrams/en/`);

@@ -10,3 +10,4 @@ __pycache__/
 
 # Supplied translation scans: 195 MB of 4559×3508 JPEGs, kept out of git.
 scripts/wiring-diagram-processor/.source/
+scripts/wiring-diagram-processor/.work/

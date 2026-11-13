@@ -10,6 +10,8 @@
     "check": "astro check",
     "render-previews": "node scripts/render-model-previews.mjs",
   "diagrams:en": "node scripts/build-en-diagrams.mjs",
+  "diagrams:manifest": "node scripts/wiring-diagram-processor/build-manifest.mjs",
+  "diagrams:machine": "node scripts/wiring-diagram-processor/translate-uncovered.mjs",
   "guard:diagrams": "node scripts/guard-diagrams.mjs"
   },
   "dependencies": {

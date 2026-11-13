@@ -38,6 +38,53 @@ Options:
 
 Cost for the full set of 87: **about $0.07**.
 
+## English scans: end to end
+
+The metadata above makes pages findable; this half makes them readable. The
+site serves `public/diagrams/en/<page>.jpg` in front of the Japanese original
+when one exists, so the whole job is producing those files and recording where
+each came from.
+
+```bash
+# 1. tie the author's hand-translated scans to page numbers
+npm run diagrams:manifest -- "<dir holding the supplied translated jpgs>"
+#    → supplied-manifest.json, and page-map.json for step 4
+
+# 2. machine-translate whatever the set does not cover — one command
+export OPENCODE_API_KEY=<your OpenCode Go key>
+npm run diagrams:machine
+#    reads the manifest, skips pages already translated, runs one page per
+#    work dir, logs each run to scripts/wiring-diagram-processor/runs/,
+#    then rebuilds what step 3 would have rebuilt
+#    (--force redoes them; the four harness pages: p0019 p0020 p0022 p0024)
+
+# 3. build what the site serves, then check the three agree
+npm run diagrams:en      # → en/*.jpg + sizes.json + provenance.json
+npm run guard:diagrams   # content ↔ disk ↔ provenance ↔ built HTML
+
+# 4. re-derive placement and size from the author's examples (optional)
+#    → measure.json beside page-map.json, the numbers draw.py is built on
+PATH=/opt/node22/bin:$PATH node scripts/wiring-diagram-processor/measure.mjs \
+  "<dir holding the supplied translated jpgs>" public/diagrams \
+  scripts/wiring-diagram-processor/measure.json
+```
+
+Step 1 is only needed when the supplied set changes. Step 2's output is
+gitignored full-size; step 3 resizes it to a longest edge of 1800, matching
+`view/`, and records provenance as `supplied` or `machine` — the diagram page
+labels the figure accordingly, so a generated translation is never passed off
+as a reviewed one. Pages with neither are still Japanese and say so. Step 4
+reproduces the numbers the drawing code was tuned against; see
+[`runs/summary.md`](runs/summary.md) for what the machine runs actually did.
+
+`translate-one.mjs` runs a convergence loop: extract labels, draw them with
+`draw.py`, verify the *drawn* result quadrant by quadrant for Japanese that
+survived, merge what it found, and redraw from the original scan so nothing
+compounds. Two clean verification passes in a row end it (max six rounds).
+Each round prints what `draw.py` declined and why — declined labels are not
+failures, they are boxes that need re-thinking, and the report file beside the
+output says which.
+
 ## Endpoint notes
 
 `https://opencode.ai/inference/go/openai/v1/chat/completions` needs two things

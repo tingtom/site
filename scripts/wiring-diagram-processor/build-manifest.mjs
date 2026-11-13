@@ -124,6 +124,19 @@ const manifest = {
 };
 writeFileSync(OUT, JSON.stringify(manifest, null, 2) + '\n');
 
+// `measure.mjs` needs translated-filename → original-filename, and would
+// otherwise have to be given one by hand: write it beside the manifest it was
+// derived from, so the two cannot disagree.
+const PAGE_MAP = path.join(import.meta.dirname, 'page-map.json');
+writeFileSync(
+  PAGE_MAP,
+  JSON.stringify(
+    Object.fromEntries(Object.entries(pages).map(([page, v]) => [v.file, page])),
+    null,
+    2,
+  ) + '\n',
+);
+
 console.log(`supplied ${files.length} · mapped ${manifest.counts.mapped} · duplicates ${duplicates.length} · missing ${missing.length}`);
 if (duplicates.length) for (const d of duplicates) console.log('  duplicate', d.file, '→ same page as', d.duplicateOf);
 if (missing.length) console.log('  missing:', missing.join(' '));
