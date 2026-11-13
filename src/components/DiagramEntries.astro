@@ -1,0 +1,76 @@
+---
+/**
+ * One sidebar list of diagram entries.
+ *
+ * Entries that have a located region on the scan render as links: the href
+ * points at that region's id, so clicking an entry scrolls to and focuses the
+ * box on the drawing even with JavaScript unavailable. Entries without a
+ * region stay plain text — a link to nowhere would be worse than no link.
+ */
+interface Props {
+  items: string[];
+  kind: 'component' | 'connector' | 'ecuPin';
+  anchors: Record<string, string>;
+  regionAnchors: Record<string, string>;
+}
+
+const { items, kind, anchors, regionAnchors } = Astro.props;
+
+// The same name can appear in more than one list (a connector and an ECU pin,
+// say). Only the occurrence that owns the anchor becomes a link: a second link
+// to the same region would give the page two identical destinations and make
+// the sidebar look like it lists the same thing twice.
+const rows = items.map((v, i) => {
+  const id = anchors[v] === `entry-${kind}-${i}` ? anchors[v] : null;
+  return { v, id, href: id ? regionAnchors[v] : null };
+});
+---
+
+<ul class="entries">
+  {
+    rows.map(({ v, id, href }) => (
+      <li>
+        {href ? (
+          <a class="entry-link" id={id} href={`#${href}`} data-region={v} aria-label={`${v} — show on the diagram`}>
+            {v}
+          </a>
+        ) : (
+          v
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .entries {
+    list-style: none;
+    margin: 0;
+    padding: 0.65rem 0.8rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    display: grid;
+    gap: 0.3rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .entry-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+    /* the sticky page header must not cover a jumped-to entry */
+    scroll-margin-top: 5rem;
+    border-radius: 2px;
+  }
+
+  .entry-link:hover,
+  .entry-link:focus-visible,
+  .entry-link.is-marked,
+  .entry-link:target {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-bottom-color: currentColor;
+  }
+</style>

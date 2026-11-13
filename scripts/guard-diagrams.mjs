@@ -31,14 +31,29 @@ const entries = readdirSync(CONTENT).filter((f) => f.endsWith('.md'));
 const enSizes = JSON.parse(readFileSync(path.join(EN, 'sizes.json'), 'utf8'));
 const provenance = JSON.parse(readFileSync(path.join(EN, 'provenance.json'), 'utf8'));
 
-// 1. every image named in content exists on disk
+// 1. every image named in content exists on disk, and each page's entry names
+//    are recorded for the region checks below
 let missing = [];
+const contentByPage = new Map();
+const listOf = (text, key) => {
+  const line = text.split('\n').find((l) => l.startsWith(`${key}:`));
+  if (!line) return [];
+  try {
+    const v = JSON.parse(line.slice(key.length + 1).trim());
+    return Array.isArray(v) ? v.filter((s) => typeof s === 'string') : [];
+  } catch {
+    return [];
+  }
+};
 for (const f of entries) {
   const text = readFileSync(path.join(CONTENT, f), 'utf8');
-  const line = text.split('\n').find((l) => l.startsWith('images:'));
-  if (!line) continue;
-  for (const m of line.matchAll(/"([^"]+)"/g)) {
-    if (!existsSync(path.join(DIAGRAMS, m[1]))) missing.push(`${f} → ${m[1]}`);
+  const images = listOf(text, 'images');
+  const slugLine = text.split('\n').find((l) => l.startsWith('slug:'));
+  const pageSlug = slugLine ? slugLine.slice('slug:'.length).trim().replace(/^["']|["']$/g, '') : f.replace(/\.md$/, '');
+  const names = new Set([...listOf(text, 'components'), ...listOf(text, 'connectors'), ...listOf(text, 'ecuPins')]);
+  for (const img of images) {
+    if (!existsSync(path.join(DIAGRAMS, img))) missing.push(`${f} → ${img}`);
+    contentByPage.set(img.split('/').pop(), { slug: pageSlug, names, file: f });
   }
 }
 missing.length ? missing.forEach(fail) : ok(`${entries.length} content entries, every image on disk`);
@@ -82,6 +97,88 @@ if (!existsSync(DIST)) {
     if (!/original Japanese scan|full resolution/.test(html)) fail(`${slug}: no link back to the original scan`);
   }
   ok(`${pages.length} built pages, ${translated} showing English, all with an original-scan link`);
+}
+
+// 5. region data is valid, names something the sidebar lists, and reaches the
+//    built page — the three have to agree or a box highlights the wrong entry
+const REGIONS = path.join(ROOT, 'src/data/diagram-regions.json');
+let regionData = {};
+try {
+  regionData = JSON.parse(readFileSync(REGIONS, 'utf8'));
+} catch {
+  fail('src/data/diagram-regions.json is missing or not JSON');
+}
+
+const KINDS = ['component', 'connector', 'ecuPin'];
+let regionCount = 0;
+let pagesWithRegions = 0;
+const regionPages = [];
+for (const [page, record] of Object.entries(regionData)) {
+  const entry = contentByPage.get(page);
+  if (!entry) {
+    fail(`${page}: region data for a page no content entry shows`);
+    continue;
+  }
+  const measured = record.measured;
+  if (!measured || !(measured.w > 0) || !(measured.h > 0)) {
+    fail(`${page}: no measured image size — fractions cannot be checked`);
+  }
+  if (!existsSync(path.join(EN, page))) {
+    fail(`${page}: regions point at a page with no English scan (text the reader cannot read)`);
+  }
+  const regions = Array.isArray(record.regions) ? record.regions : [];
+  if (!regions.length) fail(`${page}: region data with no regions`);
+  const seen = new Set();
+  for (const r of regions) {
+    regionCount++;
+    if (typeof r.label !== 'string' || !r.label.trim()) {
+      fail(`${page}: region with no label`);
+      continue;
+    }
+    if (seen.has(r.label)) fail(`${page}: "${r.label}" has more than one box`);
+    seen.add(r.label);
+    if (!KINDS.includes(r.kind)) fail(`${page}/"${r.label}": kind "${r.kind}" is not one of ${KINDS.join(', ')}`);
+    const frac = ['x', 'y', 'w', 'h'].every((k) => typeof r[k] === 'number' && Number.isFinite(r[k]));
+    if (!frac) {
+      fail(`${page}/"${r.label}": coordinates are not numbers`);
+      continue;
+    }
+    if (r.x < 0 || r.y < 0 || r.w <= 0 || r.h <= 0) fail(`${page}/"${r.label}": box has no area`);
+    if (r.x + r.w > 1.002 || r.y + r.h > 1.002) fail(`${page}/"${r.label}": box escapes the image`);
+    if (r.w < 0.0035 || r.h < 0.0035) fail(`${page}/"${r.label}": box too small to hit (${r.w}×${r.h})`);
+    if (!entry.names.has(r.label)) fail(`${page}/"${r.label}": not an entry in ${entry.file}`);
+  }
+  pagesWithRegions++;
+  regionPages.push({ page, slug: entry.slug, count: regions.length, labels: [...seen] });
+}
+if (regionCount) {
+  ok(`${pagesWithRegions} pages, ${regionCount} regions — all fractions, all naming a sidebar entry`);
+} else {
+  ok('no region data yet — every diagram page stays static');
+}
+
+// 6. each region page renders one box per region, linked both ways, and the
+//    image is not wrapped in an anchor (a link inside a link is invalid)
+for (const { page, slug, count, labels } of regionPages) {
+  const file = path.join(DIST, slug, 'index.html');
+  if (!existsSync(file)) {
+    fail(`${page}: no built page at dist/rx7/diagrams/${slug}`);
+    continue;
+  }
+  const html = readFileSync(file, 'utf8');
+  const boxes = (html.match(/class="region"/g) ?? []).length;
+  if (boxes !== count) fail(`${page}: ${count} regions in data, ${boxes} boxes built`);
+  const unlinked = labels.filter((l) => !html.includes(`data-region="${l}"`));
+  unlinked.slice(0, 3).forEach((l) => fail(`${page}: "${l}" never reached the page`));
+  const figure = html.slice(html.indexOf('<figure class="diagram-figure'), html.indexOf('</figure>'));
+  if (/<a[^>]*>\s*<img/.test(figure)) fail(`${page}: image is still wrapped in an anchor on a region page`);
+  const entryLinks = (html.match(/class="entry-link"/g) ?? []).length;
+  if (entryLinks !== new Set(labels).size) {
+    fail(`${page}: ${new Set(labels).size} entries have regions, ${entryLinks} entry links built`);
+  }
+}
+if (regionPages.length) {
+  ok(`${regionPages.length} built pages carry their regions, entries linked both ways`);
 }
 
 console.log(failures ? `\n${failures} FAILED` : '\nDIAGRAM GUARD PASS');

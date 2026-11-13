@@ -67,6 +67,11 @@ npm run guard:diagrams   # content ↔ disk ↔ provenance ↔ built HTML
 PATH=/opt/node22/bin:$PATH node scripts/wiring-diagram-processor/measure.mjs \
   "<dir holding the supplied translated jpgs>" public/diagrams \
   scripts/wiring-diagram-processor/measure.json
+
+# 5. locate the sidebar entries on each scan (optional, additive)
+export OPENCODE_API_KEY=<your OpenCode Go key>
+npm run diagrams:regions         # ← every page; --only p0022, --limit N, --force, --dry
+#    → src/data/diagram-regions.json, proof overlays in .work/regions/
 ```
 
 Step 1 is only needed when the supplied set changes. Step 2's output is
@@ -84,6 +89,44 @@ compounds. Two clean verification passes in a row end it (max six rounds).
 Each round prints what `draw.py` declined and why — declined labels are not
 failures, they are boxes that need re-thinking, and the report file beside the
 output says which.
+
+### Region capture
+
+`locate-regions.mjs` is what lets a diagram page answer "what is this plug /
+box / wire?" — it gives the sidebar entries somewhere to point at. One page at
+a time, it shows the model the **English** scan (the page the reader actually
+sees — a box over Japanese text names something they cannot read, so pages
+still in Japanese are skipped) and that page's `components` / `connectors` /
+`ecuPins`, then asks where each one is drawn. The drawing often prints a
+shorter form than the metadata — `Starter` for `Starter Motor`, `ABS(4WAS)` for
+`ABS System` — and the prompt says that still counts.
+
+Coordinates are divided by the image size before writing, so
+`src/data/diagram-regions.json` stores fractions:
+
+```json
+"wiring-1993-p0022.jpg": {
+  "measured": { "w": 1800, "h": 1385 },
+  "model": "glm-5.3-flash",
+  "regions": [
+    { "label": "Fuel Pump", "kind": "component", "x": 0.0656, "y": 0.2563, "w": 0.0611, "h": 0.0116 }
+  ]
+}
+```
+
+Fractions are the contract, not pixels: four pages are tight portrait crops
+(1235x1800) while the rest are landscape (1800x1385), and a pixel box correct in
+one coordinate system silently misses in the other. `measured` is provenance.
+Boxes that leave the page, sit under 6px, or cover a quarter of the sheet are
+dropped rather than written.
+
+A proof overlay is written to `.work/regions/<page>.jpg` for every page — the
+boxes drawn back onto the scan in red, with their labels — so a capture can be
+checked by eye. Each page's yield is appended to `runs/regions.log` (page,
+located/asked, rejected, entry), which is the record of what the model found and
+what it could not. The coverage is deliberately partial: a name the model cannot
+find stays plain text in the sidebar instead of becoming a link to nowhere, and
+pages with no usable boxes stay exactly as they were.
 
 ## Endpoint notes
 

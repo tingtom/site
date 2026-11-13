@@ -1,0 +1,15 @@
+source wiring-1993-p0020.jpg (4559x3508) model=glm-5.3-flash
+  round 1: 1 labels -> wiring-1993-p0020.jpg -> /root/projects/site/scripts/wiring-diagram-processor/.work/wiring-1993-p0020/drawn-round1.jpg  (0 drawn of 1; 1 no-text; 0 wire px restored)
+    declined: 1 no-text
+  round 2: verification found 1, 1 new after de-dupe
+  round 2: 2 labels -> wiring-1993-p0020.jpg -> /root/projects/site/scripts/wiring-diagram-processor/.work/wiring-1993-p0020/drawn-round2.jpg  (1 drawn of 2; 1 no-text; 0 wire px restored)
+    declined: 1 no-text
+  round 3: verification found 0, 0 new after de-dupe
+  clean pass 1/2 — checking again
+  round 3: 2 labels -> wiring-1993-p0020.jpg -> /root/projects/site/scripts/wiring-diagram-processor/.work/wiring-1993-p0020/drawn-round3.jpg  (1 drawn of 2; 1 no-text; 0 wire px restored)
+    declined: 1 no-text
+  round 4: verification found 0, 0 new after de-dupe
+  verification clean 2x in a row — done
+final: wiring-1993-p0020.jpg -> /root/projects/site/scripts/wiring-diagram-processor/.source/machine/wiring-1993-p0020.jpg  (1 drawn of 2; 1 no-text; 0 wire px restored)
+tokens: 65790 in / 165 out (~$0.0100)
+output: /root/projects/site/scripts/wiring-diagram-processor/.source/machine/wiring-1993-p0020.jpg
