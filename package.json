@@ -8,7 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "render-previews": "node scripts/render-model-previews.mjs"
+    "render-previews": "node scripts/render-model-previews.mjs",
+  "diagrams:en": "node scripts/build-en-diagrams.mjs",
+  "guard:diagrams": "node scripts/guard-diagrams.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.7",

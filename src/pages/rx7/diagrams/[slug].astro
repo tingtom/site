@@ -4,7 +4,7 @@ import { slug } from '../../../lib/slug';
 import Base from '../../../layouts/Base.astro';
 import WireChips from '../../../components/WireChips.astro';
 import { u } from '../../../lib/url';
-import { asset, diagramSrc, diagramSize } from '../../../lib/media';
+import { asset, diagramSrc, diagramSize, diagramEn, diagramEnSize, diagramTranslation } from '../../../lib/media';
 
 export async function getStaticPaths() {
   const diagrams = (await getCollection('diagrams')).filter((d) =>
@@ -35,26 +35,44 @@ const hasMeta = Boolean(d.category || d.components.length || d.connectors.length
           <h1>{d.title}</h1>
 
           {
-            d.images.map((img, i) => (
-              <figure class="diagram-figure">
-                <a href={asset(img, '/diagrams')} target="_blank" rel="noopener">
-                  <img
-                    src={diagramSrc(img, 'view')}
-                    alt={`${d.title}${d.images.length > 1 ? ` — page ${i + 1}` : ''}`}
-                    width={diagramSize(img)?.w}
-                    height={diagramSize(img)?.h}
-                    loading={i === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                  />
-                </a>
-                <figcaption>
-                  {d.images.length > 1 ? `Page ${i + 1} of ${d.images.length}` : 'Scan'} ·{' '}
-                  <a href={asset(img, '/diagrams')} target="_blank" rel="noopener">
-                    full resolution →
+            d.images.map((img, i) => {
+              // The English build replaces the scan when one exists, keyed by
+              // page; four harness pages have none yet and say so instead.
+              const en = diagramEn(img);
+              const origin = diagramTranslation(img);
+              const size = en ? diagramEnSize(img) : diagramSize(img);
+              const page = d.images.length > 1 ? ` — page ${i + 1}` : '';
+              const kind =
+                origin === 'machine'
+                  ? 'Machine-translated'
+                  : en
+                    ? 'English translation'
+                    : 'Japanese scan';
+              const altKind =
+                origin === 'machine' ? 'machine-translated English' : en ? 'English translation' : 'Japanese scan';
+
+              return (
+                <figure class="diagram-figure">
+                  <a href={en ?? asset(img, '/diagrams')} target="_blank" rel="noopener">
+                    <img
+                      src={en ?? diagramSrc(img, 'view')}
+                      alt={`${d.title}${page} — ${altKind}`}
+                      width={size?.w}
+                      height={size?.h}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
                   </a>
-                </figcaption>
-              </figure>
-            ))
+                  <figcaption>
+                    {d.images.length > 1 ? `Page ${i + 1} of ${d.images.length} · ` : ''}
+                    {kind} ·{' '}
+                    <a href={asset(img, '/diagrams')} target="_blank" rel="noopener">
+                      {en ? 'original Japanese scan →' : 'full resolution →'}
+                    </a>
+                  </figcaption>
+                </figure>
+              );
+            })
           }
         </div>
 

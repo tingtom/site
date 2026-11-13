@@ -67,6 +67,56 @@ export function diagramThumbSize(file: string): { w: number; h: number } | null 
   return entry?.tw ? { w: entry.tw, h: entry.th ?? 0 } : null;
 }
 
+let enSizes: Record<string, { w: number; h: number }> | null = null;
+let provenance: Record<string, string> | null = null;
+
+function readJson<T>(file: string): T | null {
+  try {
+    return JSON.parse(readFileSync(path.join(process.cwd(), 'public', 'diagrams', 'en', file), 'utf8')) as T;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The English translation of a scan, when one has been built.
+ *
+ * `scripts/build-en-diagrams.mjs` writes `en/<page>.jpg` from the author's
+ * hand-translated scans, keyed by the page number of the original it replaces.
+ * Four harness pages have no translation yet, and the four pages whose
+ * supplied file was missing or machine-translated later fall back here — so a
+ * null return means "this page is still Japanese", which the figure says
+ * rather than letting the reader assume.
+ */
+export function diagramEn(file: string): string | null {
+  const name = asset(file, '/diagrams').split('/').pop();
+  if (!name) return null;
+  const disk = path.join(process.cwd(), 'public', 'diagrams', 'en', name);
+  return fs.existsSync(disk) ? u(`/diagrams/en/${name}`) : null;
+}
+
+/** Intrinsic size of that translation, so the figure reserves its box. */
+export function diagramEnSize(file: string): { w: number; h: number } | null {
+  const name = asset(file, '/diagrams').split('/').pop();
+  if (!name) return null;
+  enSizes ??= readJson<Record<string, { w: number; h: number }>>('sizes.json') ?? {};
+  const entry = enSizes[name];
+  return entry ? { w: entry.w, h: entry.h } : null;
+}
+
+/**
+ * Where the displayed translation came from: `supplied` (the author's own
+ * hand translation), `machine` (the pipeline's), or `none` (still Japanese).
+ * The page labels the figure accordingly, because a reader should be able to
+ * tell a reviewed translation from a generated one.
+ */
+export function diagramTranslation(file: string): 'supplied' | 'machine' | 'none' {
+  const name = asset(file, '/diagrams').split('/').pop();
+  if (!name) return 'none';
+  provenance ??= readJson<Record<string, string>>('provenance.json') ?? {};
+  return (provenance[name] as 'supplied' | 'machine' | 'none') ?? 'none';
+}
+
 const sizeCache = new Map<string, { w: number; h: number } | null>();
 
 /**

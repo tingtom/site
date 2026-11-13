@@ -1,0 +1,608 @@
+{
+  "source": "user-provided translated scans (7 of 84)",
+  "model": "glm-5.3-flash",
+  "generated": "2026-11-09T21:39:03.161Z",
+  "terms": 120,
+  "glossary": {
+    "ハーネス・シンボル": {
+      "en": "Harness symbol",
+      "votes": 1,
+      "variants": 1
+    },
+    "青色カプラ": {
+      "en": "Blue coupler",
+      "votes": 3,
+      "variants": 1
+    },
+    "水温スイッチ（グレーカプラ）": {
+      "en": "Water temperature switch [gray coupler]",
+      "votes": 1,
+      "variants": 1
+    },
+    "ホールドスイッチ": {
+      "en": "hold switch",
+      "votes": 1,
+      "variants": 1
+    },
+    "EC-ATコントロールユニット（ブラックカプラ）": {
+      "en": "EC-AT Control unit [Black coupler]",
+      "votes": 1,
+      "variants": 1
+    },
+    "バッテリ": {
+      "en": "Battery",
+      "votes": 2,
+      "variants": 1
+    },
+    "冷却ファン": {
+      "en": "60A COOLING FAN",
+      "votes": 1,
+      "variants": 1
+    },
+    "イグニッションスイッチ": {
+      "en": "ignition switch",
+      "votes": 1,
+      "variants": 2
+    },
+    "冷却ファンリレーNo.1": {
+      "en": "Cooling fan relay No.1",
+      "votes": 1,
+      "variants": 1
+    },
+    "冷却ファンリレーNo.2": {
+      "en": "cooling fan Relay No.2",
+      "votes": 1,
+      "variants": 1
+    },
+    "冷却ファンリレーNo.4": {
+      "en": "cooling fan Relay No.4",
+      "votes": 1,
+      "variants": 1
+    },
+    "冷却ファンリレーNo.3": {
+      "en": "cooling fan Relay No.3",
+      "votes": 1,
+      "variants": 1
+    },
+    "マニュアルエアコンディショナ": {
+      "en": "manual air conditioner",
+      "votes": 1,
+      "variants": 1
+    },
+    "オートエアコンディショナ": {
+      "en": "auto air conditioner",
+      "votes": 1,
+      "variants": 1
+    },
+    "EC-ATコントロールユニット": {
+      "en": "EC-AT Control unit",
+      "votes": 1,
+      "variants": 1
+    },
+    "A/Cアンプ": {
+      "en": "A/C Amplifier",
+      "votes": 1,
+      "variants": 1
+    },
+    "A/Cスイッチ": {
+      "en": "A/C switch",
+      "votes": 1,
+      "variants": 1
+    },
+    "診断コネクタ": {
+      "en": "Diagnosis (U) connector",
+      "votes": 1,
+      "variants": 1
+    },
+    "冷却ファンモータNo.1": {
+      "en": "Cooling fan motor No.1",
+      "votes": 1,
+      "variants": 1
+    },
+    "冷却ファンモータNo.2": {
+      "en": "Cooling fan motor No.2",
+      "votes": 1,
+      "variants": 1
+    },
+    "水温スイッチ": {
+      "en": "water temperature switch (fan)",
+      "votes": 1,
+      "variants": 1
+    },
+    "EGI メイン（B-1aシステム）": {
+      "en": "EGI main (B-1a system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "クランク・アン No.2 No.4（B-2システム）": {
+      "en": "Crank amp No.2 No.4 (B-2 system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "A/C リレー（G-1a, G-2aシステム）": {
+      "en": "A/C relay (G-1a, G-2a system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "TNS リレー（E-2システム）": {
+      "en": "TNS relay (E-2 system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "燃料ポンプ": {
+      "en": "fuel pump",
+      "votes": 1,
+      "variants": 1
+    },
+    "キャタ・アンプ (D)": {
+      "en": "cat amp (D)",
+      "votes": 1,
+      "variants": 1
+    },
+    "黒白": {
+      "en": "black / white",
+      "votes": 1,
+      "variants": 3
+    },
+    "黒黄": {
+      "en": "black / yellow",
+      "votes": 1,
+      "variants": 3
+    },
+    "薄緑黒": {
+      "en": "light green / black",
+      "votes": 1,
+      "variants": 1
+    },
+    "薄緑赤": {
+      "en": "light green / red",
+      "votes": 1,
+      "variants": 1
+    },
+    "青緑": {
+      "en": "light green",
+      "votes": 2,
+      "variants": 1
+    },
+    "赤": {
+      "en": "red",
+      "votes": 3,
+      "variants": 1
+    },
+    "黄": {
+      "en": "yellow",
+      "votes": 2,
+      "variants": 1
+    },
+    "白": {
+      "en": "white",
+      "votes": 1,
+      "variants": 1
+    },
+    "黒": {
+      "en": "black",
+      "votes": 2,
+      "variants": 1
+    },
+    "青赤": {
+      "en": "blue / red",
+      "votes": 1,
+      "variants": 2
+    },
+    "青白": {
+      "en": "blue / white",
+      "votes": 1,
+      "variants": 3
+    },
+    "青黒": {
+      "en": "blue / black",
+      "votes": 1,
+      "variants": 2
+    },
+    "緑白": {
+      "en": "green / white",
+      "votes": 1,
+      "variants": 2
+    },
+    "緑黒": {
+      "en": "green / black",
+      "votes": 1,
+      "variants": 2
+    },
+    "茶白": {
+      "en": "brown / white",
+      "votes": 1,
+      "variants": 2
+    },
+    "茶黒": {
+      "en": "brown/black",
+      "votes": 2,
+      "variants": 2
+    },
+    "灰": {
+      "en": "gray",
+      "votes": 2,
+      "variants": 1
+    },
+    "薄緑": {
+      "en": "light green",
+      "votes": 2,
+      "variants": 1
+    },
+    "黄緑": {
+      "en": "yellow / green",
+      "votes": 1,
+      "variants": 2
+    },
+    "白赤": {
+      "en": "white/red",
+      "votes": 2,
+      "variants": 3
+    },
+    "白黒": {
+      "en": "white / black",
+      "votes": 1,
+      "variants": 2
+    },
+    "橙白": {
+      "en": "orange / white",
+      "votes": 1,
+      "variants": 1
+    },
+    "橙": {
+      "en": "orange",
+      "votes": 1,
+      "variants": 1
+    },
+    "桃": {
+      "en": "pink",
+      "votes": 1,
+      "variants": 2
+    },
+    "薄緑黄": {
+      "en": "light green / yellow",
+      "votes": 1,
+      "variants": 2
+    },
+    "黄白": {
+      "en": "yellow / white",
+      "votes": 1,
+      "variants": 3
+    },
+    "黄黒": {
+      "en": "yellow / black",
+      "votes": 1,
+      "variants": 1
+    },
+    "赤白": {
+      "en": "red / white",
+      "votes": 1,
+      "variants": 2
+    },
+    "赤黒": {
+      "en": "red / black",
+      "votes": 1,
+      "variants": 1
+    },
+    "青黄": {
+      "en": "blue / yellow",
+      "votes": 1,
+      "variants": 1
+    },
+    "青": {
+      "en": "blue",
+      "votes": 1,
+      "variants": 1
+    },
+    "薄青": {
+      "en": "light blue",
+      "votes": 2,
+      "variants": 1
+    },
+    "薄青赤": {
+      "en": "light blue / red",
+      "votes": 1,
+      "variants": 1
+    },
+    "薄青黒": {
+      "en": "light blue / black",
+      "votes": 1,
+      "variants": 1
+    },
+    "ECU": {
+      "en": "ECU",
+      "votes": 1,
+      "variants": 1
+    },
+    "diagnosis connector (U system)": {
+      "en": "diagnosis connector (U system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "EC-AT Control unit (H-1b system)": {
+      "en": "EC-AT Control unit (H-1b system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "combination meter (Ca system)": {
+      "en": "combination meter (Ca system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "pressure switch (G-1b, G-2b system)": {
+      "en": "pressure switch (G-1b, G-2b system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Crank angle Sensor (NE)": {
+      "en": "Crank angle Sensor (NE)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Crank angle Sensor (G)": {
+      "en": "Crank angle Sensor (G)",
+      "votes": 1,
+      "variants": 1
+    },
+    "thermo- sensor": {
+      "en": "thermo- sensor",
+      "votes": 1,
+      "variants": 1
+    },
+    "primary front injector (EM)": {
+      "en": "primary front injector (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "primary rear injector (EM)": {
+      "en": "primary rear injector (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Secondary front injector (EM)": {
+      "en": "Secondary front injector (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Secondary rear injector (EM)": {
+      "en": "Secondary rear injector (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Port air solenoid valve (EM)": {
+      "en": "Port air solenoid valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "DTCNT Solenoid valve (EM)": {
+      "en": "DTCNT Solenoid valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Purge solenoid Valve (EM)": {
+      "en": "Purge solenoid Valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "ISC solenoid Valve (EM)": {
+      "en": "ISC solenoid Valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "TCNT No.1 Solenoid Valve (EM)": {
+      "en": "TCNT No.1 Solenoid Valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "TCNT No.2 solenoid valve (EM)": {
+      "en": "TCNT No.2 solenoid valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Charge relief solenoid valve (EM)": {
+      "en": "Charge relief solenoid valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "CCNT Solenoid Valve (EM)": {
+      "en": "CCNT Solenoid Valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "WGCNT solenoid valve (EM)": {
+      "en": "WGCNT solenoid valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "TPCNT solenoid valve (EM)": {
+      "en": "TPCNT solenoid valve (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "thermo sensor (R)": {
+      "en": "thermo sensor (R)",
+      "votes": 1,
+      "variants": 1
+    },
+    "Crank angle Sensor (NE) (EM)": {
+      "en": "Crank angle Sensor (NE) (EM)",
+      "votes": 1,
+      "variants": 1
+    },
+    "crank angle Sensor(G)(G内蔵)": {
+      "en": "crank angle Sensor (G) (built-in G)",
+      "votes": 1,
+      "variants": 1
+    },
+    "リレー・アフロスタ・リレー（I-1システム）": {
+      "en": "Relay circuit relay (I-1 system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "緑": {
+      "en": "green",
+      "votes": 1,
+      "variants": 1
+    },
+    "緑黄": {
+      "en": "green/yellow",
+      "votes": 1,
+      "variants": 1
+    },
+    "緑赤": {
+      "en": "green/red",
+      "votes": 1,
+      "variants": 1
+    },
+    "赤青": {
+      "en": "red/blue",
+      "votes": 1,
+      "variants": 1
+    },
+    "茶": {
+      "en": "brown",
+      "votes": 2,
+      "variants": 1
+    },
+    "茶赤": {
+      "en": "brown/red",
+      "votes": 1,
+      "variants": 1
+    },
+    "白緑": {
+      "en": "white/green",
+      "votes": 1,
+      "variants": 1
+    },
+    "黄青": {
+      "en": "yellow/blue",
+      "votes": 2,
+      "variants": 1
+    },
+    "黄赤": {
+      "en": "yellow/red",
+      "votes": 2,
+      "variants": 1
+    },
+    "黒緑": {
+      "en": "black/green",
+      "votes": 1,
+      "variants": 1
+    },
+    "黒赤": {
+      "en": "black/red",
+      "votes": 2,
+      "variants": 2
+    },
+    "黒青": {
+      "en": "black/blue",
+      "votes": 2,
+      "variants": 1
+    },
+    "シールドワイヤ": {
+      "en": "shielded wire",
+      "votes": 1,
+      "variants": 1
+    },
+    "1-2スイッチ": {
+      "en": "1-2 switch",
+      "votes": 1,
+      "variants": 1
+    },
+    "車": {
+      "en": "body (ground)",
+      "votes": 1,
+      "variants": 1
+    },
+    "黒薄緑": {
+      "en": "black/light green",
+      "votes": 1,
+      "variants": 1
+    },
+    "シールド線": {
+      "en": "shielded wire",
+      "votes": 1,
+      "variants": 1
+    },
+    "車両": {
+      "en": "vehicle",
+      "votes": 1,
+      "variants": 1
+    },
+    "10A ルーム": {
+      "en": "10A room",
+      "votes": 1,
+      "variants": 1
+    },
+    "SRS": {
+      "en": "Vehicles with air bag system",
+      "votes": 1,
+      "variants": 1
+    },
+    "スタータ": {
+      "en": "starter",
+      "votes": 1,
+      "variants": 1
+    },
+    "磁石": {
+      "en": "magnetic",
+      "votes": 1,
+      "variants": 1
+    },
+    "プルインコイル": {
+      "en": "Pull-in coil",
+      "votes": 1,
+      "variants": 1
+    },
+    "ホールドインコイル": {
+      "en": "Hold-in coil",
+      "votes": 1,
+      "variants": 1
+    },
+    "フィールドコイル": {
+      "en": "field coil",
+      "votes": 2,
+      "variants": 1
+    },
+    "クルーズコントロールユニット（Qシステム）": {
+      "en": "cruise Control unit (Q system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "EC-ATコントロールユニット（H-1bシステム）": {
+      "en": "EC-AT Control unit (H-1b system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "インヒビタスイッチ": {
+      "en": "inhibitor switch",
+      "votes": 1,
+      "variants": 1
+    },
+    "ステータコイル": {
+      "en": "stator coil",
+      "votes": 1,
+      "variants": 1
+    },
+    "ICレギュレータ": {
+      "en": "IC regulator",
+      "votes": 1,
+      "variants": 1
+    },
+    "オルタネータ": {
+      "en": "alternator",
+      "votes": 1,
+      "variants": 1
+    },
+    "コンビネーションメータ（Caシステム）": {
+      "en": "combination meter (Ca system)",
+      "votes": 1,
+      "variants": 1
+    },
+    "ABSコントロールユニット（システム）": {
+      "en": "ABS Control unit (system)",
+      "votes": 1,
+      "variants": 1
+    }
+  }
+}
