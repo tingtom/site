@@ -51,9 +51,10 @@ for (const f of entries) {
   const slugLine = text.split('\n').find((l) => l.startsWith('slug:'));
   const pageSlug = slugLine ? slugLine.slice('slug:'.length).trim().replace(/^["']|["']$/g, '') : f.replace(/\.md$/, '');
   const names = new Set([...listOf(text, 'components'), ...listOf(text, 'connectors'), ...listOf(text, 'ecuPins')]);
+  const colours = new Set(listOf(text, 'wireColors'));
   for (const img of images) {
     if (!existsSync(path.join(DIAGRAMS, img))) missing.push(`${f} → ${img}`);
-    contentByPage.set(img.split('/').pop(), { slug: pageSlug, names, file: f });
+    contentByPage.set(img.split('/').pop(), { slug: pageSlug, names, colours, file: f });
   }
 }
 missing.length ? missing.forEach(fail) : ok(`${entries.length} content entries, every image on disk`);
@@ -179,6 +180,87 @@ for (const { page, slug, count, labels } of regionPages) {
 }
 if (regionPages.length) {
   ok(`${regionPages.length} built pages carry their regions, entries linked both ways`);
+}
+
+// 7. wire traces: fractions, a shape worth drawing, a colour the sidebar
+//    actually lists, and one line per run in the built page
+let wireCount = 0;
+let pagesWithWires = 0;
+const wirePages = [];
+for (const [page, record] of Object.entries(regionData)) {
+  const wires = Array.isArray(record.wires) ? record.wires : [];
+  if (!wires.length) continue;
+  const entry = contentByPage.get(page);
+  if (!entry) {
+    fail(`${page}: wire data for a page no content entry shows`);
+    continue;
+  }
+  pagesWithWires++;
+  wireCount += wires.length;
+  for (const w of wires) {
+    if (typeof w.label !== 'string' || !w.label.trim()) {
+      fail(`${page}: wire with no label`);
+      continue;
+    }
+    if (!entry.colours.has(w.label)) fail(`${page}/"${w.label}": not a wire colour in ${entry.file}`);
+    const pts = Array.isArray(w.points) ? w.points : [];
+    if (pts.length < 2) {
+      fail(`${page}/"${w.label}": ${pts.length} point(s), needs at least 2`);
+      continue;
+    }
+    let bad = null;
+    let length = 0;
+    const xs = [];
+    const ys = [];
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      if (!Array.isArray(p) || p.length < 2 || ![p[0], p[1]].every((n) => typeof n === 'number' && Number.isFinite(n))) {
+        bad = `point ${i} is not a pair of numbers`;
+        break;
+      }
+      if (p[0] < -0.002 || p[0] > 1.002 || p[1] < -0.002 || p[1] > 1.002) {
+        bad = `point ${i} is off the image`;
+        break;
+      }
+      xs.push(p[0]);
+      ys.push(p[1]);
+      if (i) length += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]);
+    }
+    if (bad) {
+      fail(`${page}/"${w.label}": ${bad}`);
+      continue;
+    }
+    const span = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+    if (span < 0.01 || length < 0.025) fail(`${page}/"${w.label}": too short to be a wire`);
+  }
+  wirePages.push({ page, slug: entry.slug, count: wires.length });
+}
+if (wireCount) {
+  ok(`${pagesWithWires} pages, ${wireCount} wire traces — all fractions, all naming a listed colour`);
+} else {
+  ok('no wire traces yet — wire chips stay plain text');
+}
+
+for (const { page, slug, count } of wirePages) {
+  const file = path.join(DIST, slug, 'index.html');
+  if (!existsSync(file)) {
+    fail(`${page}: no built page at dist/rx7/diagrams/${slug}`);
+    continue;
+  }
+  const html = readFileSync(file, 'utf8');
+  const lines = (html.match(/<polyline class="wire"/g) ?? []).length;
+  if (lines !== count) fail(`${page}: ${count} wire traces in data, ${lines} lines built`);
+}
+if (wirePages.length) ok(`${wirePages.length} built pages carry their wire layer`);
+
+// …and a page with no trace data must not have grown a layer of its own.
+if (existsSync(DIST)) {
+  const withWires = new Set(wirePages.map((w) => w.slug));
+  for (const slug of readdirSync(DIST).filter((f) => f !== 'index.html')) {
+    if (withWires.has(slug)) continue;
+    const html = readFileSync(path.join(DIST, slug, 'index.html'), 'utf8');
+    if (/<polyline class="wire"/.test(html)) fail(`${slug}: wire layer built but no wire data`);
+  }
 }
 
 console.log(failures ? `\n${failures} FAILED` : '\nDIAGRAM GUARD PASS');

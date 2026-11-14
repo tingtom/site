@@ -72,6 +72,10 @@ PATH=/opt/node22/bin:$PATH node scripts/wiring-diagram-processor/measure.mjs \
 export OPENCODE_API_KEY=<your OpenCode Go key>
 npm run diagrams:regions         # ← every page; --only p0022, --limit N, --force, --dry
 #    → src/data/diagram-regions.json, proof overlays in .work/regions/
+
+# 6. trace each wire colour as a line (optional, additive)
+npm run diagrams:wires           # ← same flags; proofs in .work/wires/
+#    → wires[] in the same src/data/diagram-regions.json
 ```
 
 Step 1 is only needed when the supplied set changes. Step 2's output is
@@ -127,6 +131,19 @@ located/asked, rejected, entry), which is the record of what the model found and
 what it could not. The coverage is deliberately partial: a name the model cannot
 find stays plain text in the sidebar instead of becoming a link to nowhere, and
 pages with no usable boxes stay exactly as they were.
+
+### Wire traces
+
+`trace-wires.mjs` is the same idea for wire colours, which cannot be boxed:
+"Black" is printed beside dozens of wires on a page, so a box over one of them
+would be a guess. What the drawing does give is the colour label printed *beside
+the wire run it belongs to*, so the script asks for that run as an ordered
+polyline — followed through crossings, with a point at every corner — and the
+page draws it over the image while the chip is hovered or focused. Runs with
+fewer than two points, points off the page, or that travel under 2.5% of the
+page are dropped rather than written, and a colour is capped at three runs
+because one label is often printed several times. Proof overlays land in
+`.work/wires/<page>.jpg`, per-page yields in `runs/wires.log`.
 
 ## Endpoint notes
 

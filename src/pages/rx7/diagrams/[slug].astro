@@ -6,7 +6,7 @@ import WireChips from '../../../components/WireChips.astro';
 import DiagramEntries from '../../../components/DiagramEntries.astro';
 import { u } from '../../../lib/url';
 import { asset, diagramSrc, diagramSize, diagramEn, diagramEnSize, diagramTranslation } from '../../../lib/media';
-import { diagramRegions, KIND_NOUN } from '../../../lib/regions';
+import { diagramRegions, diagramWires, tracedColours, KIND_NOUN } from '../../../lib/regions';
 
 export async function getStaticPaths() {
   const diagrams = (await getCollection('diagrams')).filter((d) =>
@@ -56,6 +56,11 @@ pageRegions.forEach((rs, i) =>
 );
 const anchors = Object.fromEntries(entryAnchor);
 const regionAnchors = Object.fromEntries(regionAnchor);
+
+// Wire traces are per image; the chip list is page-level, so a chip lights any
+// of its runs on whichever page shows them.
+const pageWires = d.images.map((img) => diagramWires(img));
+const linkedColours = tracedColours(pageWires.flat());
 const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
 ---
 
@@ -89,11 +94,16 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
               const altKind =
                 origin === 'machine' ? 'machine-translated English' : en ? 'English translation' : 'Japanese scan';
               const regions = pageRegions[i];
+              const wires = pageWires[i];
+              // A page can be interactive because of boxes, or because of
+              // traced wires, or both: either way the image leaves its link and
+              // sits in the frame the overlay is drawn over.
+              const linked = regions.length > 0 || wires.length > 0;
               const fullHref = asset(img, '/diagrams');
 
               return (
-                <figure class:list={['diagram-figure', regions.length > 0 && 'diagram-figure--linked']}>
-                  {regions.length > 0 ? (
+                <figure class:list={['diagram-figure', linked && 'diagram-figure--linked']}>
+                  {linked ? (
                     // The image is no longer wrapped in a link on these pages:
                     // the regions are links themselves, and an anchor inside an
                     // anchor is invalid and unreachable. The caption carries the
@@ -107,6 +117,26 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
                         loading={i === 0 ? 'eager' : 'lazy'}
                         decoding="async"
                       />
+                      {wires.length > 0 && (
+                        // Fractions of the image in a 0..1 viewBox, non-scaling
+                        // stroke: the line keeps its weight whatever the figure
+                        // is scaled to, and the layer is absolutely positioned
+                        // inside the image's reserved box, so it shifts nothing.
+                        <svg
+                          class="wire-layer"
+                          viewBox="0 0 1 1"
+                          preserveAspectRatio="none"
+                          aria-hidden="true"
+                        >
+                          {wires.map((w) => (
+                            <polyline
+                              class="wire"
+                              data-region={w.label}
+                              points={w.points.map(([x, y]) => `${x},${y}`).join(' ')}
+                            />
+                          ))}
+                        </svg>
+                      )}
                       <div class="region-layer">
                         {regions.map((r, ri) => (
                           <a
@@ -140,7 +170,7 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
                     <a href={fullHref} target="_blank" rel="noopener">
                       {en ? 'original Japanese scan →' : 'full resolution →'}
                     </a>
-                    {regions.length > 0 && (
+                    {linked && (
                       <>
                         {' · '}
                         <a href={en ?? fullHref} target="_blank" rel="noopener">
@@ -149,10 +179,10 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
                       </>
                     )}
                   </figcaption>
-                  {regions.length > 0 && (
+                  {linked && (
                     <p class="region-hint">
                       Hover, focus or tap a boxed area to see what it is — it links to the matching
-                      entry in the sidebar.
+                      entry in the sidebar.{wires.length > 0 && ' Wire colours do the same with their line.'}
                     </p>
                   )}
                 </figure>
@@ -178,7 +208,7 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
                   {d.wireColors.length > 0 && (
                     <section class="meta-block">
                       <h2>Wire colours</h2>
-                      <WireChips colors={d.wireColors} />
+                      <WireChips colors={d.wireColors} linked={linkedColours} />
                     </section>
                   )}
 
@@ -231,9 +261,8 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
 </Base>
 
 <script>
-  // Cross-highlight: pointing at or focusing one side marks the other. This is
-  // enhancement only — the anchors already jump both ways without JavaScript,
-  // and a region reveals its own tag from CSS on hover/focus.
+  // Everything that stands for the same thing is one group: a sidebar entry, a
+  // box on the drawing, a wire colour chip and the line that chip draws.
   const partners = new Map();
   for (const el of document.querySelectorAll('[data-region]')) {
     const label = el.dataset.region;
@@ -244,12 +273,89 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
   const mark = (label, on) => {
     for (const el of partners.get(label) ?? []) el.classList.toggle('is-marked', on);
   };
+
   for (const el of document.querySelectorAll('[data-region]')) {
     const label = el.dataset.region;
-    el.addEventListener('pointerenter', () => mark(label, true));
-    el.addEventListener('pointerleave', () => mark(label, false));
+    // Focus works the same for all of them: keyboard is how a box on the
+    // drawing is reached without a pointer at all.
     el.addEventListener('focus', () => mark(label, true));
     el.addEventListener('blur', () => mark(label, false));
+    // Chips and lines take the pointer themselves; the boxes do not (see
+    // pointer-events in the styles), so they are picked by the frame below.
+    if (el.classList.contains('region')) continue;
+    el.addEventListener('pointerenter', () => mark(label, true));
+    el.addEventListener('pointerleave', () => mark(label, false));
+  }
+
+  for (const frame of document.querySelectorAll('.diagram-frame')) {
+    let boxes = null;
+    let active = null;
+
+    // Client coordinates against the frame, in frame pixels — measured per
+    // gesture rather than per pointer event, and dropped on scroll or resize
+    // because every rect moves with them.
+    const measure = () => {
+      const f = frame.getBoundingClientRect();
+      boxes = [...frame.querySelectorAll('.region')].map((el) => {
+        const b = el.getBoundingClientRect();
+        return {
+          el,
+          label: el.dataset.region,
+          l: b.left - f.left,
+          t: b.top - f.top,
+          r: b.right - f.left,
+          b: b.bottom - f.top,
+          area: b.width * b.height,
+        };
+      });
+    };
+
+    // Smallest box containing the point wins: where a cluster of labels
+    // overlaps, the specific one is what the reader is pointing at.
+    const pick = (ev) => {
+      if (!boxes) measure();
+      const f = frame.getBoundingClientRect();
+      const x = ev.clientX - f.left;
+      const y = ev.clientY - f.top;
+      let best = null;
+      for (const b of boxes) {
+        if (x >= b.l && x <= b.r && y >= b.t && y <= b.b && (!best || b.area < best.area)) best = b;
+      }
+      return best;
+    };
+
+    frame.addEventListener('pointerenter', () => {
+      boxes = null;
+    });
+    frame.addEventListener('pointermove', (ev) => {
+      const hit = pick(ev);
+      if (hit?.el === active) return;
+      if (active) mark(active, false);
+      active = hit ? hit.el : null;
+      if (hit) mark(hit.label, true);
+    });
+    frame.addEventListener('pointerleave', () => {
+      if (active) mark(active, false);
+      active = null;
+      boxes = null;
+    });
+    // Tap or click a box: jump to the entry it belongs to, the same thing the
+    // anchor's href would do if the box could take the pointer.
+    frame.addEventListener('click', (ev) => {
+      const hit = pick(ev);
+      const entry = hit ? document.getElementById(hit.el.getAttribute('href').slice(1)) : null;
+      if (!entry) return;
+      ev.preventDefault();
+      entry.focus();
+      entry.scrollIntoView({ block: 'nearest' });
+    });
+
+    window.addEventListener('scroll', () => {
+      boxes = null;
+    }, { passive: true });
+    window.addEventListener('resize', () => {
+      boxes = null;
+    }, { passive: true });
   }
 </script>
 
@@ -309,19 +415,58 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
     pointer-events: none;
   }
 
+  /* Traced wires: drawn only while their chip is pointed at or focused, so the
+     page is never covered in red. The layer ignores the pointer but each line
+     takes it back for its own stroke — pointing at the wire marks its chip. */
+  .wire-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .wire {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    /* the viewBox is 0..1 while the image is hundreds of pixels wide, so
+       without this the stroke would be a hairline or a band depending on the
+       figure's size */
+    vector-effect: non-scaling-stroke;
+    pointer-events: stroke;
+    transition:
+      stroke 0.12s ease,
+      stroke-width 0.12s ease;
+  }
+
+  .wire:hover,
+  .wire.is-marked {
+    stroke: var(--accent);
+    stroke-width: 4;
+  }
+
   .region {
     position: absolute;
     display: block;
+    /* No pointer events of their own. The boxes overlap on a dense page (the
+       diagram has 21 overlapping pairs), and axe — WCAG 2.5.8 — counts every
+       overlapping focusable element as eating into its neighbour's clickable
+       area, so none of them could ever be 24x24 of *unobscured* space. It also
+       excludes neighbours whose pointer-events is `none`. The frame below does
+       the picking instead, which gives one deterministic target per point. */
+    pointer-events: none;
     /* The drawn box is ::after, at the exact fraction; the link itself carries
-       12px of padding so its pointer target is never under 24x24 CSS px
-       (WCAG 2.5.8). The smallest labels on an 1800px scan are a few pixels
-       tall when the page shows it a few hundred wide, so without this they
-       were impossible to hit — and impossible to audit. */
+       12px of padding so its rectangle is never under 24x24 CSS px (WCAG 2.5.8)
+       — the smallest labels on an 1800px scan are a few pixels tall when the
+       page shows it a few hundred wide, so without this they fail on size too. */
     padding: 12px;
     margin: -12px 0 0 -12px;
     border: 0;
     background: none;
-    pointer-events: auto;
     scroll-margin-top: 5rem;
   }
 

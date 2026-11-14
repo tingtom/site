@@ -13,6 +13,7 @@
   "diagrams:manifest": "node scripts/wiring-diagram-processor/build-manifest.mjs",
   "diagrams:machine": "node scripts/wiring-diagram-processor/translate-uncovered.mjs",
   "diagrams:regions": "node scripts/wiring-diagram-processor/locate-regions.mjs",
+  "diagrams:wires": "node scripts/wiring-diagram-processor/trace-wires.mjs",
   "guard:diagrams": "node scripts/guard-diagrams.mjs"
   },
   "dependencies": {

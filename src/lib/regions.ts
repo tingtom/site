@@ -31,6 +31,7 @@ interface PageRegions {
   measured?: { w: number; h: number };
   model?: string;
   regions?: Array<Partial<Region>>;
+  wires?: Array<{ label?: unknown; points?: unknown }>;
 }
 
 const FILE = path.join(process.cwd(), 'src/data/diagram-regions.json');
@@ -89,6 +90,44 @@ export function diagramRegions(file: string): Region[] {
 /** Does this page have a box for this exact entry string? */
 export function hasRegion(file: string, label: string): boolean {
   return diagramRegions(file).some((r) => r.label === label);
+}
+
+/**
+ * A wire colour traced as a line, in fractions of the image.
+ *
+ * A wire colour is not a thing that can be boxed: "Black" is printed beside
+ * dozens of wires on one page, so a box over one of them would be a guess.
+ * `trace-wires.mjs` instead follows the run the colour label sits next to and
+ * records it as an ordered polyline — the drawing gives us the run, we just
+ * draw over it.
+ */
+export interface Wire {
+  label: string;
+  points: Array<[number, number]>;
+}
+
+/** Traces for one scan; runs that are malformed are dropped, not rendered. */
+export function diagramWires(file: string): Wire[] {
+  const name = file.split('/').pop() ?? '';
+  const page = read()[name];
+  if (!page?.wires?.length) return [];
+
+  return page.wires.filter((w): w is Wire => {
+    if (typeof w.label !== 'string' || !w.label.trim()) return false;
+    const pts = Array.isArray(w.points) ? w.points : [];
+    if (pts.length < 2) return false;
+    return pts.every(
+      (p) =>
+        Array.isArray(p) &&
+        p.length >= 2 &&
+        [p[0], p[1]].every((n) => typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= 1.002),
+    );
+  });
+}
+
+/** Colours of this page that actually have a trace to show. */
+export function tracedColours(wires: Wire[]): Set<string> {
+  return new Set(wires.map((w) => w.label));
 }
 
 /** The scan a region is on, from an entry that may show several pages. */
