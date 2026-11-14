@@ -115,6 +115,8 @@ Rules:
 - "points" are [x, y] pixel coordinates in the ${w}x${h} image, ordered along that wire from one end to the other, with a point at every corner, bend and junction — enough points that the shape survives.
 - Trace the wire itself. Where wires cross, keep following the same line; never jump onto another wire. Follow it past the label in both directions to the nearest component, connector or junction.
 - If a colour label is printed more than once, return one item per occurrence: same label, different points.
+- A colour in the list may be printed only as part of a two-colour name, such as "Yellow/white" or "black/purple". If you cannot find that colour printed on its own anywhere on the page, trace a run labelled with a two-colour name that contains it and report the single colour from the list, so "Yellow" can point at the run printed "Yellow/white".
+- Never trace a colour that only appears inside a connector pinout table (a small callout box of pin colours with no wire running away from it) — there is no run there to draw.
 - Skip any colour you cannot find or cannot follow to an end. An absent run is fine; a guessed one is not — a wrong line is worse than no line.
 - Return ONLY the JSON object.`;
 }

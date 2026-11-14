@@ -25,12 +25,17 @@ const { colors, linked } = Astro.props;
             class="wire-chip"
             data-region={c}
             aria-label={`${c} — show this wire on the diagram`}
+            title={`${c} — show this wire on the diagram`}
             style={style ?? undefined}
           >
             {c}
           </button>
         ) : (
-          <span class="wire-chip" style={style ?? undefined}>
+          <span
+            class="wire-chip wire-chip--plain"
+            title={`${c} — no wire traced for this colour on this page`}
+            style={style ?? undefined}
+          >
             {c}
           </span>
         );
@@ -81,5 +86,13 @@ const { colors, linked } = Astro.props;
   button.wire-chip:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+
+  /* A colour with nothing to draw is a label, not a control: the dashed edge
+     and the tooltip say so, rather than looking like a button that does
+     nothing when clicked. */
+  .wire-chip--plain {
+    cursor: default;
+    border-style: dashed;
   }
 </style>

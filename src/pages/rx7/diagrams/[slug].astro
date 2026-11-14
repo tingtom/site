@@ -182,7 +182,9 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
                   {linked && (
                     <p class="region-hint">
                       Hover, focus or tap a boxed area to see what it is — it links to the matching
-                      entry in the sidebar.{wires.length > 0 && ' Wire colours do the same with their line.'}
+                      entry in the sidebar.
+                      {wires.length > 0 &&
+                        ' Wire colours with a traced line do the same; the dashed ones have no single wire to point at on this page.'}
                     </p>
                   )}
                 </figure>
@@ -287,6 +289,21 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
     el.addEventListener('pointerleave', () => mark(label, false));
   }
 
+  // A hover highlight is only true while the pointer is over the thing. Scroll
+  // the page under a stationary pointer and the browser sends no new pointer
+  // events, so a chip's line would stay lit with the chip long gone. Focus is a
+  // real state, so a mark on a group that holds the focus survives.
+  const clearHoverMarks = () => {
+    const focused = document.activeElement;
+    for (const el of document.querySelectorAll('.is-marked')) {
+      const group = partners.get(el.dataset.region) ?? [];
+      if (focused && group.includes(focused)) continue;
+      el.classList.remove('is-marked');
+    }
+  };
+  window.addEventListener('scroll', clearHoverMarks, { passive: true });
+  window.addEventListener('resize', clearHoverMarks, { passive: true });
+
   for (const frame of document.querySelectorAll('.diagram-frame')) {
     let boxes = null;
     let active = null;
@@ -327,16 +344,25 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
     frame.addEventListener('pointerenter', () => {
       boxes = null;
     });
+
+    // Drop whatever is lit. `active` is the box element, so its label is what
+    // the group is keyed by — passing the element itself matched nothing and
+    // left the tag on screen after the pointer had gone (the bug).
+    const clear = () => {
+      if (active) mark(active.dataset.region, false);
+      active = null;
+    };
+
     frame.addEventListener('pointermove', (ev) => {
       const hit = pick(ev);
       if (hit?.el === active) return;
-      if (active) mark(active, false);
-      active = hit ? hit.el : null;
-      if (hit) mark(hit.label, true);
+      clear();
+      if (!hit) return;
+      active = hit.el;
+      mark(hit.label, true);
     });
     frame.addEventListener('pointerleave', () => {
-      if (active) mark(active, false);
-      active = null;
+      clear();
       boxes = null;
     });
     // Tap or click a box: jump to the entry it belongs to, the same thing the
@@ -350,12 +376,15 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
       entry.scrollIntoView({ block: 'nearest' });
     });
 
-    window.addEventListener('scroll', () => {
+    // The boxes are measured against the frame, so they are stale after either
+    // — and the pointer is now over different content, so nothing should stay
+    // lit either.
+    const reset = () => {
+      clear();
       boxes = null;
-    }, { passive: true });
-    window.addEventListener('resize', () => {
-      boxes = null;
-    }, { passive: true });
+    };
+    window.addEventListener('scroll', reset, { passive: true });
+    window.addEventListener('resize', reset, { passive: true });
   }
 </script>
 
