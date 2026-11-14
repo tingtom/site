@@ -194,18 +194,14 @@ const filters = [
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--bg-elev);
-    /* Sticks below the fixed brand bar, not under it: the backdrop behind the
-       brand and section toggle is 4.25rem tall (see header::before) and sits
-       above this panel, so anything stuck at 0.75rem disappears behind it. */
-    position: sticky;
-    top: calc(4.25rem + 0.5rem);
-    z-index: 20;
-    backdrop-filter: blur(10px);
+    /* Sits in the page and stays there: no sticky, so it scrolls away with the
+       heading instead of hovering over the grid. */
+    position: static;
   }
 
   /* One compact toolbar rather than four stacked label+control blocks: labels
-     sit inline, so the panel is a single row at 1440 instead of 253px tall —
-     the whole point of a sticky filter is that it stays out of the way. */
+     sit inline, so the panel is two short rows instead of 253px tall — it takes
+     its space once at the top of the page rather than over the cards. */
   .filters__search {
     flex: 1 1 240px;
     min-width: 0;
@@ -267,9 +263,4 @@ const filters = [
     margin: 1rem 0 1.25rem;
   }
 
-  @media (max-width: 899px) {
-    .filters {
-      position: static;
-    }
-  }
 </style>
