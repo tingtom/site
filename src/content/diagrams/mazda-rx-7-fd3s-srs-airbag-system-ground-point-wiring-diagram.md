@@ -6,7 +6,7 @@ images: ["wiring-1993-p0019.jpg"]
 category: Airbag
 yearRange: 1993-1996
 identifier: Y
-wireColors: ["Black", "Black/Blue Stripe", "Black/Orange Stripe"]
+wireColors: ["Black","Black/Orange Stripe"]
 components: ["SRS Airbag System", "ECU", "Airbag Modules", "Sensors"]
 connectors: ["JC-01", "JC-02", "JC-05", "JC-06", "JC-08", "JC-14", "JC-15"]
 ecuPins: ["ECU pin 1", "ECU pin 20", "FPC pin 32", "pin 20 (other component)"]
