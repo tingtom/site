@@ -54,8 +54,14 @@ const MIN_LENGTH = 0.025; // …nor is one that travels under 2.5% of the page
 
 const args = process.argv.slice(2);
 const only = args.includes('--only')
-  ? args[args.indexOf('--only') + 1]?.replace(/\.jpg$/, '').replace(/^wiring-1993-/, '')
+  ? args[args.indexOf('--only') + 1]
+      ?.split(',')
+      .map((s) => s.replace(/\.jpg$/, '').replace(/^wiring-1993-/, ''))
+      .filter(Boolean) ?? null
   : null;
+// Re-trace a single listed colour on the --only pages: the runs for every
+// other colour on those pages are kept as they are.
+const colourFilter = args.includes('--colour') ? args[args.indexOf('--colour') + 1] : null;
 const limit = args.includes('--limit') ? Number(args[args.indexOf('--limit') + 1]) : Infinity;
 const force = args.includes('--force');
 const dry = args.includes('--dry');
@@ -93,7 +99,10 @@ for (const f of readdirSync(CONTENT).filter((f) => f.endsWith('.md'))) {
     if (!pages.has(page)) pages.set(page, { colours: [], entries: [] });
     const slot = pages.get(page);
     slot.entries.push(entry.slug);
-    for (const c of colours) if (!slot.colours.includes(c)) slot.colours.push(c);
+    for (const c of colours) {
+      if (colourFilter && c !== colourFilter) continue;
+      if (!slot.colours.includes(c)) slot.colours.push(c);
+    }
   }
 }
 
@@ -116,6 +125,7 @@ Rules:
 - Trace the wire itself. Where wires cross, keep following the same line; never jump onto another wire. Follow it past the label in both directions to the nearest component, connector or junction.
 - If a colour label is printed more than once, return one item per occurrence: same label, different points.
 - A colour in the list may be printed only as part of a two-colour name, such as "Yellow/white" or "black/purple". If you cannot find that colour printed on its own anywhere on the page, trace a run labelled with a two-colour name that contains it and report the single colour from the list, so "Yellow" can point at the run printed "Yellow/white".
+- If the colour in the list is itself a two-colour name, such as "Violet/White", the printed label must be that same pair, in either order. A run whose printed name shares only one component with it — "Violet/Green" next to a chip that says "Violet/White" — is a different wire and must not be traced.
 - Never trace a colour that only appears inside a connector pinout table (a small callout box of pin colours with no wire running away from it) — there is no run there to draw.
 - Skip any colour you cannot find or cannot follow to an end. An absent run is fine; a guessed one is not — a wrong line is worse than no line.
 - Return ONLY the JSON object.`;
@@ -234,7 +244,7 @@ try {
 }
 
 const targets = [...pages.entries()]
-  .filter(([page]) => (only ? pageId(page) === only : true))
+  .filter(([page]) => (only ? only.includes(pageId(page)) : true))
   .filter(([page]) => force || !existing[page]?.wires?.length)
   .sort(([a], [b]) => a.localeCompare(b))
   .slice(0, limit);
@@ -307,6 +317,17 @@ async function trace(page, info) {
 
   if (!runs.length) {
     console.log(`  ${page}: nothing usable — the page keeps its chips as plain text`);
+    if (colourFilter) {
+      // A single-colour re-trace that found nothing usable leaves the old runs
+      // for that colour stale: drop them so the chip degrades to plain text
+      // instead of lighting a run this pass could not confirm.
+      const record = existing[page];
+      if (record?.wires?.length) {
+        record.wires = record.wires.filter((w) => w.label !== colourFilter);
+        writeFileSync(OUT, `${JSON.stringify(existing, null, 2)}\n`);
+        console.log(`  ${page}: dropped stale ${colourFilter} run(s)`);
+      }
+    }
     return;
   }
   if (dry) return;
@@ -314,7 +335,17 @@ async function trace(page, info) {
   const record = existing[page] ?? {};
   record.measured = record.measured ?? { w, h };
   record.model = MODEL;
-  record.wires = runs.sort((a, b) => a.label.localeCompare(b.label));
+  if (colourFilter) {
+    // A single-colour re-trace replaces only that colour's runs and keeps the
+    // rest of the page's runs exactly as they are.
+    const fresh = new Set(runs.map((r) => r.label));
+    record.wires = [
+      ...(record.wires ?? []).filter((w) => !fresh.has(w.label)),
+      ...runs,
+    ].sort((a, b) => a.label.localeCompare(b.label));
+  } else {
+    record.wires = runs.sort((a, b) => a.label.localeCompare(b.label));
+  }
   existing[page] = record;
   writeFileSync(OUT, `${JSON.stringify(existing, null, 2)}\n`);
   await proof(source, runs, path.join(PROOFS, page));

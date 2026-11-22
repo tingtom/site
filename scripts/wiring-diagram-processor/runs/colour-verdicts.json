@@ -1,0 +1,1588 @@
+{
+  "wiring-1993-p0019.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "mazda-rx-7-fd3s-srs-airbag-system-ground-point-wiring-diagram"
+    ],
+    "verdicts": [
+      {
+        "label": "Black/Blue Stripe",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0024.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "mazda-rx-7-fd3s-system-wiring-diagram-connector-location-diagram"
+    ],
+    "verdicts": [
+      {
+        "label": "Red",
+        "printed": false
+      },
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Green/White",
+        "printed": false
+      },
+      {
+        "label": "Blue/White",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Black",
+        "printed": false
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0027.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0027"
+    ],
+    "verdicts": [
+      {
+        "label": "Purple",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0028.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0028"
+    ],
+    "verdicts": [
+      {
+        "label": "White",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0030.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0030"
+    ],
+    "verdicts": [
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Light Blue",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "Green",
+        "printed": false
+      },
+      {
+        "label": "White",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0032.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0032"
+    ],
+    "verdicts": [
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "Light green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0036.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0036"
+    ],
+    "verdicts": [
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Light Blue",
+        "printed": false
+      },
+      {
+        "label": "Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0031.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0031"
+    ],
+    "verdicts": [
+      {
+        "label": "Violet/White (F)",
+        "printed": true,
+        "box": [
+          0.5083,
+          0.2043,
+          0.0333,
+          0.0159
+        ],
+        "text": "violet white (F)"
+      }
+    ]
+  },
+  "wiring-1993-p0037.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0037"
+    ],
+    "verdicts": [
+      {
+        "label": "Sky Blue",
+        "printed": false
+      },
+      {
+        "label": "Purple/White",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Light Blue",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0035.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0035"
+    ],
+    "verdicts": [
+      {
+        "label": "Brown",
+        "printed": true,
+        "box": [
+          0.9089,
+          0.5632,
+          0.0122,
+          0.0159
+        ],
+        "text": "茶"
+      },
+      {
+        "label": "Orange",
+        "printed": true,
+        "box": [
+          0.575,
+          0.5509,
+          0.0378,
+          0.0101
+        ],
+        "text": "orange (blue)"
+      },
+      {
+        "label": "Pink",
+        "printed": false
+      },
+      {
+        "label": "Purple",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0043.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0043"
+    ],
+    "verdicts": [
+      {
+        "label": "Red/Black",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0044.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0044"
+    ],
+    "verdicts": [
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0039.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0039"
+    ],
+    "verdicts": [
+      {
+        "label": "Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "White/Green",
+        "printed": false
+      },
+      {
+        "label": "Red",
+        "printed": false
+      },
+      {
+        "label": "White/Blue",
+        "printed": false
+      },
+      {
+        "label": "Red/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Red",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0046.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0046"
+    ],
+    "verdicts": [
+      {
+        "label": "Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0041.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0041"
+    ],
+    "verdicts": [
+      {
+        "label": "Blue/Red",
+        "printed": true,
+        "box": [
+          0.674,
+          0.3889,
+          0.055,
+          0.0144
+        ],
+        "text": "青赤(R)"
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Light Blue/Orange",
+        "printed": false
+      },
+      {
+        "label": "Blue/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Gray/Red",
+        "printed": false
+      },
+      {
+        "label": "White/Blue",
+        "printed": false
+      },
+      {
+        "label": "Red/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      },
+      {
+        "label": "White/Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0053.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0053"
+    ],
+    "verdicts": [
+      {
+        "label": "Red/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/Red",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0051.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0051"
+    ],
+    "verdicts": [
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0047.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0047"
+    ],
+    "verdicts": [
+      {
+        "label": "White/Black",
+        "printed": false
+      },
+      {
+        "label": "Pink",
+        "printed": false
+      },
+      {
+        "label": "Red",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0049.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0049"
+    ],
+    "verdicts": [
+      {
+        "label": "White/Blue",
+        "printed": false
+      },
+      {
+        "label": "Brown/White",
+        "printed": false
+      },
+      {
+        "label": "Red/Black",
+        "printed": false
+      },
+      {
+        "label": "Gray/Red",
+        "printed": false
+      },
+      {
+        "label": "Gray/White",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Red",
+        "printed": false
+      },
+      {
+        "label": "Light Green/White",
+        "printed": false
+      },
+      {
+        "label": "Light Green",
+        "printed": false
+      },
+      {
+        "label": "Red/Yellow",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0045.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0045"
+    ],
+    "verdicts": [
+      {
+        "label": "Green/Red",
+        "printed": false
+      },
+      {
+        "label": "Green/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Light Green",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": true,
+        "box": [
+          0.2633,
+          0.5162,
+          0.0333,
+          0.0361
+        ],
+        "text": "赤黄"
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0063.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0063"
+    ],
+    "verdicts": [
+      {
+        "label": "Light Green/Red",
+        "printed": true,
+        "box": [
+          0.1572,
+          0.4224,
+          0.0344,
+          0.0231
+        ],
+        "text": "light green red (EM)"
+      }
+    ]
+  },
+  "wiring-1993-p0057.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0057"
+    ],
+    "verdicts": [
+      {
+        "label": "Red/Blue",
+        "printed": true,
+        "box": [
+          0.6833,
+          0.5379,
+          0.0344,
+          0.013
+        ],
+        "text": "赤青(AC)"
+      },
+      {
+        "label": "Blue/Black",
+        "printed": true,
+        "box": [
+          0.4822,
+          0.2397,
+          0.0344,
+          0.013
+        ],
+        "text": "青黒(AC)"
+      },
+      {
+        "label": "Light Green/Yellow",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0065.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0065"
+    ],
+    "verdicts": [
+      {
+        "label": "Red/Black",
+        "printed": false
+      },
+      {
+        "label": "Red/Green",
+        "printed": false
+      },
+      {
+        "label": "Purple/Brown",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0067.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0067"
+    ],
+    "verdicts": [
+      {
+        "label": "Red/Black",
+        "printed": false
+      },
+      {
+        "label": "Red/Green",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0061.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0061"
+    ],
+    "verdicts": [
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Violet/White",
+        "printed": true,
+        "box": [
+          0.7917,
+          0.244,
+          0.0278,
+          0.0231
+        ],
+        "text": "紫白(AC)"
+      },
+      {
+        "label": "Yellow/Red",
+        "printed": true,
+        "box": [
+          0.7678,
+          0.4513,
+          0.0289,
+          0.0231
+        ],
+        "text": "黄赤(I)"
+      }
+    ]
+  },
+  "wiring-1993-p0071.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0071"
+    ],
+    "verdicts": [
+      {
+        "label": "Black/Red",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0072.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0072"
+    ],
+    "verdicts": [
+      {
+        "label": "Black",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0077.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0077"
+    ],
+    "verdicts": [
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0079.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0079"
+    ],
+    "verdicts": [
+      {
+        "label": "White/Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0080.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0080"
+    ],
+    "verdicts": [
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0087.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0087"
+    ],
+    "verdicts": [
+      {
+        "label": "Green/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0090.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0090"
+    ],
+    "verdicts": [
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0091.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0091"
+    ],
+    "verdicts": [
+      {
+        "label": "Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Blue/White",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0075.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0075"
+    ],
+    "verdicts": [
+      {
+        "label": "Yellow/Red",
+        "printed": false
+      },
+      {
+        "label": "Brown/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Brown/White",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Black",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Red",
+        "printed": false
+      },
+      {
+        "label": "Light Green",
+        "printed": false
+      },
+      {
+        "label": "Blue/Orange",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0094.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0094"
+    ],
+    "verdicts": [
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0093.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0093"
+    ],
+    "verdicts": [
+      {
+        "label": "Purple",
+        "printed": true,
+        "box": [
+          0.2761,
+          0.3097,
+          0.0167,
+          0.013
+        ],
+        "text": "紫(F)"
+      }
+    ]
+  },
+  "wiring-1993-p0097.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0097"
+    ],
+    "verdicts": [
+      {
+        "label": "Purple",
+        "printed": true,
+        "box": [
+          0.3511,
+          0.4708,
+          0.0233,
+          0.0303
+        ],
+        "text": "紫 (D)"
+      }
+    ]
+  },
+  "wiring-1993-p0098.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0098"
+    ],
+    "verdicts": [
+      {
+        "label": "Light Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0095.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0095"
+    ],
+    "verdicts": [
+      {
+        "label": "Violet/Red",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0059.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0059"
+    ],
+    "verdicts": [
+      {
+        "label": "Green/Black",
+        "printed": true,
+        "box": [
+          0.3028,
+          0.2765,
+          0.0344,
+          0.0144
+        ],
+        "text": "緑黒 (AC)"
+      },
+      {
+        "label": "Light Green/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/Green",
+        "printed": true,
+        "box": [
+          0.3583,
+          0.1242,
+          0.0322,
+          0.0144
+        ],
+        "text": "黒緑 (F)"
+      },
+      {
+        "label": "Light Blue",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Orange",
+        "printed": false
+      },
+      {
+        "label": "Sky Blue",
+        "printed": false
+      },
+      {
+        "label": "Pink",
+        "printed": false
+      },
+      {
+        "label": "Violet",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Green",
+        "printed": true,
+        "box": [
+          0.4267,
+          0.4455,
+          0.0322,
+          0.0144
+        ],
+        "text": "黄緑 (I)"
+      },
+      {
+        "label": "Brown/Black",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Red",
+        "printed": false
+      },
+      {
+        "label": "Peach",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0101.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0101"
+    ],
+    "verdicts": [
+      {
+        "label": "Purple/Green",
+        "printed": true,
+        "box": [
+          0.2978,
+          0.4111,
+          0.048,
+          0.0056
+        ],
+        "text": "purple green"
+      }
+    ]
+  },
+  "wiring-1993-p0073.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0073"
+    ],
+    "verdicts": [
+      {
+        "label": "Red",
+        "printed": true,
+        "box": [
+          0.2156,
+          0.143,
+          0.025,
+          0.0325
+        ],
+        "text": "赤黒"
+      },
+      {
+        "label": "Light Green",
+        "printed": true,
+        "box": [
+          0.1956,
+          0.4729,
+          0.025,
+          0.0325
+        ],
+        "text": "赤緑"
+      },
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      },
+      {
+        "label": "White/Black",
+        "printed": false
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      },
+      {
+        "label": "Light Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Red/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Orange",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Black",
+        "printed": false
+      },
+      {
+        "label": "Gray/Red",
+        "printed": false
+      },
+      {
+        "label": "White",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Red",
+        "printed": false
+      },
+      {
+        "label": "Black/White",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0100.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0100"
+    ],
+    "verdicts": [
+      {
+        "label": "Black",
+        "printed": false
+      },
+      {
+        "label": "Green",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0103.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0103"
+    ],
+    "verdicts": [
+      {
+        "label": "Blue/Black",
+        "printed": false
+      },
+      {
+        "label": "White/Red",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "White",
+        "printed": false
+      },
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Black",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      },
+      {
+        "label": "Brown/Black",
+        "printed": false
+      },
+      {
+        "label": "Green/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/White",
+        "printed": false
+      },
+      {
+        "label": "Purple",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Green",
+        "printed": false
+      },
+      {
+        "label": "Sky Blue",
+        "printed": false
+      },
+      {
+        "label": "Violet",
+        "printed": false
+      },
+      {
+        "label": "Gray/Red",
+        "printed": false
+      },
+      {
+        "label": "White/Green",
+        "printed": false
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      },
+      {
+        "label": "Orange",
+        "printed": false
+      },
+      {
+        "label": "Light Blue",
+        "printed": false
+      },
+      {
+        "label": "Pink",
+        "printed": false
+      },
+      {
+        "label": "Turquoise",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0108.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0108"
+    ],
+    "verdicts": [
+      {
+        "label": "Red/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Green/Black",
+        "printed": false
+      },
+      {
+        "label": "Brown/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/White",
+        "printed": false
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Green",
+        "printed": false
+      },
+      {
+        "label": "Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "Green/White",
+        "printed": false
+      },
+      {
+        "label": "White/Black",
+        "printed": false
+      },
+      {
+        "label": "Blue/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/Red",
+        "printed": false
+      },
+      {
+        "label": "Light Green",
+        "printed": false
+      },
+      {
+        "label": "White/Green",
+        "printed": false
+      },
+      {
+        "label": "White/Red",
+        "printed": false
+      },
+      {
+        "label": "Blue/White",
+        "printed": false
+      },
+      {
+        "label": "White",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Red",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Red",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0106.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0106"
+    ],
+    "verdicts": [
+      {
+        "label": "Black/Red",
+        "printed": false
+      },
+      {
+        "label": "Light Green",
+        "printed": false
+      },
+      {
+        "label": "Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      },
+      {
+        "label": "White/Red",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "Blue/Black",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Black",
+        "printed": false
+      },
+      {
+        "label": "White",
+        "printed": false
+      },
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "Red",
+        "printed": false
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Red",
+        "printed": false
+      },
+      {
+        "label": "Gray/Red",
+        "printed": false
+      },
+      {
+        "label": "Black/White",
+        "printed": false
+      },
+      {
+        "label": "Black/Yellow/Red",
+        "printed": false
+      },
+      {
+        "label": "White/Blue",
+        "printed": false
+      },
+      {
+        "label": "Light Green/White",
+        "printed": false
+      },
+      {
+        "label": "Light Green/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Black/Blue",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Black",
+        "printed": false
+      },
+      {
+        "label": "Orange",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0105.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0105"
+    ],
+    "verdicts": [
+      {
+        "label": "Brown/Black",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Red",
+        "printed": false
+      },
+      {
+        "label": "White/Green",
+        "printed": false
+      },
+      {
+        "label": "Light Green",
+        "printed": false
+      },
+      {
+        "label": "Gray",
+        "printed": false
+      },
+      {
+        "label": "Black/Red",
+        "printed": false
+      },
+      {
+        "label": "White/Black",
+        "printed": false
+      },
+      {
+        "label": "Orange",
+        "printed": false
+      },
+      {
+        "label": "Purple",
+        "printed": false
+      },
+      {
+        "label": "Black/Blue",
+        "printed": false
+      },
+      {
+        "label": "Blue/Black",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Black",
+        "printed": false
+      },
+      {
+        "label": "Black/White",
+        "printed": false
+      },
+      {
+        "label": "Red",
+        "printed": false
+      },
+      {
+        "label": "Blue/Red",
+        "printed": false
+      },
+      {
+        "label": "Brown",
+        "printed": false
+      },
+      {
+        "label": "Yellow/White",
+        "printed": false
+      },
+      {
+        "label": "Red/White",
+        "printed": false
+      },
+      {
+        "label": "Light Blue",
+        "printed": false
+      },
+      {
+        "label": "Violet/Red",
+        "printed": false
+      },
+      {
+        "label": "White/Red",
+        "printed": false
+      },
+      {
+        "label": "Black/Yellow",
+        "printed": false
+      },
+      {
+        "label": "Yellow",
+        "printed": false
+      },
+      {
+        "label": "Blue",
+        "printed": false
+      },
+      {
+        "label": "White",
+        "printed": false
+      },
+      {
+        "label": "Green",
+        "printed": false
+      },
+      {
+        "label": "Red/Green",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Blue",
+        "printed": false
+      },
+      {
+        "label": "Green/White",
+        "printed": false
+      },
+      {
+        "label": "Black/Green",
+        "printed": false
+      },
+      {
+        "label": "Red/Blue",
+        "printed": false
+      },
+      {
+        "label": "Blue/White",
+        "printed": false
+      },
+      {
+        "label": "Black/Red (Light Green)",
+        "printed": false
+      },
+      {
+        "label": "White/Black (Light Green)",
+        "printed": false
+      },
+      {
+        "label": "Yellow/Red (Light Blue)",
+        "printed": false
+      },
+      {
+        "label": "White/Red (Light Blue)",
+        "printed": false
+      }
+    ]
+  },
+  "wiring-1993-p0033.jpg": {
+    "model": "glm-5.3-flash",
+    "passes": 3,
+    "entries": [
+      "wiring-1993-p0033"
+    ],
+    "verdicts": [
+      {
+        "label": "Purple",
+        "printed": false
+      }
+    ]
+  }
+}
