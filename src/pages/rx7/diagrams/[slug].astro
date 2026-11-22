@@ -276,17 +276,61 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
     for (const el of partners.get(label) ?? []) el.classList.toggle('is-marked', on);
   };
 
+  // Touch needs its own grammar. A tap leaves focus behind — on a phone
+  // nothing ever blurs it, because tapping empty space moves focus on no
+  // platform — so a focus mark made for a tap would pin the tag on screen for
+  // good, and the scroll clearing below deliberately spares focus-held marks.
+  // A focus that lands within a beat of a touch pointerdown is that tap's
+  // leavings and must not mark; keyboard focus never is. A tap is also the
+  // dismissal: whatever an earlier tap lit, the next tap puts out (and lights
+  // its own target, if it has one). `focusLabel` carries the keyboard/tap
+  // distinction to the scroll and resize clearing below.
+  let lastTouchAt = -Infinity;
+  let focusLabel = null;
+  window.addEventListener(
+    'pointerdown',
+    (ev) => {
+      if (ev.pointerType !== 'touch') return;
+      lastTouchAt = performance.now();
+      focusLabel = null;
+      for (const el of document.querySelectorAll('.is-marked')) el.classList.remove('is-marked');
+    },
+    { capture: true, passive: true },
+  );
+  const fromTap = () => performance.now() - lastTouchAt < 500;
+
   for (const el of document.querySelectorAll('[data-region]')) {
     const label = el.dataset.region;
     // Focus works the same for all of them: keyboard is how a box on the
-    // drawing is reached without a pointer at all.
-    el.addEventListener('focus', () => mark(label, true));
-    el.addEventListener('blur', () => mark(label, false));
+    // drawing is reached without a pointer at all. A tap also focuses, but
+    // that focus is leavings (see the pointerdown above) — the tap marks its
+    // own group on click instead.
+    el.addEventListener('focus', () => {
+      if (fromTap()) return;
+      focusLabel = label;
+      mark(label, true);
+    });
+    el.addEventListener('blur', () => {
+      if (focusLabel === label) focusLabel = null;
+      mark(label, false);
+    });
     // Chips and lines take the pointer themselves; the boxes do not (see
     // pointer-events in the styles), so they are picked by the frame below.
     if (el.classList.contains('region')) continue;
-    el.addEventListener('pointerenter', () => mark(label, true));
-    el.addEventListener('pointerleave', () => mark(label, false));
+    el.addEventListener('pointerenter', (ev) => {
+      if (ev.pointerType === 'touch') return; // a tap marks on click instead
+      mark(label, true);
+    });
+    el.addEventListener('pointerleave', (ev) => {
+      if (ev.pointerType === 'touch') return; // the tap's click marks, the next tap dismisses
+      mark(label, false);
+    });
+    el.addEventListener('click', () => {
+      // With a mouse the focus handler already did this, and hover keeps the
+      // group lit while the pointer stays. On touch this is the only marking
+      // the tap gets.
+      if (fromTap()) mark(label, true);
+    });
   }
 
   // A hover highlight is only true while the pointer is over the thing. Scroll
@@ -294,10 +338,10 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
   // events, so a chip's line would stay lit with the chip long gone. Focus is a
   // real state, so a mark on a group that holds the focus survives.
   const clearHoverMarks = () => {
-    const focused = document.activeElement;
     for (const el of document.querySelectorAll('.is-marked')) {
-      const group = partners.get(el.dataset.region) ?? [];
-      if (focused && group.includes(focused)) continue;
+      // A group holding the keyboard focus keeps its mark — focus is a state,
+      // hover is not. Marks a tap made never survive a scroll.
+      if (el.dataset.region === focusLabel) continue;
       el.classList.remove('is-marked');
     }
   };
@@ -354,6 +398,9 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
     };
 
     frame.addEventListener('pointermove', (ev) => {
+      // A touch drag on the frame is a scroll, not a pick: following the
+      // finger would flash tags under it while the page scrolls.
+      if (ev.pointerType === 'touch') return;
       const hit = pick(ev);
       if (hit?.el === active) return;
       clear();
@@ -361,7 +408,10 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
       active = hit.el;
       mark(hit.label, true);
     });
-    frame.addEventListener('pointerleave', () => {
+    frame.addEventListener('pointerleave', (ev) => {
+      // Touch ends every tap with an implicit leave; the tap's mark is
+      // dismissed by the next tap or a scroll, not by the finger lifting.
+      if (ev.pointerType === 'touch') return;
       clear();
       boxes = null;
     });
@@ -369,7 +419,16 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
     // anchor's href would do if the box could take the pointer.
     frame.addEventListener('click', (ev) => {
       const hit = pick(ev);
-      const entry = hit ? document.getElementById(hit.el.getAttribute('href').slice(1)) : null;
+      if (!hit) return;
+      // A tap lights the tag where the finger is and nothing more. The mouse
+      // path below focuses the sidebar entry, which on a phone would yank the
+      // reader off the drawing (the sidebar sits below the images there) and
+      // pin the tag on screen — nothing on touch ever blurs that focus.
+      if (fromTap()) {
+        mark(hit.label, true);
+        return;
+      }
+      const entry = document.getElementById(hit.el.getAttribute('href').slice(1));
       if (!entry) return;
       ev.preventDefault();
       entry.focus();
@@ -472,7 +531,16 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
       stroke-width 0.12s ease;
   }
 
-  .wire:hover,
+  /* Hover is a mouse state: on touch a tap would leave :hover stuck on the
+     line under the finger, and the tap's own highlight comes from the script
+     marking the group instead. */
+  @media (hover: hover) {
+    .wire:hover {
+      stroke: var(--accent);
+      stroke-width: 4;
+    }
+  }
+
   .wire.is-marked {
     stroke: var(--accent);
     stroke-width: 4;

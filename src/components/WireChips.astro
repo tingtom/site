@@ -77,7 +77,13 @@ const { colors, linked } = Astro.props;
     border-color: var(--line);
   }
 
-  button.wire-chip:hover,
+  @media (hover: hover) {
+    button.wire-chip:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+  }
+
   button.wire-chip.is-marked {
     border-color: var(--accent);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);

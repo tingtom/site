@@ -65,7 +65,14 @@ const rows = items.map((v, i) => {
     border-radius: 2px;
   }
 
-  .entry-link:hover,
+  @media (hover: hover) {
+    .entry-link:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-bottom-color: currentColor;
+    }
+  }
+
   .entry-link:focus-visible,
   .entry-link.is-marked,
   .entry-link:target {
