@@ -53,8 +53,63 @@
     ],
     "verdicts": [
       {
-        "label": "Purple",
+        "label": "Green",
+        "printed": true,
+        "box": [
+          0.6689,
+          0.4563,
+          0.0367,
+          0.0188
+        ],
+        "text": "Light green (IG)"
+      },
+      {
+        "label": "Gray",
+        "printed": true,
+        "box": [
+          0.7544,
+          0.5054,
+          0.0222,
+          0.0116
+        ],
+        "text": "灰 (F)"
+      },
+      {
+        "label": "Yellow",
+        "printed": true,
+        "box": [
+          0.4989,
+          0.1516,
+          0.0211,
+          0.0087
+        ],
+        "text": "yellow"
+      },
+      {
+        "label": "Brown",
+        "printed": true,
+        "box": [
+          0.8628,
+          0.3921,
+          0.0122,
+          0.0116
+        ],
+        "text": "茶"
+      },
+      {
+        "label": "Orange",
         "printed": false
+      },
+      {
+        "label": "Pink",
+        "printed": true,
+        "box": [
+          0.7156,
+          0.4209,
+          0.05,
+          0.0116
+        ],
+        "text": "pink black (F)"
       }
     ]
   },
